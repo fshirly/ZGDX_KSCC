@@ -1,0 +1,39 @@
+package com.fable.kscc.bussiness.service.enrollMedT;
+
+import com.fable.kscc.api.medTApi.MedTApi;
+import com.fable.kscc.bussiness.cache.DataCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+
+/**
+ * @auther jiangmingjun
+ * @create 2017/10/24
+ * @description 单个鉴权线程类
+ */
+public class AuthenticThread implements Runnable {
+    public String confId;
+    public Map<String, String> login;
+    public MedTApi medTApi;
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticThread.class);
+
+    public AuthenticThread(String confId, Map<String, String> login, MedTApi medTApi) {
+        this.confId = confId;
+        this.login = login;
+        this.medTApi = medTApi;
+    }
+
+    @Override
+    public void run() {
+        while ((boolean) DataCache.getInstance().getCache(confId)){
+            try {
+                logger.info(login.get("ip")+":"+login.get("port")+"========================");
+                Thread.sleep(5000);
+                medTApi.heartBeat(login);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

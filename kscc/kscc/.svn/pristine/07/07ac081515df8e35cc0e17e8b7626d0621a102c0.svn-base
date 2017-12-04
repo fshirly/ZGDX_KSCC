@@ -1,0 +1,73 @@
+package com.fable.kscc.api.medTApi;
+
+import com.fable.kscc.api.utils.HttpUtils;
+import com.fable.kscc.api.utils.XmlGenerator;
+import net.sf.json.JSONObject;
+import net.sf.json.xml.XMLSerializer;
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by Wanghairui on 2017/10/10.
+ */
+@Component
+public class MedTApi {
+
+    public static void main(String[] args) {
+        Map<String, String> login = new HashMap<>();
+        login.put("ip", "http://202.127.28.81:50080/");
+        login.put("username", "admin");
+        login.put("password", "admin123");
+        login.put("hospitalId", "1");
+        String str= HttpUtils.httpPostByNullXml("http://202.127.28.81:50080/nvrcgi2/system/GetAuthenticationid");
+        login.put("authenticationid", xmlToJson(str).get("Authenticationid").toString());
+        XmlGenerator.generateRequestRoot(login);
+        new MedTApi().Login(login);
+        new MedTApi().Mp4FileQuery(login);
+    }
+    public void Login(Map<String,String> param){
+
+        String params = XmlGenerator.generateLoginParam(enhanceKey(param));
+
+        String result = HttpUtils.httpPostByXml(param.get("ip") + "nvrcgi2/system/Login", params);
+        System.out.println("login:"+xmlToJson(result).get("statusstring"));
+    }
+
+    public  void heartBeat(Map<String,String> param){
+
+        String param2 = XmlGenerator.generateKeepHeartBeatParam(enhanceKey(param));
+
+        HttpUtils.httpPostByXml(param.get("ip")+"/nvrcgi2/system/State", param2);
+
+    }
+
+    public void Mp4BackUpProgress(Map<String,String> param){
+
+        String params =XmlGenerator.generateHaveNotParam(enhanceKey(param));
+
+        String result = HttpUtils.httpPostByXml(param.get("ip")+"nvrcgi2/svrmp4/Mp4BackupGetProgress",params);
+
+        System.out.println(result);
+    }
+    public void viewSelfThroughSelf(Map<String,String> param){
+        String params = XmlGenerator.generateSetVmtParam(enhanceKey(param));
+        String result = HttpUtils.httpPostByXml(param.get("ip") + "nvrcgi2/svrvmt/SetVmtParam", params);
+        System.out.println("自己看自己：：：："+result);
+    }
+    public void Mp4FileQuery(Map<String,String> param){
+        String params = XmlGenerator.generateMp4FileQueryParam(enhanceKey(param));
+        String result = HttpUtils.httpPostByXml(param.get("ip") + "nvrcgi2/svrmp4/Mp4FileQuery", params);
+        System.out.println("文件为：：：："+result);
+    }
+    public static JSONObject xmlToJson(String xml){
+        XMLSerializer xmlSerializer=new XMLSerializer();
+        return  (JSONObject)xmlSerializer.read(xml);
+    }
+
+    private static String enhanceKey(Map<String,String> param){
+        return param.get("hospitalId") + param.get("ip");
+    }
+
+}

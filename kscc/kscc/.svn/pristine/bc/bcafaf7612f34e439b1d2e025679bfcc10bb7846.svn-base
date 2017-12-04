@@ -1,0 +1,36 @@
+package com.fable.kscc.bussiness.service.fbmenu;
+
+import com.fable.kscc.api.model.menu.FbsMenu;
+import com.fable.kscc.bussiness.mapper.fbmenu.FbMenuMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class FbsMenuServiceImpl implements FbsMenuService{
+
+    @Autowired
+    private FbMenuMapper fbMenuMapper;
+
+    @Override
+    public List<FbsMenu> findAllByRole() {
+        return fbMenuMapper.findAllByRole();
+    }
+
+    @Override
+    @Transactional(propagation= Propagation.REQUIRED)
+    public int updateMenuByRole(Map<String,Object> params) {
+        fbMenuMapper.InitializationMenuRole();//初始化kscc管理员
+        String ids = params.get("ids").toString();
+        String[] id = ids.split(",");
+        int[] num = new int[id.length];
+        for(int i=0; i<id.length;i++){
+            num[i] = Integer.parseInt(id[i]) ;
+        }
+        return fbMenuMapper.updateMenuByRole(num);
+    }
+}

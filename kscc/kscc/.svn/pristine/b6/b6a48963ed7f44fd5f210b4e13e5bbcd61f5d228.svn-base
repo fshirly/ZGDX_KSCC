@@ -1,0 +1,35 @@
+package com.fable.kscc.bussiness.service.uploadfile;
+
+import java.io.File;
+import java.util.ArrayList;
+import com.fable.kscc.api.utils.StringUtil;
+
+public class FilesGetter {
+	private static ArrayList<String> filelist = new ArrayList<String>();
+
+	public static void getFiles(String filePath) {
+		File root = new File(filePath);
+		File[] files = root.listFiles();
+		for (File file : files) {
+			if (file.isDirectory()) {
+				/*
+				 * 递归调用
+				 */
+				getFiles(file.getAbsolutePath());
+			}
+			else
+			{
+				if(StringUtil.isNotEmpty(file.getAbsolutePath())
+						&&file.getAbsolutePath().indexOf(".mp4")>-1 )
+				{
+					filelist.add(file.getAbsolutePath());
+				}
+			}
+		}
+	}
+	
+	public ArrayList<String> getFilelist()
+	{
+		return filelist;
+	}
+}

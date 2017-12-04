@@ -1,0 +1,236 @@
+package com.fable.kscc.api.utils;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Wanghairui on 2017/10/10.
+ */
+public class XmlGenerator {
+
+    private static Map<String, Element> rootRequestMap = new HashMap<>();
+
+    public static void main(String[] args) throws Exception {
+//        Map<String, String> login = new HashMap<>();
+//        login.put("ip", "123");
+//        login.put("username", "admin");
+//        login.put("password", "admin123");
+//        login.put("hospitalId", "1");
+//        login.put("authenticationid", "asgf5");
+//        generateRequestRoot(login);
+//        System.out.println(generateMp4FileQueryParam(login.get("hospitalId") + login.get("ip")));
+
+//        String response = "<?xml version=\"1.0\" encoding=\"utf-8\"?><MedtMp4QueryRsp><TotalNum>11</TotalNum><MP4List num=\"11\"><MP4Info><Title>1test</Title><TitlePath>/tmp/disk/02_02/2017年9月25日/1test/</TitlePath></MP4Info><MP4Info><Title>1314</Title><TitlePath>/tmp/disk/02_02/2017年9月25日/1314/</TitlePath></MP4Info><MP4Info><Title>0104003</Title><TitlePath>/tmp/disk/02_02/1970年1月1日/0104003/</TitlePath></MP4Info><MP4Info><Title>01040</Title><TitlePath>/tmp/disk/02_02/1970年1月1日/01040/</TitlePath></MP4Info><MP4Info><Title>0104088</Title><TitlePath>/tmp/disk/02_02/1970年1月1日/0104088/</TitlePath></MP4Info><MP4Info><Title>0104134</Title><TitlePath>/tmp/disk/02_02/1970年1月1日/0104134/</TitlePath></MP4Info><MP4Info><Title>远程测试</Title><TitlePath>/tmp/disk/02_02/2017年10月12日/远程测试/</TitlePath></MP4Info><MP4Info><Title>远程测试2 空</Title><TitlePath>/tmp/disk/02_02/2017年10月12日/远程测试2 空/</TitlePath></MP4Info><MP4Info><Title>1000000001</Title><TitlePath>/tmp/disk/02_02/1970年1月1日/1000000001/</TitlePath></MP4Info><MP4Info><Title>0104270</Title><TitlePath>/tmp/disk/02_02/2017年10月16日/0104270/</TitlePath></MP4Info><MP4Info><Title>0104270</Title><TitlePath>/tmp/disk/02_02/1970年1月1日/0104270/</TitlePath></MP4Info></MP4List></MedtMp4QueryRsp>";
+//        Document document = DocumentHelper.parseText(response);
+//        Element root = document.getRootElement();
+//        Element MP4List = root.element("MP4List");
+//        List nodes = MP4List.elements("MP4Info");
+//        for (Iterator it = nodes.iterator(); it.hasNext();) {
+//            Element elm = (Element) it.next();
+//            System.out.println(elm.asXML());
+//        }
+
+        String response1 = "<?xml version=\"1.0\" encoding=\"utf-8\"?><GetAuthenticationidResp><Authenticationid>5690060010378b</Authenticationid></GetAuthenticationidResp>";
+        Document root1 = DocumentHelper.parseText(response1);
+        System.out.println(root1.getRootElement().element("Authenticationid").getText());
+        System.out.println(root1.getRootElement().getName());
+
+    }
+
+    public static String generateLoginParam(String key) {
+
+        Element root = rootRequestMap.get(key);
+        removeRedundantElement(root);
+        Element loginReq = root.addElement("LoginReq");
+        loginReq.setText("");
+        return root.asXML();
+    }
+
+    public static String generateKeepHeartBeatParam(String key) {
+        Element root = rootRequestMap.get(key);
+        removeRedundantElement(root);
+        //        <StateReq>
+        //	<Chn></Chn>						<!--xs:boolean	是否查询通道相关变化(当节点不存在相当于取值为FALSE)-->
+        //	<Group></Group>					<!--xs:boolean	是否查询通道分组相关变化(当节点不存在相当于取值为FALSE)-->
+        //	<CfgMod></CfgMod>				<!--xs:boolean	是否查询配置变更-->
+        //	<RecentLog>						<!--该节点存在表示要查询实时日志个数-->
+        //		<TimeStamp></TimeStamp>		<!--xs:integer	查询"实时日志"的起始时间戳(登录后，第一次查询需要传入0)-->
+        //		<LogParam></LogParam>		<!--xs:string	查询的日志类别,多项以逗号隔开(可选值: UserOp:用户操作日志 SysExp:系统异常日志 NvrAlm:NVR告警日志
+        //        DevAlm:设备告警日志 ImpNtf:重要通知日志 值为空:表示全部类型)-->
+        //	</RecentLog>
+        //	<SysStatus></SysStatus>			<!--xs:boolean	是否查询系统实时状态-->
+        //	<DiskChg></DiskChg>				<!--xs:boolean	是否查询磁盘插拔状态-->
+        //</StateReq>
+        Element StateReq = root.addElement("StateReq");
+        Element CfgMod = StateReq.addElement("CfgMod");
+        Element SysStatus = StateReq.addElement("SysStatus");
+        Element DiskChg = StateReq.addElement("DiskChg");
+        CfgMod.setText("TRUE");
+        SysStatus.setText("TRUE");
+        DiskChg.setText("TRUE");
+        return root.asXML();
+    }
+
+    public static String generateHaveNotParam(String key) {
+        Element root = rootRequestMap.get(key);
+        removeRedundantElement(root);
+        return root.asXML();
+    }
+
+    public static void generateRequestRoot(Map<String,String> login) {
+        Document doc = DocumentHelper.createDocument();
+        Element contentroot = doc.addElement("contentroot");
+        //增加子元素
+        Element authenticationinfoNode = contentroot.addElement("authenticationinfo");
+        authenticationinfoNode.addAttribute("type", "7.0");
+
+        Element usernameNode = authenticationinfoNode.addElement("username");
+        Element passwordNode = authenticationinfoNode.addElement("password");
+        Element authenticationidNode = authenticationinfoNode.addElement("authenticationid");
+        usernameNode.setText(login.get("username"));
+        passwordNode.setText(encode(login));
+        authenticationidNode.setText(login.get("authenticationid"));
+        rootRequestMap.put(login.get("hospitalId")+login.get("ip"), contentroot);
+    }
+
+    //自己看自己不经过新世通平台参数
+    public static String generateSetVmtParam(String key){
+
+        Element root = rootRequestMap.get(key);
+        removeRedundantElement(root);
+        Element SetVmtParamReq = root.addElement("SetVmtParamReq");
+        Element DviOutPortList = SetVmtParamReq.addElement("DviOutPortList");
+        DviOutPortList.addAttribute("num", "4");
+
+        Element DviOutPort = DviOutPortList.addElement("DviOutPort");
+        DviOutPort.addAttribute("id", "0");
+        Element SrcChnID = DviOutPort.addElement("SrcChnID");
+        SrcChnID.setText("3");
+
+        Element DviOutPort1 = DviOutPortList.addElement("DviOutPort");
+        DviOutPort1.addAttribute("id", "1");
+        Element SrcChnID1 = DviOutPort1.addElement("SrcChnID");
+        SrcChnID1.setText("9");
+
+        Element DviOutPort2 = DviOutPortList.addElement("DviOutPort");
+        DviOutPort2.addAttribute("id", "2");
+        Element SrcChnID2 = DviOutPort2.addElement("SrcChnID");
+        SrcChnID2.setText("9");
+
+        Element DviOutPort3 = DviOutPortList.addElement("DviOutPort");
+        DviOutPort3.addAttribute("id", "3");
+        Element SrcChnID3 = DviOutPort3.addElement("SrcChnID");
+        SrcChnID3.setText("6");
+        return root.asXML();
+    }
+
+    public static  String generateMp4FileQueryParam(String key){
+        Element root = rootRequestMap.get(key);
+        removeRedundantElement(root);
+        //        <!--功能: 录像MP4文件所在目录搜索-->
+        Element MedtMp4QueryReq = root.addElement("MedtMp4QueryReq");
+        Element Type = MedtMp4QueryReq.addElement("Type");
+        Type.setText("2");//1为根据会议id开始时间结束时间查询会议，2是查询所有会议
+        Element StartTime = MedtMp4QueryReq.addElement("StartTime");
+        StartTime.setText(DateTimeUtil.stringDateToStringTime("2017-10-16 09:11:29"));
+        Element EndTime = MedtMp4QueryReq.addElement("EndTime");
+        EndTime.setText(DateTimeUtil.stringDateToStringTime("2017-10-16 09:59:04"));
+        Element CatalogPath = MedtMp4QueryReq.addElement("CatalogPath");
+        CatalogPath.setText("0104270");//会议id
+        Element StartIndex = MedtMp4QueryReq.addElement("StartIndex");
+        StartIndex.setText("0");
+        return root.asXML();
+    }
+
+    public static String generateSetSysTimeInfoParam(String key){
+        Element root = rootRequestMap.get(key);
+        removeRedundantElement(root);
+        Element SetSysTimeInfoReq= root.addElement("SetSysTimeInfoReq");
+        Element TimeZone=SetSysTimeInfoReq.addElement("TimeZone");
+        TimeZone.setText("+08:00");
+        Element ManualSyncParam=SetSysTimeInfoReq.addElement("ManualSyncParam");
+        Element Sync = ManualSyncParam.addElement("Sync");
+        Sync.setText("true");
+        Element Time = ManualSyncParam.addElement("Time");
+        Time.setText(DateTimeUtil.gmtToUtc(new Date()));
+        Element SummerParam=SetSysTimeInfoReq.addElement("SummerParam");
+        Element Enable=SummerParam.addElement("Enable");
+        Enable.setText("false");
+        Element OffSet=SummerParam.addElement("OffSet");
+        OffSet.setText("60min");
+        Element Begin=SummerParam.addElement("Begin");
+        Element Month = Begin.addElement("Month");
+        Month.setText("6");
+        Element WeekIndex = Begin.addElement("WeekIndex");
+        WeekIndex.setText("1");
+        Element Weekday = Begin.addElement("Weekday");
+        Weekday.setText("1");
+        Element Hour = Begin.addElement("Hour");
+        Hour.setText("1");
+        Element End=SummerParam.addElement("End");
+        Element Month1 = End.addElement("Month");
+        Month1.setText("9");
+        Element WeekIndex1 = End.addElement("WeekIndex");
+        WeekIndex1.setText("2");
+        Element Weekday1 = End.addElement("Weekday");
+        Weekday1.setText("7");
+        Element Hour1 = End.addElement("Hour");
+        Hour1.setText("23");
+        Element AutoSyncParam=SetSysTimeInfoReq.addElement("AutoSyncParam");
+        Element Enable1 = AutoSyncParam.addElement("Enable");
+        Enable1.setText("false");
+        Element Type = AutoSyncParam.addElement("Type");
+        Type.setText("proto");
+        Element ServerIP = AutoSyncParam.addElement("ServerIP");
+        ServerIP.setText("0.0.0.0");
+        Element ServerPort = AutoSyncParam.addElement("ServerPort");
+        ServerPort.setText("123");
+        Element Interval = AutoSyncParam.addElement("Interval");
+        Interval.setText("60");
+        return root.asXML();
+    }
+
+    public static String generateMp4BackupStartParam(String key){
+        Element root = rootRequestMap.get(key);
+        removeRedundantElement(root);
+        Element Mp4BackupStartReq=root.addElement("Mp4BackupStartReq");
+        Element StartTime = Mp4BackupStartReq.addElement("StartTime");
+        StartTime.setText(DateTimeUtil.stringDateToStringTime("2017-10-16 09:11:29"));
+        Element EndTime = Mp4BackupStartReq.addElement("EndTime");
+        EndTime.setText(DateTimeUtil.stringDateToStringTime("2017-10-16 09:59:04"));
+        Element ChnlIDList = Mp4BackupStartReq.addElement("ChnlIDList");
+        ChnlIDList.setText("3");
+        Element Title = Mp4BackupStartReq.addElement("Title");
+        Title.setText("0104270");//会议id
+        Element Description = Mp4BackupStartReq.addElement("Description");
+        Description.setText("测试录像5的录像");
+
+        return root.asXML();
+    }
+
+    private static void removeRedundantElement(Element root) {
+        List<Element> list = root.elements();
+        if (list.size() == 2) {
+            root.remove(list.get(1));
+        }
+    }
+
+    private static String encode(Map<String,String> login) {
+        String hexMd5String = "";
+        try {
+            hexMd5String = DigestUtils.md5Hex((login.get("username") + "," + login.get("password") + "," + login.get("authenticationid")).getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return Base64.encodeBase64String(hexMd5String.getBytes());
+    }
+}

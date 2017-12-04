@@ -1,0 +1,120 @@
+package com.fable.kscc.bussiness.mapper.fbsUser;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import com.fable.kscc.api.model.user.FbsUser;
+
+@Repository
+public interface FbsUserMapper {
+
+	/**
+	 * 查询全部用户分页列表
+	 */
+	List<FbsUser> findAllPageUserList(FbsUser user);
+
+	/**
+	 * 查询医生用户信息
+	 * @param user
+	 * @return
+	 */
+	List<FbsUser> findAllPageHopitalUserList(FbsUser user);
+
+	/**
+	 * 查询医院下的管理员用户
+	 * @param user
+	 * @return
+	 */
+	List<FbsUser> findAllPageAdminUserList(FbsUser user);
+	/**
+	 * 查询所有用户list
+	 */
+	List<FbsUser> findAllFbsUser();
+
+	/**
+	 * 新增用户
+	 */
+	int insertFbUser(FbsUser user);
+
+	/**
+	 *更新用户
+	 */
+	int updateFbUser(@Param("params") Map<String,Object> params);
+
+	/**
+	 *更新医院用户
+	 */
+	int updateHosipitalFbUser(@Param("params") Map<String,Object> params);
+
+	/**
+	 * 密码重置
+	 * @param params
+	 * @return
+	 */
+	int updatePassword(@Param("params") Map<String,Object> params);
+	/**
+	 *删除用户
+	 */
+	int deleteFbUser(int[] num);
+
+	/**
+	 *查询单个用户信息
+	 */
+	FbsUser queryFbUser(FbsUser user);
+
+	/**
+	 * 密码重置
+	 */
+	int updatePass(FbsUser user);
+	
+	/**
+	 * 查看是否是kscc管理员
+	 * @param userId
+	 * @return
+	 */
+	int searchAdmin(int userId);
+	/**
+	 * 通过医院id查询相应的所属用户
+	 * @param hospitalId
+	 * @return
+	 */
+	FbsUser getFbUserByhospitalId(int hospitalId);
+
+	/**
+	 * 根据登录名查询用户是否存在
+	 * @param params
+	 * @return
+	 */
+	int searchUserByLoginName(Map<String,Object> params);
+
+	/**
+	 * 设置为超级管理员(kscc管理员)
+	 * @param map
+	 * @return
+	 */
+	int setAdmin(@Param("map") Map<String,Object> map);
+
+	/**
+	 * 根据id查询用户
+	 * @param params
+	 * @return
+	 */
+	FbsUser userByLoginName(@Param("params") Map<String,Object> params);
+
+	FbsUser userByHostLoginName(@Param("params") Map<String,Object> params);
+
+	FbsUser queryHostUser(@Param("params") Map<String,Object> params);
+
+	List<FbsUser> findAllHostUserList();
+
+	FbsUser getUserInfoByUser(@Param("id")int id);
+
+	int deleteFbUserByhospitalId(int hospitalId);
+
+	FbsUser getUserByLoginName(@Param("params") Map<String,Object> params);
+
+	List<FbsUser> queryUserByHospitalId();
+}

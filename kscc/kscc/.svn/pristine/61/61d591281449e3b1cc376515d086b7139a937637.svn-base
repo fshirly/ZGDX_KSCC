@@ -1,0 +1,16 @@
+package com.fable.kscc.bussiness.service.livebroadcast;
+
+import com.fable.enclosure.bussiness.entity.ResultKit;
+import com.fable.enclosure.bussiness.entity.ServiceResponse;
+import com.fable.enclosure.bussiness.service.impl.BaseServiceImpl;
+import org.springframework.stereotype.Service;
+
+/**
+ * Created by Wanghairui on 2017/9/5.
+ */
+@Service("testService")
+public class TestService extends BaseServiceImpl{
+    public ServiceResponse testMethod(){
+        return ResultKit.success();
+    }
+}

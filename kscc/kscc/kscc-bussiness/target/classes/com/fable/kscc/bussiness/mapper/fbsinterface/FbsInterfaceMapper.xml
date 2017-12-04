@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fable.kscc.bussiness.mapper.fbsinterface.FabsInterfaceMapper">
+	<resultMap type="com.fable.kscc.api.model.fbsInterface.FbsInterface" id="fbsInterfaceInfo">
+		<id column="ID" property="id" jdbcType="INTEGER"/>
+		<id column="URL" property="url" jdbcType="VARCHAR"/>
+		<id column="NAME" property="name" jdbcType="VARCHAR"/>
+		<id column="STATUS" property="status" jdbcType="VARCHAR"/>
+		<id column="METHOD" property="method" jdbcType="VARCHAR"/>
+	</resultMap>
+	<select id="selectFbsInterfaceList" resultMap="fbsInterfaceInfo" parameterType="hashmap">
+		SELECT ID,URL,NAME,STATUS,METHOD FROM fbs_interface WHERE 1=1
+	</select>
+</mapper>

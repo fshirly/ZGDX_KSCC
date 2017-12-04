@@ -1,0 +1,68 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+ request.setCharacterEncoding("UTF-8");
+%>
+<%
+    Object idstr = request.getAttribute("id");
+%>
+<div class="hospitalAdminDiv">
+      <input type="hidden" id="userIdstr" value="<%=idstr %>"/>
+      <div class="clearfix addOrEdit">
+      </div>
+      <div class="editAdminDiv">
+	      <div class="clearfix mt-10">
+	          <label class="text-right">登录名：</label>
+	          <input type="text" class="form-control form-width" name="loginName" id="loginName" style="width:35%;">
+	      </div>
+	      <div class="clearfix mt-10">
+	          <label class="text-right">联系方式：</label>
+	          <input type="text" class="form-control form-width" name="phone" id="phone" style="width:35%;">
+	      </div>
+	      <div class="clearfix mt-10">
+	          <label class="text-right">邮箱：</label>
+	          <input type="text" class="form-control form-width" name="email" id="email" style="width:35%;">
+	      </div>
+      </div>
+</div>
+
+<script>
+$(document).ready(function(){
+    var userId = $("#userIdstr").val();
+	$.ajax({
+        //医院用户登录管理员基本登录信息
+    	url:$.base+"/fbsUser/getHostUserDetails?userId="+userId,
+        type: "GET",
+        async:false,
+    	success:function(data){
+    		$(".addOrEdit").empty();
+    		var strs="";
+    		if(data.id){
+    			$("#loginName").val(data.loginName);
+        		$("#phone").val(data.mobilePhone);
+        		$("#email").val(data.email);
+        		$(".editAdminDiv input").attr("disabled","disabled");
+        		strs="<button class='btn btn-primary hospitalAdminEdit'>编辑</button>";
+    		}else{
+    			strs="<button class='btn btn-primary hospitalAdminAdd'>新增</button>";
+    		}
+    		$(".addOrEdit").append(strs);
+    		setEdit();
+    	}
+    });
+	function setEdit(){
+		$(".hospitalAdminEdit").off().on("click",function(){
+			$(".editAdminDiv input").attr("disabled",false);
+			$(this).text("保存");
+			$.ajax({
+		        //编辑保存接口
+		    	//url:$.base+"/fbsUser/getHostUserDetails?userId="+userId,
+		        type: "GET",
+		    	success:function(data){
+		    		
+		    	}
+			});
+		});
+	}
+});
+</script>

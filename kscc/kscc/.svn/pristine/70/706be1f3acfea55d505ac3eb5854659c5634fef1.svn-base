@@ -1,0 +1,33 @@
+package com.fable.kscc.bussiness.controller.aws;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fable.kscc.api.model.page.ResultKit;
+import com.fable.kscc.api.model.page.ServiceResponse;
+import com.fable.kscc.bussiness.service.uploadfile.UploadFileService;
+
+@RequestMapping("/awsFile")
+@Controller
+public class AwsFileController {
+    @Autowired
+    private UploadFileService uploadFileService;
+
+    /**
+     * 删除文件
+     */
+    @RequestMapping("/deleteFile/{key}/{bucket}")
+    @ResponseBody
+    public ServiceResponse deleteFile(@PathVariable String bucket,@PathVariable String key) throws Exception {
+    	try {
+    		uploadFileService.deleteFile(bucket, key);
+    		return ResultKit.success();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResultKit.fail("删除失败");
+		}
+    }
+}

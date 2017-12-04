@@ -1,0 +1,123 @@
+package com.fable.kscc.bussiness.service.liveparticipant;
+
+import java.util.*;
+
+import com.fable.kscc.api.utils.JsonUtil;
+import com.fable.kscc.bussiness.mapper.livecodec.LiveCodecMapper;
+import org.codehaus.jackson.type.TypeReference;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation;
+import com.fable.kscc.api.model.participant.FbsLiveParticipant;
+import com.fable.kscc.bussiness.mapper.hospitalInformation.HospitalInformationMapper;
+import com.fable.kscc.bussiness.mapper.liveparticipant.LiveParticiPantMapper;
+@Service("liveParticiPantServiceImpl")
+public class LiveParticiPantServiceImpl implements LiveParticiPantService {
+	@Autowired
+	LiveParticiPantMapper liveParticiPantMapper;
+	@Autowired
+	private HospitalInformationMapper hospitalInformationMapper;
+	@Autowired
+	private LiveCodecMapper liveCodecMapper;
+	@Override
+	public List<FbsLiveParticipant> queryFbsLiveParti(Integer id) {
+		return liveParticiPantMapper.queryFbsLiveParti(id);
+	}
+	@Override
+	public FbsHospitalInformation getHospitalInformationList(Integer id) {
+		return liveParticiPantMapper.getHospitalInformationList(id);
+	}
+
+
+	/**
+	 * 查询(过滤前端参与方)
+	 */
+	@Override
+	public  List<String> findParticiPant(String keyword , String participant ){
+		List<String> list = java.util.Arrays.asList(participant.split(","));
+		List<String> arraylist = new ArrayList<String>();
+		for (String hospital : list) {
+			int count = hospital.indexOf(keyword);
+			if(count > -1){
+				arraylist.add(hospital);
+			}
+		}
+
+		return arraylist;
+	}
+
+	@Override
+	public FbsLiveParticipant queryParticipantHost(Map<String, Object> map) {
+		Map<String,Object> paramsMap = new HashMap<String,Object>();
+		//该直播的id和当前登录用户的id
+		int liveId = Integer.parseInt(map.get("liveId").toString()) ;
+		int id = Integer.parseInt(map.get("id").toString()) ;
+		paramsMap.put("liveId", liveId);
+		FbsHospitalInformation hospitalInfo = hospitalInformationMapper.getHospitalInfoByUser(id);
+		int hospitalId = hospitalInfo.getId();
+		paramsMap.put("hospitalId", hospitalId);
+		//通过直播id 和 所属医院hospitalId 确定相应的参与者主持人信息
+		FbsLiveParticipant parcitipant = liveParticiPantMapper.queryParcitipantHost(paramsMap);
+		//判断是否是主持人
+		return parcitipant;
+	}
+
+	@Override
+	public boolean updateParticiPantOnline(Map<String, Object> map) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		Map<String,Object> taram = new HashMap<String,Object>();
+		int id = Integer.parseInt(map.get("liveId").toString());
+		int userId = Integer.parseInt(map.get("userId").toString());
+		param.put("liveId",id);
+		//通过用户id查询医院id
+		FbsHospitalInformation hospitalBean = hospitalInformationMapper.getHospitalInfoByUser(userId);
+		param.put("hospitalId",hospitalBean.getId());
+		//通过医院id和直播id查询相应的所有参与方信息
+		FbsLiveParticipant particantBean = liveParticiPantMapper.queryParcitipantHost(param);
+		taram.put("id", particantBean.getId());
+		taram.put("liveId", particantBean.getLiveId());
+		taram.put("onlineStatus", "1");//在线状态
+		//更新参与者在线状态
+		int flag = liveParticiPantMapper.updateParticipantOnline(taram);
+		if(flag >0){
+			return true;
+		}
+		return false;
+	}
+
+	//邀请参与方(筛选传来的参与方)
+	@Override
+	public List<FbsLiveParticipant> invitationHospitalParticipant(Map<String,Object> map) {
+		return liveParticiPantMapper.invitationHospitalParticipant(map);
+	}
+
+
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED)
+	public int setParticipant(Map<String,Object> map) {
+		List<Map<String, Object>> list = JsonUtil.toJavaBeanList(map.get("searchParticipant").toString(),
+				new TypeReference<List<Map<String, Object>>>() {
+				});
+		int count = 0;
+		for (Map<String, Object> objectMap : list) {
+			FbsLiveParticipant fbsLiveParticipant = new FbsLiveParticipant();
+			int id = Integer.parseInt(objectMap.get("id").toString());
+			fbsLiveParticipant.setHospitalId(id);//设置参与方医院id
+			String newVideoNum = liveCodecMapper.findNewVideoNum(id);//根据参与方医院id设置新世通账号
+			fbsLiveParticipant.setNewvideoNum(newVideoNum);
+			fbsLiveParticipant.setIshost("2");
+			fbsLiveParticipant.setLiveId(Integer.parseInt(map.get("liveId").toString()));//设置直播间id
+			fbsLiveParticipant.setCreatorId(map.get("creatorId").toString());//设置创建者(获取的登陆者id)
+			fbsLiveParticipant.setUpdateId(map.get("creatorId").toString());
+			fbsLiveParticipant.setParticipation("0");
+			count =  liveParticiPantMapper.setParticipant(fbsLiveParticipant);
+			if(count<=0){//控制是否成功
+				return 0;
+			}
+		}
+		return count;
+	}
+
+}

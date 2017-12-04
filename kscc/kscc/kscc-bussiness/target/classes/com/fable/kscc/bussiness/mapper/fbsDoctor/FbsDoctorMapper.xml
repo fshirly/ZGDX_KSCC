@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper  namespace="com.fable.kscc.bussiness.mapper.fbsDoctor.FbsDoctorMapper">
+    <select id="findAllPageHopitalUserList"  resultType="com.fable.kscc.api.model.doctor.FbsDoctor" parameterType="com.fable.kscc.api.model.doctor.FbsDoctor">
+        SELECT FU.ID id,DOCTOR_NAME doctorName,MOBILE_PHONE mobilePhone,GMSFHM gmsfhm,DEPARTMENT department,RANK rank,FD.DEPARTMENT_NAME departname
+        FROM fbs_doctor FU
+        LEFT JOIN fbs_department FD ON FU.DEPARTMENT = FD.ID
+        WHERE 1=1
+        <if test="doctorName !=null and doctorName != ''">
+            AND fu.DOCTOR_NAME LIKE '%${doctorName}%'
+        </if>
+        <if test="department !=null and department != ''">
+            AND department = #{department}
+        </if>
+        <if test="rank !=null and rank != ''">
+            AND rank =#{rank}
+        </if>
+        <if test="hospitalId !=null and hospitalId != ''">
+            AND HOSPITAL_ID = #{hospitalId}
+        </if>
+    </select>
+
+    <insert id="insertFbDoctor" useGeneratedKeys="true" keyProperty="id" parameterType="com.fable.kscc.api.model.doctor.FbsDoctor">
+        INSERT INTO fbs_doctor
+        (
+                 DOCTOR_NAME
+				,GMSFHM
+				,MOBILE_PHONE
+				,CREATOR_ID
+				,CREATED_TIME
+				,UPDATED_TIME
+				,HOSPITAL_ID
+				,DEPARTMENT
+				,RANK
+        )VALUES (
+                 #{doctorName,jdbcType=VARCHAR}
+				,#{gmsfhm,jdbcType=VARCHAR}
+				,#{mobilePhone,jdbcType=VARCHAR}
+				,#{creatorId,jdbcType=VARCHAR}
+				,SYSDATE()
+				,SYSDATE()
+				,#{hospitalId,jdbcType=VARCHAR}
+				,#{department,jdbcType=VARCHAR}
+				,#{rank,jdbcType=VARCHAR}
+        )
+    </insert>
+    <update id="updateDoctorFbUser" parameterType="java.util.Map">
+        update fbs_doctor
+        SET
+        DOCTOR_NAME = #{params.userName},
+        MOBILE_PHONE = #{params.mobilePhone},
+        GMSFHM =#{params.gmsfhm},
+        DEPARTMENT =#{params.department},
+        RANK =#{params.rank}
+        WHERE  ID = #{params.id}
+    </update>
+
+    <delete id="deleteFbsDoctor" parameterType="int">
+        DELETE FROM fbs_doctor WHERE ID in
+        <foreach collection="array" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="queryFbDoctorUser" parameterType="com.fable.kscc.api.model.doctor.FbsDoctor" resultType="com.fable.kscc.api.model.doctor.FbsDoctor">
+        SELECT
+        ID id,
+        DOCTOR_NAME doctorName,
+        GMSFHM gmsfhm,
+        MOBILE_PHONE mobilePhone,
+        CREATOR_ID creatorId,
+        CREATED_TIME createdTime,
+        UPDATE_ID upDateId,
+        UPDATED_TIME upDatedTime,
+        HOSPITAL_ID hospitalId,
+        DEPARTMENT department,
+        RANK rank
+        FROM fbs_doctor
+        WHERE 1=1
+        <if test="id !=null and id !=''">
+            and ID = #{id}
+        </if>
+    </select>
+</mapper>

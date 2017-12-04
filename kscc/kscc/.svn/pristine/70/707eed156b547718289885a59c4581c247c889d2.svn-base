@@ -1,0 +1,132 @@
+package com.fable.kscc.api.model.liveFile;
+
+import java.util.Date;
+
+public class FbsLiveFile {
+  private Integer id;				//编号
+  private String fileName;			//原始文件名称
+  private String filePath;			//原始文件路径
+  private String storefilePath;		//存储文件路径
+  private String storefileName;		//存储文件名称
+  private Integer liveId;			//所属直播
+  private Integer fileSerialnumber;	//文件序号
+  private String oldfileStatus;		//原文件状态
+  private String uploadStatus;		//上传状态
+  private String creatorId;			//创建者
+  private Date createdTime;			//创建时间
+  private String updateId;			//修改者
+  private Date updatedTime;			//修改时间
+  private String storefileStatus;	//存储文件状态
+
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
+  public String getFileName() {
+    return fileName;
+  }
+
+  public void setFileName(String fileName) {
+    this.fileName = fileName;
+  }
+
+  public String getFilePath() {
+    return filePath;
+  }
+
+  public void setFilePath(String filePath) {
+    this.filePath = filePath;
+  }
+
+  public String getStorefilePath() {
+    return storefilePath;
+  }
+
+  public void setStorefilePath(String storefilePath) {
+    this.storefilePath = storefilePath;
+  }
+
+  public String getStorefileName() {
+    return storefileName;
+  }
+
+  public void setStorefileName(String storefileName) {
+    this.storefileName = storefileName;
+  }
+
+  public Integer getLiveId() {
+    return liveId;
+  }
+
+  public void setLiveId(Integer liveId) {
+    this.liveId = liveId;
+  }
+
+  public Integer getFileSerialnumber() {
+    return fileSerialnumber;
+  }
+
+  public void setFileSerialnumber(Integer fileSerialnumber) {
+    this.fileSerialnumber = fileSerialnumber;
+  }
+
+  public String getOldfileStatus() {
+    return oldfileStatus;
+  }
+
+  public void setOldfileStatus(String oldfileStatus) {
+    this.oldfileStatus = oldfileStatus;
+  }
+
+  public String getUploadStatus() {
+    return uploadStatus;
+  }
+
+  public void setUploadStatus(String uploadStatus) {
+    this.uploadStatus = uploadStatus;
+  }
+
+  public String getCreatorId() {
+    return creatorId;
+  }
+
+  public void setCreatorId(String creatorId) {
+    this.creatorId = creatorId;
+  }
+
+  public Date getCreatedTime() {
+    return createdTime;
+  }
+
+  public void setCreatedTime(Date createdTime) {
+    this.createdTime = createdTime;
+  }
+
+  public String getUpdateId() {
+    return updateId;
+  }
+
+  public void setUpdateId(String updateId) {
+    this.updateId = updateId;
+  }
+
+  public Date getUpdatedTime() {
+    return updatedTime;
+  }
+
+  public void setUpdatedTime(Date updatedTime) {
+    this.updatedTime = updatedTime;
+  }
+
+  public String getStorefileStatus() {
+    return storefileStatus;
+  }
+
+  public void setStorefileStatus(String storefileStatus) {
+    this.storefileStatus = storefileStatus;
+  }
+}

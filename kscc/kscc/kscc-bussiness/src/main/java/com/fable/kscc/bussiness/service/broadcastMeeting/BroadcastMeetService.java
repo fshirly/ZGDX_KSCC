@@ -1,0 +1,32 @@
+package com.fable.kscc.bussiness.service.broadcastMeeting;
+
+
+import com.fable.kscc.api.model.livebroadcast.FbsLiveBroadcast;
+import com.fable.kscc.api.model.page.PageRequest;
+import com.fable.kscc.api.model.page.PageResponse;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by wangyh on 2017/8/7 0007.
+ * 会议直播service
+ */
+public interface BroadcastMeetService {
+    /**
+     * 获取直播会议列表
+     */
+    PageResponse<FbsLiveBroadcast> getBroadcastList(PageRequest<Map<String,Object>> pageRequest);
+
+    /**
+     * 获取当前直播详情
+     */
+    FbsLiveBroadcast getBroadcastDetails(Integer id);
+
+    /**
+     *修改直播信息
+     */
+    Map<String,Object> editBroadcastMeet(FbsLiveBroadcast fbsLiveBroadcast);
+    
+    List<Map<String,Object>> getBroadcastForSchedule(Map<String,String> map);
+}

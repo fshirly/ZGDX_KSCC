@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper  namespace="com.fable.kscc.bussiness.mapper.fbsUser.FbsUserMapper">
+	<resultMap type="com.fable.kscc.api.model.user.FbsUser" id="BaseResultUserMap">
+		<id column="ID" property="id" jdbcType="INTEGER"/>
+		<id column="USERNAME" property="username" jdbcType="VARCHAR"/>
+		<id column="PASSWORD" property="password" jdbcType="VARCHAR"/>
+		<id column="GMSFHM" property="gmsfhm" jdbcType="VARCHAR"/>
+		<id column="TELE_PHONE" property="telePhone" jdbcType="VARCHAR"/>
+		<id column="MOBILE_PHONE" property="mobilePhone" jdbcType="VARCHAR"/>
+		<id column="EMAIL" property="email" jdbcType="VARCHAR"/>
+		<id column="LAST_LOGIN_TIME" property="lastLoginTime" jdbcType="TIMESTAMP"/>
+		<id column="LAST_LOGIN_IPADDR" property="lastLoginIpaddr" jdbcType="VARCHAR"/>
+		<id column="NOTE" property="note" jdbcType="VARCHAR"/>
+		<id column="CREATOR_ID" property="creatorId" jdbcType="VARCHAR"/>
+		<id column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP"/>
+		<id column="UPDATE_ID" property="updateId" jdbcType="VARCHAR"/>
+		<id column="UPDATED_TIME" property="updateTime" jdbcType="TIMESTAMP"/>
+		<id column="HospitalId" property="hospitalId" jdbcType="INTEGER"/>
+		<id column="Department" property="department" jdbcType="VARCHAR"/>
+		<id column="Rank" property="rank" jdbcType="VARCHAR"/>
+		<id column="LOGIN_NAME" property="loginName" jdbcType="VARCHAR"/>
+		<id column="LOCK_TIME" property="lockTime" jdbcType="TIMESTAMP"/>
+		<id column="LOCK_STATUS" property="lockStatus" jdbcType="VARCHAR"/>
+	</resultMap>
+	<sql id="Base_Column_List" >
+        ID,USER_NAME,LOGIN_NAME,PASSWORD,GMSFHM,TELE_PHONE,MOBILE_PHONE,EMAIL,LAST_LOGIN_TIME,LAST_LOGIN_IPADDR,
+        NOTE,CREATOR_ID,CREATED_TIME,UPDATE_ID,UPDATED_TIME,HOSPITAL_ID,DEPARTMENT,RANK,LOCK_TIME,LOCK_STATUS
+    </sql>
+    <sql id="limit">
+		<![CDATA[
+			LIMIT #{pageStart},#{pageSize}
+		]]>
+	</sql>
+	<select id="findAllPageUserList"  resultType="com.fable.kscc.api.model.user.FbsUser" parameterType="com.fable.kscc.api.model.user.FbsUser">
+ 	 SELECT FU.ID id,USER_NAME userName,LOGIN_NAME loginName,EMAIL email,MOBILE_PHONE mobilePhone,TELE_PHONE telePhone,SECTOR sector,NEWVIDEO_NUM newVideoNum
+ 	 FROM fbs_user FU
+ 	 LEFT JOIN fbs_user_role FUR ON FU.ID=fur.USER_ID
+ 	 LEFT JOIN fbs_role FR ON FUR.ROLE_ID=FR.ID
+		WHERE FR.ROLE_CODE = 'role1'
+		<if test="userName !=null and userName != ''">
+			AND USER_NAME LIKE '%${userName}%'
+		</if>
+		<if test="loginName !=null and loginName != ''">
+			AND LOGIN_NAME LIKE '%${loginName}%'
+		</if>
+	</select>
+
+	<select id="findAllPageHopitalUserList"  resultType="com.fable.kscc.api.model.user.FbsUser" parameterType="com.fable.kscc.api.model.user.FbsUser">
+		SELECT FU.ID id,USER_NAME userName,MOBILE_PHONE mobilePhone,GMSFHM gmsfhm,DEPARTMENT department,RANK rank,FD.DEPARTMENT_NAME departname
+		FROM fbs_user FU
+		LEFT JOIN fbs_user_role FUR ON FU.ID=fur.USER_ID
+		LEFT JOIN fbs_role FR ON FUR.ROLE_ID=FR.ID
+		LEFT JOIN fbs_department FD ON FU.DEPARTMENT = FD.ID
+		WHERE 1=1
+		AND ISNULL(LOGIN_NAME)
+		AND ISNULL(PASSWORD)
+		<if test="userName !=null and userName != ''">
+			AND fu.USER_NAME LIKE '%${userName}%'
+		</if>
+		<if test="department !=null and department != ''">
+			AND department = #{department}
+		</if>
+		<if test="rank !=null and rank != ''">
+			AND rank =#{rank}
+		</if>
+		<if test="hospitalId !=null and hospitalId != ''">
+			AND HOSPITAL_ID = #{hospitalId}
+		</if>
+	</select>
+
+<!-- 查询所有用户 -->
+	<select id="findAllFbsUser" resultType="com.fable.kscc.api.model.user.FbsUser">
+		SELECT ID,USER_NAME FROM FBS_USER
+	</select>
+	
+	<insert id="insertFbUser" useGeneratedKeys="true" keyProperty="id" parameterType="com.fable.kscc.api.model.user.FbsUser">
+		INSERT INTO FBS_USER (
+			<if test="userName !=null and userName != ''">
+				USER_NAME
+			</if>
+			<if test="loginName !=null and loginName != ''">
+				,LOGIN_NAME
+			</if>
+			<if test="password !=null and password != ''">
+				,PASSWORD
+			</if>
+			<if test="gmsfhm !=null and gmsfhm != ''">
+				,GMSFHM
+			</if>
+			<if test="telePhone !=null and telePhone != ''">
+				,TELE_PHONE
+			</if>
+			<if test="mobilePhone !=null and mobilePhone != ''">
+				,MOBILE_PHONE
+			</if>
+			<if test="creatorId !=null and creatorId != ''">
+				,CREATOR_ID
+			</if>
+			<if test="createdTime !=null and createdTime != ''">
+				,CREATED_TIME
+			</if>
+			<!--<if test="lastLoginTime !=null and lastLoginTime != ''">
+				LAST_LOGIN_TIME,
+			</if> -->
+			<if test="updateTime !=null and updateTime != ''">
+				,UPDATED_TIME
+			</if>
+			<if test="email !=null and email != ''">
+				,EMAIL
+			</if>
+			<if test="note !=null and note != ''">
+				,NOTE
+			</if>
+			<if test="hospitalId !=null and hospitalId != ''">
+				,HOSPITAL_ID
+			</if>
+			<if test="department !=null and department != ''">
+				,DEPARTMENT
+			</if>
+			<if test="rank !=null and rank != ''">
+				,RANK
+			</if>
+			<if test="sector !=null and sector != ''">
+				,SECTOR
+			</if>
+			<if test="newVideoNum !=null and newVideoNum != ''">
+				,NEWVIDEO_NUM
+			</if>
+		) VALUES (
+			<if test="userName !=null and userName != ''">
+				#{userName,jdbcType=VARCHAR}
+			</if>
+			<if test="loginName !=null and loginName != ''">
+				,#{loginName,jdbcType=VARCHAR}
+			</if>
+			<if test="password !=null and password != ''">
+				,#{password,jdbcType=VARCHAR}
+			</if>
+			<if test="gmsfhm !=null and gmsfhm != ''">
+				,#{gmsfhm,jdbcType=VARCHAR}
+			</if>
+			<if test="telePhone !=null and telePhone != ''">
+				,#{telePhone,jdbcType=VARCHAR}
+			</if>
+			<if test="mobilePhone !=null and mobilePhone != ''">
+				,#{mobilePhone,jdbcType=VARCHAR}
+			</if>
+			<if test="creatorId !=null and creatorId != ''">
+				,#{creatorId,jdbcType=VARCHAR}
+			</if>
+			<if test="createdTime !=null and createdTime != ''">
+				,SYSDATE()
+			</if>
+			<!--<if test="lastLoginTime !=null">
+				#{lastLoginTime,jdbcType=TIMESTAMP},
+			</if>-->
+			<if test="updateTime !=null and updateTime != ''">
+				,SYSDATE()
+			</if> 
+			<if test="email !=null and email != ''">
+				,#{email,jdbcType=VARCHAR}
+			</if>
+			<if test="note !=null and note != ''">
+				,#{note,jdbcType=VARCHAR}
+			</if>
+			<if test="hospitalId !=null and hospitalId != ''">
+				,#{hospitalId,jdbcType=VARCHAR}
+			</if>
+			<if test="department !=null and department != ''">
+				,#{department,jdbcType=VARCHAR}
+			</if>
+			<if test="rank !=null and rank != ''">
+				,#{rank,jdbcType=VARCHAR}
+			</if>
+			<if test="sector !=null and sector != ''">
+				,#{sector,jdbcType=VARCHAR}
+			</if>
+			<if test="newVideoNum !=null and newVideoNum != ''">
+				,#{newVideoNum,jdbcType=VARCHAR}
+			</if>
+		)
+	</insert>
+	<select id="queryFbUser" parameterType="com.fable.kscc.api.model.user.FbsUser" resultType="com.fable.kscc.api.model.user.FbsUser">
+		SELECT
+			ID id,
+			USER_NAME userName,
+			LOGIN_NAME loginName,
+			`PASSWORD` `password`,
+			GMSFHM gmsfhm,
+			TELE_PHONE telePhone,
+			MOBILE_PHONE mobilePhone,
+			EMAIL email,
+			LAST_LOGIN_TIME lastLoginTime,
+			LAST_LOGIN_IPADDR lastLoginIpaddr,
+			NOTE note,
+			CREATOR_ID creatorId,
+			CREATED_TIME createdTime,
+			UPDATE_ID upDateId,
+			UPDATED_TIME upDatedTime,
+			HOSPITAL_ID hospitalId,
+			DEPARTMENT department,
+			RANK rank,
+			LOCK_STATUS lockStatus,
+			LOCK_TIME lockTime
+		FROM FBS_USER
+		WHERE 1=1
+		<if test="id !=null and id !=''">
+			and ID = #{id}
+		</if>
+
+	</select>
+	
+	<delete id="deleteFbUser" parameterType="int">
+		DELETE FROM FBS_USER WHERE ID in
+		<foreach collection="array" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<update id="updateFbUser" parameterType="java.util.Map">
+    	update FBS_USER 
+    	set
+			USER_NAME = #{params.username},
+			LOGIN_NAME= #{params.loginName},
+		<if test="params.password !=null and params.password != ''">
+			PASSWORD= #{params.password},
+		</if>
+		<if test="params.telePhone !=null and params.telePhone != ''">
+			TELE_PHONE= #{params.telePhone},
+		</if>
+			EMAIL= #{params.email}
+    	where ID = #{params.id}
+    </update>
+
+	<update id="updateHosipitalFbUser" parameterType="java.util.Map">
+		update FBS_USER
+		SET
+			USER_NAME = #{params.userName},
+			MOBILE_PHONE = #{params.mobilePhone},
+			GMSFHM =#{params.gmsfhm},
+			DEPARTMENT =#{params.department},
+			RANK =#{params.rank}
+			WHERE  ID = #{params.id}
+	</update>
+
+    <update id="updatePass" parameterType="com.fable.kscc.api.model.user.FbsUser">
+    	UPDATE fbs_user SET `PASSWORD` = #{password} WHERE LOGIN_NAME = #{loginName}
+    </update>
+	<select id="login" parameterType="com.fable.kscc.api.model.user.FbsUser" resultType="com.fable.kscc.api.model.user.FbsUser">
+		select * FROM FBS_USER WHERE LOGIN_NAME=#{loginId} AND PASSWORD=#{password}
+	</select>
+	
+<!-- 	查看是否是kscc管理员 -->
+	<select id="searchAdmin" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT count(1) FROM FBS_USER_ROLE WHERE USER_ID = #{userId}  AND ROLE_ID = 1
+	</select>
+	<select id="getFbUserByhospitalId" parameterType="java.lang.Integer" resultType="com.fable.kscc.api.model.user.FbsUser">
+		SELECT 
+			<include refid="Base_Column_List" /> 
+ 		FROM FBS_USER
+ 		where 1=1  
+ 		and ID = #{hospitalId,jdbcType=INTEGER}
+	</select>
+	<!--根据登录名查询用户是否存在-->
+	<select id="searchUserByLoginName" resultType="java.lang.Integer" parameterType="java.util.Map">
+		SELECT count(1) FROM fbs_user WHERE LOGIN_NAME = #{loginName}
+		<if test="id !=null and id != ''">
+		AND ID!= #{id}
+		</if>
+	</select>
+	<insert id="setAdmin" parameterType="java.util.Map">
+		INSERT INTO fbs_user_role VALUES(ID,#{map.id},'1','',SYSDATE(),'',SYSDATE());
+	</insert>
+	<!--根据登录名查询用户-->
+	<resultMap type="com.fable.kscc.api.model.user.FbsUser" id="UserByLoginNameMap">
+	<id column="ID" property="id" />
+	<result column="LOGIN_NAME" property="loginName" />
+	<result column="USER_NAME" property="userName" />
+	<result column="PASSWORD" property="password" />
+	<result column="TELE_PHONE" property="telePhone" />
+	<result column="MOBILE_PHONE" property="mobilePhone" />
+	<result column="EMAIL" property="email" />
+	</resultMap>
+	<select id="userByLoginName" resultMap="UserByLoginNameMap" parameterType="java.util.Map">
+		SELECT ID,LOGIN_NAME,USER_NAME,PASSWORD,TELE_PHONE,MOBILE_PHONE,EMAIL FROM FBS_USER WHERE ID = #{params.id}
+	</select>
+	<select id="queryHostUser" resultType="com.fable.kscc.api.model.user.FbsUser" parameterType="java.util.Map">
+		SELECT ID,LOGIN_NAME,USER_NAME,PASSWORD,TELE_PHONE,MOBILE_PHONE,EMAIL
+		FROM FBS_USER WHERE 1=1
+		AND LOGIN_NAME IS NOT NULL
+		AND PASSWORD IS NOT NULL
+		AND HOSPITAL_ID = #{params.hospitalId}
+
+	</select>
+</mapper>

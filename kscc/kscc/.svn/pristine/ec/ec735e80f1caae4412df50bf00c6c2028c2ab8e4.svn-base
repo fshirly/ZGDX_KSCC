@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.kscc.bussiness.mapper.liveoperationlog.LiveOperationLogMapper">
+	<resultMap type="com.fable.kscc.api.model.operationLog.FbsLiveOperationLog" id="BaseLogMapper">
+		<id column="ID" property="id" jdbcType="INTEGER"/>
+		<id column="OPERATION_ID" property="operationId" jdbcType="INTEGER"/>
+		<id column="OPERATION_TIME" property="operationTime" jdbcType="TIMESTAMP"/>
+		<id column="OPERATION_CONTENT" property="operationContent" jdbcType="VARCHAR"/>
+		<id column="LIVE_ID" property="liveId" jdbcType="INTEGER"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID,OPERATION_ID,OPERATION_TIME,OPERATION_CONTENT,LIVE_ID
+    </sql>
+	<select id="queryFbsLiveOperationLogList"  parameterType="hashmap" resultMap="BaseLogMapper">
+		select
+		<include refid="Base_Column_List"/>
+		from FBS_LIVE_OPERATIONLOG
+		where 1=1
+		<if test="id !=null and id != ''">
+			and LIVE_ID = #{id,jdbcType=INTEGER}
+		</if>
+		ORDER BY OPERATION_TIME DESC
+	</select>
+	<select id="queryFbsLiveOperationLogCount" parameterType="com.fable.kscc.api.utils.Page" resultType="java.lang.Integer">
+		select count(*) 
+		from FBS_LIVE_OPERATIONLOG
+		where 1=1
+		<if test="paramsMap.id !=null and paramsMap.id != ''">
+			and LIVE_ID = #{paramsMap.id,jdbcType=INTEGER}
+		</if>
+	</select>
+	<insert id="insertLiveOperationLog" parameterType="com.fable.kscc.api.model.operationLog.FbsLiveOperationLog">
+		insert into FBS_LIVE_OPERATIONLOG (
+				<if test="id !=null">
+				ID,
+				</if>
+				OPERATION_ID,
+				<if test="operationTime !=null and operationTime != ''">
+				OPERATION_TIME,
+				</if>
+				<if test="operationContent !=null">
+				OPERATION_CONTENT,
+				</if>
+				<if test="liveId !=null">
+				LIVE_ID
+				</if>
+		) values (
+			<if test="id !=null">
+				#{ID,jdbcType=INTEGER},
+			</if>
+				#{operationId,jdbcType=INTEGER},
+			<if test="operationTime !=null and operationTime != ''">
+				#{operationTime,jdbcType=TIMESTAMP},
+			</if>	
+			<if test="operationContent !=null">
+				#{operationContent,jdbcType=VARCHAR},
+			</if>
+			<if test="liveId !=null">
+				#{liveId,jdbcType=INTEGER}
+			</if>
+		)
+	</insert>
+<!-- 	查看当前直播间会场记录 -->
+	<resultMap type="com.fable.kscc.api.model.operationLog.FbsLiveOperationLog" id="meetingRecordMapper">
+		<id column="OPERATION_TIME" property="operationTime" jdbcType="TIMESTAMP"/>
+		<id column="OPERATION_CONTENT" property="operationContent" jdbcType="VARCHAR"/>
+	</resultMap>
+	<select id="meetingRecord" resultMap="meetingRecordMapper" parameterType="java.util.Map">
+		SELECT OPERATION_TIME,OPERATION_CONTENT FROM FBS_LIVE_OPERATIONLOG WHERE LIVE_ID = #{param.liveId} ORDER BY OPERATION_TIME DESC
+	</select>
+</mapper>

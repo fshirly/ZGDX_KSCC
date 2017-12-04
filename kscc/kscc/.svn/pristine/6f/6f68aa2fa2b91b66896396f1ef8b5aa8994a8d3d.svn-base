@@ -1,0 +1,62 @@
+define(["base"],function(base){
+	
+	//获得医院列表数据
+	function setTree(){
+		$.ajax({
+			   type: "GET", 
+               async: true, 
+               url:  $.base + "/hospital/selectHospitalInfo", 
+               dataType: "json",
+               success: function(data){
+            	   setZtree(data);//渲染医院列表
+               }
+	      });
+	}
+	var setting = {
+			view: {
+				selectedMulti:true,	
+			},
+			data: {
+				simpleData: {
+					enable: true,
+					pIdKey: "pid"
+				}
+			},
+			callback: {
+	            onClick: zTreeOnClick
+	        }
+	  };
+	function setZtree(zNodes,startTime,endTime){
+		require(["bootstrap","ztreeCore","ztreeExcheck","ztreeExedit"],function(){
+			$.fn.zTree.init($("#treeDemo2"), setting, zNodes);
+			treeObj = $.fn.zTree.getZTreeObj("treeDemo2");
+			treeObj.expandAll(true); 
+		});
+	}
+	function  zTreeOnClick(event, treeId, treeNode){
+		
+    }
+	//加载资源日历    
+	function setResourceCal(){
+		base.ajax({
+			url:$.base+"/js/app/resourceCalendar/schedule.json",
+			type:"get",
+			success:function(data){
+				base.calendar({
+					container:$("#resourceCal"),
+					data:data,
+					clickEvent:function(data){
+						console.log(data);
+					}
+				});
+			}
+		});
+	};
+
+	return {
+		run:function(){
+			setTree();
+			setResourceCal();//加载资源日历
+		}
+	};
+});

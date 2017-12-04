@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper  namespace="com.fable.kscc.bussiness.mapper.fbsdepartment.FbsDepartmentMapper">
+	<!--查询医院里的所有部门(科室)-->
+	<select id="findAllDepartment" resultType="com.fable.kscc.api.model.department.FbsDepartment">
+		SELECT ID id,DEPARTMENT_NAME departmentName FROM fbs_department
+	</select>
+	<select id="queryDepartmentById" parameterType="java.lang.Integer" resultType="com.fable.kscc.api.model.department.FbsDepartment">
+		SELECT ID id,DEPARTMENT_NAME departmentName FROM  fbs_department
+		WHERE ID =#{id}
+	</select>
+</mapper>

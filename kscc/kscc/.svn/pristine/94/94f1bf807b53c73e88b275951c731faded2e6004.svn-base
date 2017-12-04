@@ -1,0 +1,16 @@
+package com.fable.kscc.bussiness.mapper.uploadfile;
+
+
+import java.util.List;
+import org.springframework.stereotype.Repository;
+import com.fable.kscc.api.model.upload.UploadBean;
+
+@Repository
+public interface UploadFileMapper {
+	
+	//查询已落地未上传的数据
+	List<UploadBean> getUploadFileInfo();
+	
+	void updateUpload(List<UploadBean> list);
+
+}

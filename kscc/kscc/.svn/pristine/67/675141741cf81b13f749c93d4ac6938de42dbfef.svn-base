@@ -1,0 +1,184 @@
+package com.fable.kscc.api.skyCloud;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CompleteMultipartUploadRequest;
+import com.amazonaws.services.s3.model.CompleteMultipartUploadResult;
+import com.amazonaws.services.s3.model.InitiateMultipartUploadRequest;
+import com.amazonaws.services.s3.model.InitiateMultipartUploadResult;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.PartETag;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.services.s3.model.UploadPartRequest;
+import com.amazonaws.services.s3.model.UploadPartResult;
+import com.fable.kscc.api.utils.FileUtil;
+
+public class MultObjectOperate
+{
+	public MultObjectOperate(String bucketName)
+	{
+		this.bucketName = bucketName;
+	}
+	
+    private static String bucketName = "";
+    
+    /**
+     * 天翼云上传分两个类型 上传<br/>
+     * 1.文件小，可以选择整体上传<br/>
+     * 2.文件大，需要开始分片上传<br/>
+     * 管理后台地址：http://oos.ctyun.cn/oos/v2/console.html<br/>
+     * 登录帐号是758253182@qq.com 密码是zy1234567890
+     * 
+     * @param args
+     */
+    public static void main(String[] args)
+    {
+        // 获取oss连接
+        AmazonS3Client client = Common.getClient();
+        
+        // 获取文件列表
+        listObject(client);
+        try
+        {
+            multUploadObject(client, "ts-" + System.currentTimeMillis() + ".zip","c:/aaaaa.zip");
+        }
+        catch (IOException e)
+        {
+            System.out.println("分片文件上传失败：" + e.getMessage());
+            e.printStackTrace();
+        }
+        // 获取文件列表
+        listObject(client);
+    }
+    
+    /**
+     * 分片上传
+     * 
+     * @throws IOException
+     */
+    public static void multUploadObject(AmazonS3Client client, String objectName,String path)
+        throws IOException
+    {
+        System.out.println("-----------------multUploadObject start-----------------------");
+        // 带上传文件路径
+        //File file = new File(System.getProperty("user.dir") + "/oosSample/t2.zip");
+        File file = new File(path);
+        
+        // 分片大小 5MB
+        long partSize = 5 * 1024 * 1024;
+        
+        // 开启分片上传
+        InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest(bucketName, objectName);
+        InitiateMultipartUploadResult result = client.initiateMultipartUpload(request);
+        
+        // 分片任务标识
+        String uploadId = result.getUploadId();
+        
+        // 分片的MD5校验
+        List<PartETag> parts = new ArrayList<PartETag>();
+        long fileLength = file.length();
+        // 计算实际需要分多少个上传任务
+        long jobLength = fileLength / partSize;
+        
+        // 开始上传
+        UploadPartRequest uploadRequest = new UploadPartRequest();
+        // 上传结果
+        UploadPartResult uploadResult = null;
+        // 分片MD5
+        PartETag e = null;
+        System.out.println("需要上传:" + (jobLength + 1) + "次");
+        if (jobLength > 0)
+        {
+            long fileOffset = 0;
+            uploadRequest.setFile(file);
+            uploadRequest.setUploadId(uploadId);
+            uploadRequest.setBucketName(bucketName);
+            uploadRequest.setKey(objectName);
+            int i = 0;
+            // 文件需要分片上传
+            for (; i < jobLength; i++)
+            {
+                uploadRequest.setPartNumber(i + 1);
+                uploadRequest.setPartSize(partSize);
+                uploadRequest.setFileOffset(fileOffset);
+                uploadResult = client.uploadPart(uploadRequest);
+                e = new PartETag((i + 1), uploadResult.getPartETag().getETag());
+                parts.add(e);
+                System.out.println("partSize:" + partSize + " offset:" + partSize * i + " time:" + i);
+                fileOffset += partSize;
+            }
+            if (fileLength % partSize != 0)
+            {
+                uploadRequest.setPartNumber(i + 1);
+                uploadRequest.setPartSize(fileLength - fileOffset);
+                uploadRequest.setFileOffset(fileOffset);
+                uploadResult = client.uploadPart(uploadRequest);
+                e = new PartETag((i + 1), uploadResult.getPartETag().getETag());
+                parts.add(e);
+                System.out.println("partSize:" + partSize + " offset:" + partSize * i + " time:" + i);
+                fileOffset += partSize;
+            }
+        }
+        else
+        {
+            // 文件不需要分片上传
+            uploadRequest.setFile(file);
+            uploadRequest.setPartNumber(1);
+            uploadRequest.setUploadId(uploadId);
+            uploadRequest.setBucketName(bucketName);
+            uploadRequest.setKey(objectName);
+            uploadRequest.setPartSize(file.length());
+            System.out.println("文件不需要分片上传:" + file.getName());
+            uploadResult = client.uploadPart(uploadRequest);
+            e = new PartETag(1, uploadResult.getPartETag().getETag());
+            parts.add(e);
+        }
+        
+        // 上传完成
+        CompleteMultipartUploadRequest multRequest =
+            new CompleteMultipartUploadRequest(bucketName, objectName, uploadId, parts);
+        CompleteMultipartUploadResult multipartUploadResponse = client.completeMultipartUpload(multRequest);
+        
+        System.out.println("文件名:" + multipartUploadResponse.getKey() + " 文件MD5:" + multipartUploadResponse.getETag());
+        
+        System.out.println("我们计算的文件MD5:" + MD5Utils.fileMD5(file.getAbsolutePath()));
+        
+        // 下载对象
+        S3Object object = client.getObject(bucketName, objectName);
+        InputStream input = null;
+        try
+        {
+            input = object.getObjectContent();
+            FileUtil.downloadInputStream(input, object.getKey());
+        }
+        finally
+        {
+            if (input != null)
+                input.close();
+        }
+        System.out.println("我们计算的文件MD5:" + MD5Utils.fileMD5("E:/idea/web/test/oos/" + object.getKey()));
+        System.out.println("-----------------multUploadObject end-----------------------");
+    }
+    
+    /**
+     * 获取对象类别（指定存储桶）
+     * 
+     * @param client
+     */
+    public static void listObject(AmazonS3Client client)
+    {
+        System.out.println("------------listObject start---------------");
+        ObjectListing list = client.listObjects(bucketName);
+        for (S3ObjectSummary temp : list.getObjectSummaries())
+        {
+            System.out.println("fileName:" + temp.getKey() + " fileMD5:" + temp.getETag());
+        }
+        System.out.println("------------listObject end-----------------");
+    }
+}

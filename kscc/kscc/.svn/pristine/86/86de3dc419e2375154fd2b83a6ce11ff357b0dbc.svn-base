@@ -1,0 +1,46 @@
+package com.fable.kscc.bussiness.service.enrollMedT;
+
+import com.fable.kscc.api.medTApi.MedTApi;
+import com.fable.kscc.api.utils.Constants;
+import com.fable.kscc.api.utils.HttpUtils;
+import com.fable.kscc.api.utils.XmlGenerator;
+import com.fable.kscc.bussiness.cache.DataCache;
+import com.fable.kscc.bussiness.mapper.livecodec.LiveCodecMapper;
+import com.fable.kscc.bussiness.service.liveControllerService.IliveController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.ehcache.EhCacheCache;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/**
+ * Created by Wanghairui on 2017/10/11.
+ */
+public class EnrollMedT {
+
+    private static MedTApi medTApi = new MedTApi();
+    /**
+     *@author jiangmingjun
+     *@date 2017/10/23
+     *@description 鉴权线程
+     */
+    public static void threadStart(int size,List<Map<String, String>> loginQueue,final String confId){
+        ExecutorService service=null;
+        if(loginQueue.size()!=0){
+            service = Executors.newFixedThreadPool(size);
+            DataCache.getInstance().addCache(confId, true);
+            DataCache.getInstance().addCache("线程"+confId,service);
+        }
+        for (final Map<String, String> login:loginQueue){
+            login.put("authenticationid", medTApi.getAuthenticationId(login));
+            XmlGenerator.generateRequestRoot(login);
+            medTApi.Login(login);
+            medTApi.SetSysTimeInfo(login);
+            service.execute(new AuthenticThread(confId,login,medTApi));
+        }
+    }
+}

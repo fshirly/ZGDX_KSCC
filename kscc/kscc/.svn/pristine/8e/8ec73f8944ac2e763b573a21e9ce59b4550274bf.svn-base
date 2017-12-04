@@ -1,0 +1,68 @@
+package com.fable.kscc.bussiness.service.medToServer;
+
+import com.fable.kscc.api.medTApi.MedTApi;
+import com.fable.kscc.api.utils.Constants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
+import java.util.concurrent.Executors;
+
+/**
+ * <p>
+ * Title :
+ * </p>
+ * <p>
+ * Description:
+ * </p>
+ * <p>
+ * Author :Administrator
+ * Date :2017/10/19
+ * Time :18:46
+ * </p>
+ * <p>
+ * Department :
+ * </p>
+ * <p> Copyright : 江苏飞博软件股份有限公司 </p>
+ */
+@Service
+public class MedFileToServer {
+
+    @Autowired
+    private MedTApi medTApi;
+
+    public void function(Map<String,String> param){
+       String response= medTApi.Mp4BackupStart(param);
+       if("success".equals(response)){
+
+       }
+    }
+
+    public void isFileDownLoadSucess(final Map<String,String> param){
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                boolean flag = true;
+                while (flag){
+                     String response= medTApi.Mp4BackUpProgress(param);
+                    if(Constants.MedT100File.totalProgressFree.equals(response)){
+                        //没有文件在备份
+                        flag = false;
+                    }
+                    else if(Constants.MedT100File.channelProgressRun.equals(response)){
+                        //备份正在进行中
+                        flag = true;
+                    }
+                    else if (Constants.MedT100File.channelProgressFail.equals(response)){
+                        //备份失败
+                        flag=false;
+                    }
+                    else{
+                        //备份成功
+                        flag=false;
+                    }
+                }
+            }
+        });
+    }
+}

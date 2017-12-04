@@ -1,0 +1,108 @@
+package com.fable.kscc.bussiness.service.livecodec;
+
+import java.util.List;
+import java.util.Map;
+
+import com.fable.kscc.api.exception.BussinessException;
+import com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation;
+import com.fable.kscc.api.model.page.PageRequest;
+import com.fable.kscc.api.model.page.PageResponse;
+import com.fable.kscc.api.model.user.FbsUser;
+import com.fable.kscc.bussiness.mapper.hospitalInformation.HospitalInformationMapper;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fable.kscc.api.model.liveCodec.FbsLiveCodec;
+import com.fable.kscc.bussiness.mapper.livecodec.LiveCodecMapper;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+public class LiveCodecServiceImpl implements LiveCodecService {
+
+	@Autowired
+	private LiveCodecMapper liveCodecMapper;
+
+	@Autowired
+	private HospitalInformationMapper hospitalInformationMapper;
+	
+	/**
+	 * 根据id查看编解码器(手术室)
+	 */
+	@Override
+	public List<FbsLiveCodec> findAllLiveCodec(int id) {
+		return liveCodecMapper.findAllLiveCodec(id);
+	}
+
+	/**
+	 * 根据参与方医院id查询新世通账号
+	 * @param id
+	 * @return
+	 */
+	@Override
+	public String findNewVideoNum(int id) {
+		return liveCodecMapper.findNewVideoNum(id);
+	}
+
+	@Override
+	public PageResponse<FbsLiveCodec> findAllPageLiveCodeList(PageRequest<FbsLiveCodec> pageRequest) {
+		FbsLiveCodec map=pageRequest.getParam();
+		Page<FbsLiveCodec> result = PageHelper.startPage(pageRequest.getPageNo(), pageRequest.getPageSize());
+		liveCodecMapper.findAllPageLiveCodeList(map);
+		return PageResponse.wrap(result);
+	}
+
+	@Override
+	public boolean insertLiveCode(Map<String, Object> params) {
+		FbsLiveCodec code = new FbsLiveCodec();
+		code.setCodecOwnership(params.get("codecOwnership").toString());
+		code.setIp(params.get("ip").toString());
+		//code.setMac(params.get("mac").toString());
+		code.setNewvideoNum(params.get("newvideoNum").toString());
+		//增加端口号，用户名，密码
+		code.setPort(params.get("port").toString());
+		code.setUserName(params.get("username").toString());
+		if("".equals(params.get("code_password"))){
+			code.setPassword(params.get("password").toString());
+		}else{
+			code.setPassword(params.get("code_password").toString());
+		}
+		if("".equals(params.get("hospitalId"))){//.equal()){
+			//通过医院名称查询相应的医院id
+			FbsHospitalInformation bean = hospitalInformationMapper.getHospitalIdByName(params.get("hospitalName").toString());
+			code.setHospitalId(bean.getId());
+		}else{
+			code.setHospitalId(Integer.parseInt(params.get("hospitalId").toString()));
+		}
+		int num = liveCodecMapper.insertLiveCode(code);
+		if(num>0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRED)
+	public int deleteCode(String ids) throws BussinessException {
+		String[] id = ids.split(",");
+		int[] num = new int[id.length];
+		for(int i=0; i<id.length;i++){
+			num[i] = Integer.parseInt(id[i]) ;
+		}
+		return liveCodecMapper.deleteLiveCode(num);
+	}
+
+	@Override
+	public FbsLiveCodec getCode(FbsLiveCodec code) {
+		return liveCodecMapper.queryLiveCode(code);
+	}
+
+	@Override
+	@Transactional(propagation= Propagation.REQUIRED)
+	public int updateLiveCode(Map<String, Object> params) {
+		return liveCodecMapper.updateLiveCode(params);
+	}
+}

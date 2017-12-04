@@ -1,0 +1,36 @@
+package com.fable.kscc.api.model.upload;
+
+public class UploadBean {
+	private Integer id; // 编号
+
+	private String confId; // 会场id
+
+	private String bucket; // 视频上传桶
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getConfId() {
+		return confId;
+	}
+
+	public void setConfId(String confId) {
+		this.confId = confId;
+	}
+
+	public String getBucket() {
+		return bucket;
+	}
+
+	public void setBucket(String bucket) {
+		this.bucket = bucket;
+	}
+	
+	
+
+}

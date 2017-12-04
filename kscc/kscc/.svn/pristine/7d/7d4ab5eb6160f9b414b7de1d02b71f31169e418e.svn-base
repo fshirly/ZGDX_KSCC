@@ -1,0 +1,28 @@
+package com.fable.kscc.bussiness.service.uploadfile.jobmanage;
+
+import javax.annotation.PostConstruct;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UploadJobManager {
+	
+	private final Logger LOG = LoggerFactory.getLogger(UploadJobManager.class);
+ 
+
+	/**
+	 * 增加定时任务
+	 */
+	@PostConstruct
+	public void addJob() {
+		LOG.error("开始上传 job===================start");
+		try {
+			QuartzManager.addJob("UploadFileJob", UploadFileJob.class,"0 0 0 * * ?");
+		} catch (Exception e) {
+			QuartzManager.addJob("UploadFileJob", UploadFileJob.class, "0 0 1 * * ?");
+		}
+		LOG.error("开始上传 job===================end");
+	}
+}

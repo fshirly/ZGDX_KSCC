@@ -1,0 +1,103 @@
+define(["base","datatables.net","commonUtil","app/commonApp"],function(base,DataTable,commonUtil,common){
+	 var grid = null;
+	    
+		function getMenus(){
+			$.ajax({
+	            type:"post",
+	            async: false,
+	            url:$.base+"/liveBroadCastController/getUserId",
+	            success:function (data) {
+	            	    $("input[name='createId']").val(data.id);
+	            }
+			});
+		};
+	
+	function imgView(imgInput,imgDiv){
+		$("#"+imgInput).change(function(){
+			var imgPreview=document.getElementById(imgInput);
+			PreviewImage(imgPreview, null,imgDiv);
+		});
+	}
+	
+	function setView(){
+		imgView("pictureInputFirst","imgPreviewFirst");
+		imgView("pictureInputSecond","imgPreviewSecond");
+		imgView("pictureInputThree","imgPreviewThree");
+		imgView("pictureInputThird","imgPreviewThird");
+	}
+	
+	function  getModel(){
+		$("a[type='button']").on("click",function(){
+			$(this).attr({"data-toggle":"modal","data-target":"#selectLiveModal"});
+			var selectId=$(this).next();
+			var selectTxt=$(this).next().next();
+			setTable(selectId,selectTxt);
+		});
+	}
+	
+	 function setTable(selectId,selectTxt){
+		 grid = $("#tblLiveSelect").DataTable({
+				"searching":false,
+				"lengthChange":false,
+				"autoWidth":false,
+				"serverSide":true,
+				"paging":true,
+				"ordering":false,
+				"language":{"url":$.base+"/js/lib/chinese.json"},
+				"ajax":{ 
+				"type":"post",
+	            "url":$.base+"/liveBroadCastController/getSelectBroadcast",
+				"contentType":"application/json",
+				"dataType":"json",
+				"data": function ( d ) { 
+		               var params={
+		            		   "pageNo": d.start/d.length+1,
+		            		   "pageSize": d.length,
+							   "param": {
+								   "title" : $('#searchLive').val()
+								}
+		               };
+		              return JSON.stringify(params);
+		            }
+				},
+				"columns":[
+				           {"title":"","sWidth":"15%"},
+				           {"title":"直播名称", "data":"title","sWidth":"85%"}
+				           ],
+	           "columnDefs":[
+							{ 
+							    "render":function(data,type,row,meta){ 
+							    	var html = "<input type='radio' name='result' value='"+row.id+"' att='"+row.title+"'>";
+								       $("input[name='result']").parent().addClass("text-center"); 
+								    return html; 
+							    }, 
+							    "targets":0 
+							 }
+			              ],
+				"drawCallback":function(setting){
+					//选择
+					$(".saveSelect").unbind().on("click",function(){
+						var selectLiveId=$("input[name='result']:checked").val();
+						var selectLiveName=$("input[name='result']:checked").attr("att");
+						selectId.val(selectLiveId);
+						selectTxt.text(selectLiveName);
+						$("#selectLiveModal").modal('hide');
+					})
+				}
+		   });
+	 }   
+	 
+	 function setCancel(){
+		 
+	 }
+	 
+
+	return {
+		run:function(){
+			getMenus();
+			setView();
+			getModel();
+			setCancel();//取消
+		}
+	};
+});

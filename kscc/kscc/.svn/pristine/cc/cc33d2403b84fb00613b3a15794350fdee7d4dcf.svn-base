@@ -1,0 +1,89 @@
+package com.fable.kscc.api.medTApi;
+
+import com.fable.kscc.api.utils.Constants;
+import com.fable.kscc.api.utils.HttpUtils;
+import com.fable.kscc.api.utils.XmlGenerator;
+import net.sf.json.JSONObject;
+import net.sf.json.xml.XMLSerializer;
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by Wanghairui on 2017/10/10.
+ */
+@Component
+public class MedTApi {
+
+    public static void main(String[] args) {
+        Map<String, String> login = new HashMap<>();
+        login.put("ip", "202.127.28.81");
+        login.put("port", "50080");
+        login.put("username", "admin");
+        login.put("password", "admin123");
+        login.put("hospitalId", "1");
+        MedTApi api = new MedTApi();
+        String str= HttpUtils.httpPostByNullXml(api.getSocketAddress(login)+"nvrcgi2/system/GetAuthenticationid");
+        System.out.println("鉴权：：："+str);
+        login.put("authenticationid", api.xmlToJson(str).get("Authenticationid").toString());
+        XmlGenerator.generateRequestRoot(login);
+        api.Login(login);
+//        api.SetSysTimeInfo(login);
+        api.Mp4FileQuery(login);
+//                api.Mp4BackUpProgress(login);
+    }
+    public void Login(Map<String,String> param){
+
+        String params = XmlGenerator.generateLoginParam(enhanceKey(param));
+
+        String result = HttpUtils.httpPostByXml(getSocketAddress(param) + Constants.MedT100.login, params);
+        System.out.println("login:"+xmlToJson(result).get("statusstring"));
+    }
+
+    public  void heartBeat(Map<String,String> param){
+
+        String param2 = XmlGenerator.generateKeepHeartBeatParam(enhanceKey(param));
+
+        HttpUtils.httpPostByXml(getSocketAddress(param)+Constants.MedT100.heartBeat, param2);
+
+    }
+
+    public void Mp4BackUpProgress(Map<String,String> param){
+
+        String params =XmlGenerator.generateHaveNotParam(enhanceKey(param));
+
+        String result = HttpUtils.httpPostByXml(getSocketAddress(param)+Constants.MedT100.mp4BackupProgress,params);
+
+        System.out.println(result);
+    }
+    public void viewSelfThroughSelf(Map<String,String> param){
+        String params = XmlGenerator.generateSetVmtParam(enhanceKey(param));
+        String result = HttpUtils.httpPostByXml(getSocketAddress(param) + Constants.MedT100.viewSelf, params);
+        System.out.println("自己看自己：：：："+result);
+    }
+    public void Mp4FileQuery(Map<String,String> param){
+        String params = XmlGenerator.generateMp4FileQueryParam(enhanceKey(param));
+        System.out.println("查询文件参数为：：："+params);
+        String result = HttpUtils.httpPostByXml(getSocketAddress(param) + Constants.MedT100.mp4FileQuery, params);
+        System.out.println("文件为：：：："+result);
+    }
+    public void SetSysTimeInfo(Map<String,String> param){
+        String params = XmlGenerator.generateSetSysTimeInfoParam(enhanceKey(param));
+        System.out.println(params);
+        String result = HttpUtils.httpPostByXml(getSocketAddress(param) + Constants.MedT100.setSysTimeInfo, params);
+        System.out.println("设置时间：：：："+result);
+    }
+    public  JSONObject xmlToJson(String xml){
+        XMLSerializer xmlSerializer=new XMLSerializer();
+        return  (JSONObject)xmlSerializer.read(xml);
+    }
+
+    private static String enhanceKey(Map<String,String> param){
+        return param.get("hospitalId") + param.get("ip");
+    }
+
+    public String getSocketAddress(Map<String,String> param){
+        return String.format("http://%s:%s/", param.get("ip"), param.get("port"));
+    }
+}

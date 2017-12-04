@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper  namespace="com.fable.kscc.bussiness.mapper.login.LoginMapper">
+<select id="login" parameterType="com.fable.kscc.api.model.user.FbsUser" resultType="com.fable.kscc.api.model.user.FbsUser">
+		SELECT
+		  FU.ID id,
+		  USER_NAME userName,
+		  LOGIN_NAME loginName,
+		  PASSWORD password,
+		  GMSFHM gmsfhm,
+		  TELE_PHONE telePhone,
+		  MOBILE_PHONE mobilePhone,
+		  EMAIL email,
+		  LAST_LOGIN_IPADDR lastLoginIpaddr,
+		  FU.NOTE note,
+		  FU.CREATOR_ID createId,
+		  FU.UPDATE_ID updateId,
+		  HOSPITAL_ID hospitalId,
+		  DEPARTMENT department,
+		  RANK rank,
+		  LOCK_STATUS lockStatus,
+		  LOCK_TIME lockTime,
+		  ROLE_NAME roleName,
+		  ROLE_CODE roleCode,
+		  FU.HOSTlEVEL hostLevel
+		FROM FBS_USER FU
+		  JOIN FBS_USER_ROLE FUR ON FU.ID=FUR.USER_ID
+		  JOIN FBS_ROLE FR ON FR.ID=FUR.ROLE_ID
+			 WHERE LOGIN_NAME=#{loginName} and PASSWORD=#{password};
+</select>
+</mapper>

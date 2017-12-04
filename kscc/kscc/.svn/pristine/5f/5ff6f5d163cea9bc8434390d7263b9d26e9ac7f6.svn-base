@@ -1,0 +1,72 @@
+package com.fable.kscc.bussiness.service.livebroadcast;
+
+import com.fable.kscc.api.model.liveHomePage.FbsLiveHomepage;
+import com.fable.kscc.api.model.livebroadcast.FbsLiveBroadcast;
+import com.fable.kscc.api.model.page.PageRequest;
+import com.fable.kscc.api.model.page.PageResponse;
+import com.fable.kscc.api.model.page.ServiceResponse;
+import com.fable.kscc.api.model.user.FbsUser;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.web.multipart.MultipartFile;
+
+public interface LiveBroadCastService {
+
+	/**
+	 * 创建直播申请
+	 * @param broadcast
+	 * @return ServiceResponse
+	 */
+	ServiceResponse createLiveApplications(FbsLiveBroadcast broadcast);
+	
+	ServiceResponse getLiveBroadCast(Map<String,Object> param);
+
+	ServiceResponse inviteLive(Map<String,Object> map);
+
+	PageResponse<FbsLiveBroadcast> getAllHistoryBroadCast(PageRequest<Map<String,Object>> pageRequest);
+
+	int agreeInviteOrNot(Map<String,Object> map);
+
+	Map<String,Object> getLiveDetail(Map<String,Object> param);
+	
+	Map<String,Object> getLiveDetailTwo(Map<String,Object> param);
+	
+	ServiceResponse modifyLiveBroadcast(Map<String,Object> param) throws Exception;
+
+	ServiceResponse startLive(String liveId,Date date);
+
+	Map<String,Object> cancelLive(String param);
+
+	ServiceResponse getMts(String id);
+
+	
+	/**
+	 * 更新当前直播间的结束时间(延时)
+	 * @param param
+	 * @return
+	 */
+	String updateEndTime(Map<String,Object> param);
+
+	/**
+	 * 获取当前直播间结束时间
+	 * @param param
+	 * @return
+	 */
+	String searchEndTime(Map<String,Object> param);
+
+	PageResponse<FbsLiveBroadcast>  getSelectBroadcast(PageRequest<FbsLiveBroadcast> request);
+
+	ServiceResponse addHomePicture(FbsLiveHomepage homepage);
+
+	FbsLiveBroadcast searchBroadcastInfoByLiveId(Map<String,Object> map);
+
+	ServiceResponse applyBroadCast(Map<String,Object> param);
+
+	ServiceResponse selectHomePage();
+
+}

@@ -1,0 +1,1427 @@
+define(["base","datatables.net"],function(base,DataTable){
+       var ids=[];
+       var nodesObj=[];
+       var treeObj; 
+       var name;
+	   var start;
+	   var end;
+	   var loginUserId;
+	   var ws;
+	    //通过相应的直播id查询直播间信息
+		function setLiveRoom(){
+			if($("#liveIdControlDetail").val()){
+				$.ajax({
+	                type: "GET",
+	                async: false,
+	                url:$.base + "/liveBroadCastController/getLiveDetail/"+$("#liveIdControlDetail").val(),
+	                contentType:"application/json",
+					success:function(data){
+						$("#liveName").text(decodeURI(data.title));
+						$("#liveStartTime").text(formatDate(data.startTime));
+				 	    $("#liveEndTime").text(formatDate(data.endTime));
+				 	    name = $("#liveName").text();
+					    start = $("#liveStartTime").text();
+					    end = $("#liveEndTime").text();
+					},
+	                error:function(){
+	                    alert("加载错误！");
+	                }
+				});
+			}
+		}
+		
+ 	    var userName;
+ 	    var participants;
+ 	    var isAdmin;
+ 	    var participant;
+ 	    var hospitalId;
+ 	    var mtId_old;
+ 	    var hospitalsName;
+ 	    var thisMtId;
+	    function userId(){
+	        $.ajax({
+	            type:"post",
+	            async: false,
+	            url:$.base+"/liveBroadCastController/getUserId",
+	            success:function (data) {
+	                loginUserId=data.id;
+	                userName=data.userName;
+	                hospitalId=data.hospitalId;
+	                if(data.roleName==="kscc管理员"){
+	                	isAdmin=true;
+	                    var url="ws://"+$.base.substr(7)+"/websocket/"+loginUserId+"/1";
+	                    ws=new WebSocket(url);
+	                    $(".menuAdmin").append("<button class='btn delayIcon' title='申请延长直播'><i class='iconfont'>&#xe60d;</i></button>");
+	                    $(".menuAdmin").append("<button class='btn endLive' title='结束直播'><i class='iconfont' style='color:red;'>&#xe61b;</i></button>");
+	                    $(".screenIcon").before("<button class='btn synthesisIcon' title='画面合成'><i class='iconfont'>&#xe644;</i></button>");
+					}
+					else{
+	                    $.ajax({
+	                        type:"POST",
+	                        async: false,
+	                        url:$.base+"/liveController/getParticipant",
+	                        dataType:'json',
+	                        contentType:"application/json",
+	                        data:JSON.stringify({
+	                            id:loginUserId,
+	                            liveId:$("#liveIdControlDetail").val()
+	                        }),
+	                        success:function (data) {
+	                        	console.log(data,'--------------')
+                                var url
+	                        	participant=data;
+	                        	thisMtId=data.mtId
+	                            if(participant.ishost==1){
+                                    url="ws://"+$.base.substr(7)+"/websocket/"+loginUserId+"/2";
+                                    ws=new WebSocket(url);
+	                               $(".menuAdmin").append("<button class='btn delayIcon' title='申请延长直播'><i class='iconfont'>&#xe60d;</i></button>");
+	                               $(".menuAdmin").append("<button class='btn endLive' title='结束直播'><i class='iconfont' style='color:red;'>&#xe61b;</i></button>");
+	                               $(".screenIcon").before("<button class='btn synthesisIcon' title='画面合成'><i class='iconfont'>&#xe644;</i></button>");
+	                            }else{
+                                    url="ws://"+$.base.substr(7)+"/websocket/"+loginUserId+"/3";
+                                    ws=new WebSocket(url);
+	                            	var strs="<button class='btn applySpeak' title='申请发言'><i class='iconfont'>&#xe612;</i></button>"+
+	        			                     "<button class='btn applyExtendTime' title='申请延时'><i class='iconfont'>&#xe611;</i></button>";
+	                            	 $(".outLive").before(strs);
+	                            }
+							}
+						})
+					}
+	                ws.onopen = function () {
+	                	console.log("webSocket服务已开启")
+	                    // ws.send("webSocket服务已开启");
+	                }
+	                ws.onmessage = function (event) {
+	                    var message = event.data;
+	                    var obj=eval("("+message+")");
+	                    if(obj.mtsStatus){
+	                    	var status=obj.mtsStatus;
+	                    	$.each(participants,function(i,v){
+	                    		var isOnline=status[v.mtId];
+	                    		if(isOnline==1){
+	                    		  $('.icon_'+v.mtId).css("color","rgb(2,250,78)");
+	                    		  $('.icon_'+v.mtId).removeAttr("disabled");
+	                    		  $(".icon_"+v.mtId+" i").removeAttr("disabled");
+	                    		  $('.lineOne,.lineTwo').removeAttr("disabled");
+	                    		  $('.lineOne').css("color","rgb(2,250,78)");
+	                    		  $('.talkIcon_'+v.mtId).attr("disabled","disabled");
+	                    		  $(".talkIcon_"+v.mtId+" i").attr("disabled","disabled");
+	                    		}
+	                    		else{
+	                    		  $('.icon_'+v.mtId).attr("disabled","disabled");
+	                    		  $(".icon_"+v.mtId+" i").attr("disabled","disabled");
+	                    		  $('.talkIcon_'+v.mtId).removeAttr("disabled");
+	                    		  $('.talkIcon_'+v.mtId).css("color","rgb(2,250,78)");
+	                    		}
+	                    	});
+	                    }
+	                    else{
+	                    	base.confirm({ 
+	          		    	  label:"提示",
+	          		    	  text:"<div style='text-align:center;font-size:13px;'>"+obj.message+"</div>",
+	          	              confirmCallback:function(){
+	          	              }
+	          			    });
+	                    }
+	                }
+	
+	                ws.onerror = function (evt) {
+	                    ws.close();
+	                    console.log('websocket error', evt);
+	                }
+	                ws.onclose = function (evt) {
+	                    ws.close();
+	                    console.log('websocket is closed', evt);
+	                }
+					setCarousel(hospitalId);//设置轮播
+	            }
+	        });
+	    };
+	    
+		/**
+		 * 时间戳转化为固定格式日期
+		 * @param m
+		 * @returns {string}
+		 */
+		function add0(m){return m<10?'0'+m:m }
+		function formatDate(now) {
+			var time = new Date(now);
+			var year=time.getFullYear();
+			var month=time.getMonth()+1;
+			var date=time.getDate();
+			var hour=time.getHours();
+			var minute=time.getMinutes();
+			var second=time.getSeconds();
+			return year+'-'+add0(month)+'-'+add0(date)+' '+add0(hour)+':'+add0(minute);
+		}
+		function setCarousel(hospitalId){
+			 $.ajax({
+                 type: "GET",
+                 url:$.base + "/liveBroadCastController/getLiveDetailTwo/"+$("#liveIdControlDetail").val(),
+                 contentType:"application/json",
+	             success: function(data){
+	            	 var mute=data.mute;//哑音
+	            	 var silence=data.silence;//静音
+	            	 $(".allShutIcon").attr("att",mute);
+	            	 $(".allSilenIcon").attr("att",silence);
+	            	 if(mute==1){
+	            		 $(".allShutIcon").html("<i class='iconfont'>&#xe7f0;</i>");
+	            		 $(".allShutIcon").attr("title","全场哑音");
+	            	 }else{
+	            		 $(".allShutIcon").html("<i class='iconfont'>&#xe601;</i>");
+	            		 $(".allShutIcon").attr("title","全场停止哑音");
+	            	 }
+	            	 if(silence==1){
+	            		 $(".allSilenIcon").html("<i class='iconfont'>&#xe64a;</i>");
+	            		 $(".allSilenIcon").attr("title","全场静音");
+	            	 }else{
+	            		 $(".allSilenIcon").html("<i class='iconfont'>&#xe62d;</i>");
+	            		 $(".allSilenIcon").attr("title","全场停止静音");
+	            	 }
+	            	   var lis="";
+	                   participants=data.participants;
+                       $("#confId").val(data.confId);
+	            	   $.each(data.participants,function(i,v){
+	            		   	   //会场第一主持人就是默认进入直播间的主讲人
+	            		   	   if(v.serialNumber == 1){
+	            		   		 $("#speakerMain").val(v.hospitalName);//改变前的医院名称
+	            		   		 mtId_old = v.mtId;//改变前的mtid
+	            		   	   }
+	            			   var ifont=""; var ifontCircle="";var conversionCircuit="";
+	            			   
+	            			     var muteP=v.mute;//哑音
+		      	            	 var silenceP=v.silence;//静音
+		      	            	 var mutePStr="";
+		      	            	 var silencePStr="";
+		      	            	 if(muteP==1){
+		      	            		 mutePStr="<i class='iconfont' title='哑音'>&#xe7f0;</i>";
+		      	            	 }else{
+		      	            		 mutePStr="<i class='iconfont' title='停止哑音'>&#xe601;</i>";
+		      	            	 }
+		      	            	 if(silenceP==1){
+		      	            		 silencePStr="<i class='iconfont' title='静音'>&#xe64a;</i>";
+		      	            	 }else{
+		      	            		 silencePStr="<i class='iconfont' title='停止静音'>&#xe62d;</i>";
+		      	            	 }
+	            			   
+		            		   //判断是否在线
+	            			   ifont="<button disabled class='btn hostIcon icon_"+v.mtId+"' att='"+v.confId+"' att1='"+v.mtId+"' att2='"+v.hospitalName+"' title='主持人'><i class='iconfont'>&#xe61f;</i></button>"+
+		        			         "<button disabled class='btn shutdIcon icon_"+v.mtId+"' att='"+v.confId+"' att1='"+v.mtId+"' mutePStatus='"+v.mute+"'>"+mutePStr+"</button>"+
+			            			 "<button disabled class='btn silenIcon icon_"+v.mtId+"' att='"+v.confId+"' att1='"+v.mtId+"' silencePStatus='"+v.silence+"'>"+silencePStr+"</button>"+
+			            			 "<button disabled class='btn speakIcon icon_"+v.mtId+"' att='"+v.confId+"' att1='"+v.mtId+"' title='发言'><i class='iconfont'>&#xe60c;</i></button>"+
+			            			 "<button disabled class='btn talkIcon talkIcon_"+v.mtId+"' att='"+v.confId+"' att1='"+v.mtId+"' att2='"+v.hospitalName+"' title='呼叫'><i class='iconfont'>&#xe606;</i></button>"+
+			            			 "<button class='btn deleIcon' att='"+v.confId+"' att1='"+v.mtId+"' att2='"+v.id+"' att3='"+v.hospitalName+"' title='删除终端'><i class='iconfont' style='color:red;'>&#xe666;</i></button>";
+	            			   ifontCircle="<i class='btn iconfont icon_"+v.mtId+"' title=''>&#xe645;</i>";
+		            		   
+		            		   //判断是否是自家医院
+		            		   if(v.hospitalId==hospitalId){
+		            			   conversionCircuit="<button class='btn icon_"+v.mtId+" lineOne' title='线路一'><i class='iconfont'>&#xe61a;</i>"+
+	           		                                 "<button class='btn icon_"+v.mtId+" lineTwo' title='线路二'><i class='iconfont'>&#xe61a;</i>";
+		            		   }
+		            		   
+		            		   var index=Math.ceil((i+1)/2);
+		            		   lis+="<li class='carousel_"+index+" detailLi'>"+
+			            		         "<div style='height:100%;'>"+
+			            		           "<div style='width:100%;height:80%;'>"+
+				            		            "<div class='detailBannerLi' uid='"+v.mtId+"' uv='"+v.hospitalName+"'>"+
+					            		            "<div class='detailBannerDiv'>"+
+					            		               "<div class='detailBgDiv'>"+
+					            		               "<span style='float:right;'>"+ifontCircle+"</span>"+
+					            		               "<div class='detailParti' title='"+v.hospitalName+"'>"+v.hospitalName+"</div>"+
+					            		               "</div>"+
+					            		           "</div>"+
+				            		            "</div>"+
+				            		            "<div style='width:20%;height:100%;float:left;'>"+conversionCircuit+"</div>"+
+			            		            "</div>"+
+			            		            "<div class='buttonIfont'>"+ifont+"</div>"
+			            		          "</div>"+
+	            		          "</li>";
+	            	   });
+	            	   $(".carousel-inner").append(lis);
+	            	   for (var i=0;i<Math.ceil(data.participants.length/2);i++){
+	            		   $(".carousel_"+(i+1)+"").wrapAll("<ul class='carouselUl_"+(i+1)+"'></ul>");
+	            		   $(".carouselUl_"+(i+1)+"").wrap("<div class='item' style='height:100%;'></div>");
+	            		   $("#carouselCircle").append("<li data-target='#myCarousel' data-slide-to='"+i+"'></li>");
+	            	   }
+	            	   $(".item:first").addClass("active");
+	            	   $("#carouselCircle").children(":first").addClass("active");
+	            	   
+	            	   var iconBtn="<button class='btn hostIcon' title='主持人' disabled><i class='iconfont' disabled>&#xe61f;</i></button>"+
+  			                       "<button class='btn shutdIcon' title='哑音' disabled><i class='iconfont' disabled>&#xe601;</i></button>"+
+        			               "<button class='btn silenIcon'attr='' title='静音' disabled><i class='iconfont' disabled>&#xe62d;</i></button>"+
+        			               "<button class='btn speakIcon' title='发言' disabled><i class='iconfont' disabled>&#xe60c;</i></button>"+
+        			               "<button class='btn talkIcon' title='呼叫' disabled><i class='iconfont' disabled>&#xe606;</i></button>"+
+        			               "<button class='btn deleIcon' title='删除终端'><i class='iconfont' style='color:red;'>&#xe666;</i></button>";
+	            	   
+	            	   var number=(data.participants.length)/2;
+	            	   var pageNumber=$(".carousel-inner").find(".item").length;
+	            	   if(Math.floor(number) === number){
+	            	   var addItemStrs="<div class='item' style='height:100%;'>" +
+	            		   		   "<ul class='carouselUl_"+(pageNumber+1)+"' style='height:100%;margin:0 auto;'>" +
+		            		   		"<li class='carousel_"+(pageNumber+1)+" detailLi'>"+
+			            		         "<div style='height:100%;'>"+
+			            		           "<div style='width:100%;height:80%;'>"+
+				            		            "<div class='detailBannerLi addPartiDiv'>"+
+					            		            "<div class='detailBannerDiv'>"+
+					            		               "<div class='detailBgDiv'>" +
+					            		                  "<div class='addParti'></div>"+
+					            		               "</div>"+
+					            		           "</div>"+
+				            		            "</div>"+
+			            		            "</div>"+
+			            		            "<div class='buttonIfont'>"+iconBtn+"</div>"
+			            		          "</div>"+
+		            		          "</li>" +
+	            		   		"</ul>" +
+	            		   		"</div>";
+	            		   $(".carousel-inner").append(addItemStrs);
+	            		   $("#carouselCircle").append("<li data-target='#myCarousel' data-slide-to='"+pageNumber+"'></li>");
+	            	   }else{
+	            		 var  addLiStrs="<li class='carousel_add detailLi'>"+
+			            		         "<div style='height:100%;'>"+
+			            		           "<div style='width:100%;height:80%;'>"+
+				            		            "<div class='detailBannerLi addPartiDiv'>"+
+					            		            "<div class='detailBannerDiv'>"+
+					            		               "<div class='detailBgDiv'>" +
+					            		                   "<div class='addParti'></div>"+
+					            		               "</div>"+
+					            		           "</div>"+
+				            		            "</div>"+
+			            		             "</div>"+
+			            		            "<div class='buttonIfont'>"+iconBtn+"</div>"
+			            		          "</div>"+
+		            		          "</li>";
+	            	      $(".carousel-inner .item:last ul").append(addLiStrs);
+	            	   }
+	            	   
+	            	   $('#myCarousel').carousel({
+	                       pause: true,
+	                       interval: false
+	                   });
+	            	   dragBannerDiv();//画面合成、画面选看拖拽
+	            	   setPartiClick();//参与方点击事件
+	            	   setAddParti();
+	               },
+	               error:function(e){
+	            	   
+	               }
+			 });
+			 
+		 };
+		 
+		 function setAddParti(){
+			 $(".addPartiDiv").off().on("click",function(){
+				 $("#selectModal").modal('show');
+				 $("#selectNum").text('0');
+				 var startTime=$("#liveStartTime").text();
+				 var endTime=$("#liveEndTime").text();
+				 setZTreeModel(startTime,endTime);
+			 });
+		 }
+		 
+		 var setting = {
+					view: {
+						selectedMulti:true,	
+					},
+					data: {
+						simpleData: {
+							enable: true,
+							pIdKey: "pid"
+						}
+					}
+			  };
+			function setZtree(zNodes,startTime,endTime){
+				require(["bootstrap","ztreeCore","ztreeExcheck","ztreeExedit"],function(){
+					$.fn.zTree.init($("#treeDemo1"), setting, zNodes);
+					treeObj = $.fn.zTree.getZTreeObj("treeDemo1");
+					treeObj.expandAll(true);
+					setLi();
+					setSelect();
+					searchTree(startTime,endTime);//模态框医院列表数据搜索
+				});
+			}
+		 //模态框里的树渲染
+		 function setZTreeModel(startTime,endTime){
+			//获得医院列表数据
+				$.ajax({
+					   type: "post", 
+		               async: true, 
+		               url:  $.base + "/hospital/screenHospital", 
+		               contentType:"application/json",
+		               data:JSON.stringify({
+		                     "startTime":startTime,
+		                     "endTime":endTime,
+						   	 "name":$("#searchParticipantModal").val()
+		                     }),
+		               dataType: "json",
+		               success: function(data){
+		            	 var zNodes =data; 
+		            	 setZtree(zNodes,startTime,endTime);//渲染医院列表
+		               }
+			      });
+		 }
+		 function setLi(){
+				if($("#selectResult li").length>0){
+					$("#selectResult li").click(function(){
+						$(this).addClass("cur").siblings().removeClass("cur")
+					});
+				}
+			}
+		 //搜索
+		 function searchTree(startTime,endTime){
+				$("#searchBtnModel").unbind().on("click",function(){
+					$.ajax({
+			        	url:$.base+"/hospital/findAllHospitalAndUser",
+			        	type:"POST",
+			        	contentType:"application/json",
+	                    dateType:"json",
+	                    data:JSON.stringify(
+	                        {
+	                            "searchCon":$("#searchParticipantModal").val()
+	                        }
+						),
+			        	success:function(data){
+			        		 var zNodes =data; 
+			            	 setZtree(zNodes,startTime,endTime);//渲染医院列表
+			            	 setLi();
+			        	},
+			        	error:function(data){}
+					});
+				});
+			}
+		 
+		//左右选择框
+		function setSelect(){
+			
+			//从左往右单选
+			$("#LTRSingle").unbind().on("click",function(){
+				var treeObj = $.fn.zTree.getZTreeObj("treeDemo1");
+				var sNodes = treeObj.getSelectedNodes();
+				if (sNodes.length > 0) {
+					var node = sNodes[0].getParentNode();
+				}
+				var importId;var importName;
+				if(node!=null){
+					importId=node.id;
+					importName=node.name;
+				}
+				else{
+					importId=sNodes[0].id;
+					importName=sNodes[0].name;
+				}
+				if(importId){
+	                	 if(ids.length==0){
+	                		ids.push(importId);
+	                		nodesObj.push({
+	                			"id":importId,
+	                			"name":importName,
+	                		});
+	                		$("#selectResult").append("<li att='"+importId+"' class='partisLimodal'><span class='iconfont iconfontList'>&#xe61e;</span><span class='selectSpan' title='"+importName+"'>"+importName+"</span></li>");
+	                	 }
+	                	 else{
+	                		 if($.inArray(importId,ids)==-1){
+	 		                		ids.push(importId);
+	 		                		nodesObj.push({
+	 		                			"id":importId,
+	 		                			"name":importName,
+	 		                		});
+	 		                $("#selectResult").append("<li att='"+importId+"' class='partisLimodal'><span class='iconfont iconfontList'>&#xe61e;</span><span class='selectSpan' title='"+importName+"'>"+importName+"</span></li>");
+	 		              }
+	                	}
+	            	$("#selectNum").text($("#selectResult").find("li").length);
+	            	setLi();
+			}
+		});
+			
+			//从右往左单选
+			$("#RTLSingle").unbind().on("click",function(){
+				setLi();
+				var selectLiId=$("#selectResult li.cur").attr("att");
+					var index=$.inArray(parseInt(selectLiId),ids);
+					ids.splice(index,1);
+					nodesObj.splice(index,1);
+					$("#selectResult li.cur").remove();
+					$("#selectNum").text($("#selectResult").find("li").length);
+			});
+			
+			//模态框确定按钮
+			$(".selectBtn").unbind().on("click",function(){
+				$.ajax({
+					   type: "post", 
+		               async: true, 
+		               url:  $.base + "/kscc/liveParticiPant/setParticipant", 
+		               contentType:"application/json",
+		               data:JSON.stringify({
+		                     "searchParticipant":nodesObj,
+		                     "liveId":$("#liveIdControlDetail").val(),
+		                     "creatorId":loginUserId
+		                     }),
+		               dataType: "json",
+		               success: function(data){
+		            	   $("#selectModal").modal('hide');
+		            	   if(data>0){
+		            		   setCarousel(hospitalId);
+		            	   }
+		               }
+			      });
+			});
+		}
+		 
+		 //参与方列表操作按钮控制
+		function setPartiClick(){
+			//主持人
+			$(".hostIcon").on("click",function(){
+				var hospitalNameNow=$(this).attr("att2");//现在的医院名称
+				var confId=$(this).attr("att");
+				var mt_id=$(this).attr("att1");
+				var params={
+							"hospitalNameEx":$("#speakerMain").val(),
+							"hospitalNameNow":hospitalNameNow,
+							"confId":confId,
+							"mtIdOld":mtId_old,
+							"params":{
+								"mt_id":mt_id	
+								}
+						 }
+				var requestTip=base.requestTip({position:"center"});
+				$.ajax({
+	                 type: "POST",
+	                 url:$.base + "/liveController/switchHost",
+	                 data:JSON.stringify(params),
+	                 contentType:"application/json",
+		             success: function(data){
+		            	
+		            	 switch(data.status){
+			            	 case '1':
+			            		 requestTip.success("切换主持人成功！");
+			            		 setCarousel();
+			            		 break;
+		            		 default:
+		            			 requestTip.error("切换主持人失败！");
+		            		     break;
+		            	 }
+		             },
+		             beforeSend:function(){
+		            	 requestTip.wait();
+		             },
+	            	 error:function(){
+	            		 requestTip.error();
+		             }
+		          });
+			});
+			//哑音
+			$(".shutdIcon").unbind().on("click",function(){
+				var _thisShut = this;
+				var confId=$(this).attr("att");
+				var mt_id=$(this).attr("att1");
+				var muteStatus=$(this).attr("mutePStatus");
+				var shutdStatus=$(this).find("i").attr("title");
+				var shutdStr="";
+				var params={
+						"confId":confId,
+						"mtId":mt_id,
+						"params":{
+							"value":muteStatus==0?1:0
+							}
+					 }
+				var requestTip=base.requestTip({position:"center"});
+				$.ajax({
+					 type: "POST",
+	                 url:$.base + "/liveController/mute",
+	                 data:JSON.stringify(params),
+	                 contentType:"application/json",
+	                 success: function(data){
+		            		 if(data.status=='1'){
+		            			 if(shutdStatus=="哑音"){
+			            			 requestTip.success("停止哑音成功！");
+			            			 shutdStr="<i class='iconfont' title='停止哑音'>&#xe601;</i>";
+                                     $(_thisShut).attr("mutePStatus","0");
+			            			 $(_thisShut).html(shutdStr);
+			            		 }
+			            		 else{
+			            			 requestTip.success("哑音成功！");
+			            			 shutdStr="<i class='iconfont' title='哑音'>&#xe7f0;</i>";
+                                     $(_thisShut).attr("mutePStatus","1");
+			            			 $(_thisShut).html(shutdStr);
+			            		 }
+		            		 }
+		            		 else{
+		            			 requestTip.error("哑音失败！");
+		            		 }
+		             },
+		             beforeSend:function(){
+		            	 requestTip.wait();
+		             },
+	            	 error:function(){
+	            		 requestTip.error();
+		             }
+		        });
+			});
+			//静音
+			$(".silenIcon").unbind().on("click",function(){
+				var _thisSilen = this;
+				var confId=$(this).attr("att");
+				var mt_id=$(this).attr("att1");
+				var silenceStatus=$(this).attr("silencePStatus");
+				var silenStatus=$(this).find("i").attr("title");
+				var silenStr="";
+				var params={
+						"confId":confId,
+						"mtId":mt_id,
+						"params":{
+							"value":silenceStatus==0?1:0
+							}
+					 }
+				var requestTip=base.requestTip({position:"center"});
+				$.ajax({
+					 type: "POST",
+	                 url:$.base + "/liveController/silence",
+	                 data:JSON.stringify(params),
+	                 contentType:"application/json",
+	                 success: function(data){
+		            	if(data.status=='1'){
+		            		if(silenStatus=="静音"){
+		            			 requestTip.success("停止静音成功！");
+		            			 silenStr="<i class='iconfont' title='停止静音'>&#xe62d;</i>";
+		            			 $(_thisSilen).html(silenStr);
+                                 $(_thisSilen).attr("silencePStatus","0");
+		            		 }
+		            		 else{
+		            			 requestTip.success("静音成功！");
+		            			 silenStr="<i class='iconfont' title='静音'>&#xe64a;</i>";
+                                $(_thisSilen).attr("silencePStatus","1");
+		            			 $(_thisSilen).html(silenStr);
+		            		 }
+		            	}	 
+		            	else{
+		            		requestTip.error("静音失败！");
+			            	}	 
+		             },
+		             beforeSend:function(){
+		            	 requestTip.wait();
+		             },
+	            	 error:function(){
+	            		 requestTip.error();
+		             }
+		        });
+			});
+			//发言
+			$(".speakIcon").on("click",function(){
+				var confId=$(this).attr("att");
+				var mt_id=$(this).attr("att1");
+				var params={
+							"confId":confId,	 
+							"params":{
+								"mt_id":mt_id	
+								}
+						 }
+				var requestTip=base.requestTip({position:"center"});
+				$.ajax({
+					 type: "POST",
+	                 url:$.base + "/liveController/chooseSpeaker",
+	                 data:JSON.stringify(params),
+	                 contentType:"application/json",
+	                 success: function(data){
+	                	
+		            	 switch(data.status){
+			            	 case '1':
+			            		 requestTip.success("发言成功！");
+			            		 break;
+		            		 default:
+		            			 requestTip.error("发言失败！");
+		            		     break;
+		            	 }
+		             },
+		             beforeSend:function(){
+		            	 requestTip.wait();
+		             },
+	            	 error:function(){
+	            		 requestTip.error();
+		             }
+		       });
+			});
+			//呼叫
+			$(".talkIcon").on("click",function(){
+				var confId=$(this).attr("att");
+				var mt_id=$(this).attr("att1");
+				var hospitalName=$(this).attr("att2");
+				var params={
+							"confId":confId,	 
+							"hospitalName":hospitalName,	 
+							"params":{
+								"mts":[{
+									"mt_id":mt_id	
+								}]
+								}
+						 }
+				var requestTip=base.requestTip({position:"center"});
+				$.ajax({
+					type: "POST",
+	                url:$.base + "/liveController/callParticipant",
+	                data:JSON.stringify(params),
+	                contentType:"application/json",
+	                success: function(data){
+	                	
+		            	 switch(data.status){
+			            	 case '1':
+			            		 requestTip.success("呼叫成功！");
+			            		 break;
+		            		 default:
+		            			 requestTip.error("呼叫失败！");
+		            		     break;
+		            	 }
+		             },
+		             beforeSend:function(){
+		            	 requestTip.wait();
+		             },
+	            	 error:function(){
+	            		 requestTip.error();
+		             }
+		       });
+			});
+			//删除终端
+			$(".deleIcon").on("click",function(){
+                var confId = $("#confId").val();
+				var mt_id=$(this).attr("att1");
+				var delayId=$(this).attr("att2");
+				var hospitalName=$(this).attr("att3");
+				var params={
+							"hospitalName":hospitalName,
+							"id":delayId,
+							"confId":confId,	 
+							"params":{
+								"mts":[{
+									"mt_id":mt_id	
+								}]
+								}
+						 }
+				var requestTip=base.requestTip({position:"center"});
+				$.ajax({
+					type: "POST",
+	                url:$.base + "/liveController/deleteParticipant",
+	                data:JSON.stringify(params),
+	                contentType:"application/json",
+	                success: function(data){
+	                	 
+		            	 switch(data.status){
+			            	 case '1':
+			            		 requestTip.success("删除成功！");
+			            		 setCarousel();
+			            		 break;
+		            		 default:
+		            			 requestTip.error("删除失败！");
+		            		     break;
+		            	 }
+		             },
+		             beforeSend:function(){
+		            	 requestTip.wait();
+		             },
+	            	 error:function(){
+	            		 requestTip.error();
+		             }
+		         });
+			});
+		}
+		 
+		 //会场记录表格
+		function setTableRecord(){
+			   $("#tblRecord").DataTable({
+					"searching":false,
+					"lengthChange":false,
+					"autoWidth":false,
+					"serverSide":true,
+					"paging":true,
+					"ordering":false,
+					"bRetrieve": true,
+					"language":{"url":$.base+"/js/lib/chinese.json"},
+					"ajax":{ 
+						"type":"post",
+						"url":$.base+"/kscc/liveOperationLog/liveFbsLiveParticiList",
+						"contentType":"application/json",
+						"data": function ( d ) { 
+	                          var params={
+	                        		  "pageNo": d.start/d.length+1,
+			                          "pageSize": d.length,
+			                          "param":{
+			                        	  "id": $("#liveIdControlDetail").val()
+			                          }
+	                          };
+//	                           $.extend(d,params);
+	                         return JSON.stringify(params);
+	                       }
+						},
+					"columns":[
+                               {"title":"时间", "data":"operationTime","sWidth":"30%"},
+					           {"title":"日志", "data":"operationContent","sWidth":"70%"}
+					           ],
+                   "columnDefs":[
+                       {
+                           "render":function(data,type,row,meta){
+                               if(data != null && data != ''){
+                                   return data.substr(0,16);
+                               }
+                           },
+                           "targets":0
+                       }
+				   ]
+				});
+		    };
+		    
+		//设置点击切换 
+		 function setChange(){
+			 //全场哑音
+			 $(".allShutIcon").unbind().on("click",function(){
+				 var confId = $("#confId").val();
+				 var status=$(".allShutIcon").attr("att");
+				 var allShutStatus=$(".allShutIcon").attr("title");
+			     var allShutStr="";
+				 var params={
+							"confId":confId,
+							"params":{
+								"value":status==0?1:0
+								}
+						 }
+				    var requestTip=base.requestTip({position:"center"});
+					$.ajax({
+						type: "POST",
+		                url:$.base + "/liveController/allMute",
+		                data:JSON.stringify(params),
+		                contentType:"application/json",
+		                success: function(data){
+			            	 switch(data.status){
+				            	 case '1':
+				            		 
+				            		 if(allShutStatus=="全场哑音"){
+				            			 requestTip.success("全场停止哑音成功！");
+				            			 allShutStr="<i class='iconfont'>&#xe601;</i>";
+                                         $(".allShutIcon").attr("att",'0');
+				            			 $(".allShutIcon").html(allShutStr);
+				            			 $(".allShutIcon").attr("title","全场停止哑音");
+
+				            		 }
+				            		 else{
+				            			 requestTip.success("全场哑音成功！");
+				            			 allShutStr="<i class='iconfont'>&#xe7f0;</i>";
+                                         $(".allShutIcon").attr("att",'1');
+				            			 $(".allShutIcon").html(allShutStr);
+				            			 $(".allShutIcon").attr("title","全场哑音");
+				            		 }
+				            		 break;
+			            		 default:
+			            			 requestTip.error("全场哑音失败！");
+			            		     break;
+			            	 }
+			             },
+			             beforeSend:function(){
+			            	 requestTip.wait();
+			             },
+		            	 error:function(){
+		            		 requestTip.error();
+			             }
+			         });
+			 });
+			 
+			 //全场静音
+			 $(".allSilenIcon").unbind().on("click",function(){
+				 var confId = $("#confId").val();
+				 var status=$(".allSilenIcon").attr("att");
+				 var allSilenStatus=$(".allSilenIcon").attr("title");
+				 var allSilenStr="";
+				 var params={
+							"confId":confId,
+							"params":{
+								"value":status==0?1:0
+								}
+						 }
+				    var requestTip=base.requestTip({position:"center"});
+					$.ajax({
+						type: "POST",
+		                url:$.base + "/liveController/allSilence",
+		                data:JSON.stringify(params),
+		                contentType:"application/json",
+		                success: function(data){
+		                	 
+			            	 switch(data.status){
+				            	 case '1':
+				            		 
+				            		 if(allSilenStatus=="全场静音"){
+				            			 requestTip.success("全场停止静音成功！");
+				            			 allSilenStr="<i class='iconfont'>&#xe62d;</i>";
+                                         $(".allSilenIcon").attr("att",'0');
+				            			 $(".allSilenIcon").html(allSilenStr);
+				            			 $(".allSilenIcon").attr("title","全场停止静音");
+				            		 }
+				            		 else{
+				            			 requestTip.success("全场静音成功！");
+				            			 allSilenStr="<i class='iconfont'>&#xe64a;</i>";
+                                         $(".allSilenIcon").attr("att",'1');
+				            			 $(".allSilenIcon").html(allSilenStr);
+				            			 $(".allSilenIcon").attr("title","全场静音");
+				            		 }
+				            		 break;
+			            		 default:
+			            			 requestTip.error("全场静音失败！");
+			            		     break;
+			            	 }
+			             },
+			             beforeSend:function(){
+			            	 requestTip.wait();
+			             },
+		            	 error:function(){
+		            		 requestTip.error();
+			             }
+			      });
+			 });
+			
+			 //点击添加字幕
+			 $(".subtitleIcon").unbind().on("click",function(){
+				 $(".subtitle").removeClass("disNone");
+				 $(".subtitle").siblings().addClass("disNone");
+				 //提交
+				 $(".subtitleSubmit").unbind().on("click",function(){
+				 	if($("#subtitleContent").val().trim()==""){
+                        var modal = BaseApp.createModal({
+                            modalId:"hostMsg",
+                            title:"提示",
+                            cls:"modal-dialog modal-sm",
+                            size:"sm",
+                            buttons:[{"name":"cancel","title":"确定"}]
+                        });
+                        $(modal.modalContainer).html("请输入字幕内容！");
+                        return;
+					}
+
+                     var array=[]
+				 	 if(isAdmin||participant.isHost==='1'){
+				 	 	$.each(participants,function (i,v) {
+							array.push({mt_id:v.mtId})
+                        })
+					 }
+					 else{
+				 	 	array.push({mt_id:participant.mtId})
+					 }
+                     var params = {
+                         confId: $('#confId').val(),
+                         params:{
+                             "message": $("#subtitleContent").val(),
+                             "type": $("#scrollType").find("option:selected").val()-0,
+                             "roll_num": 1,
+                             "roll_speed": 1,
+                             "mts": array
+                         }
+                     };
+                     var requestTip=base.requestTip({position:"center"});
+					 $.ajax({ 
+			               type: "post",
+			               url:  $.base + "/liveController/sendScreenWord",
+						   data:JSON.stringify(params),
+						   dataType:'json',
+	                       contentType:"application/json",
+			               success: function(data){
+				               switch(data.status){
+					            	 case '1':
+					            		 requestTip.success("添加字幕成功！");
+					            		 break;
+				            		 default:
+				            			 requestTip.error(data.tips);
+				            		     break;
+				            	 }
+				             },
+				             beforeSend:function(){
+				            	 requestTip.wait();
+				             },
+			            	 error:function(){
+			            		 requestTip.error();
+				             }
+					 });
+				 });
+				 
+				//取消
+				 $(".subtitleCancel").unbind().on("click",function(){
+					 $("#scrollType").val("");
+		             $("#subtitleContent").val("");
+				 });
+				 
+			 });
+			//点击画面合成
+			 $(".synthesisIcon").unbind().on("click",function(){
+				 $(".synthesis").removeClass("disNone");
+				 $(".synthesis").siblings().addClass("disNone");
+
+				 $(".synthesisSubmit").unbind().on("click",function(){
+					 var requestTip=base.requestTip({position:"center"});
+                     var confId = $("#confId").val();
+                     var mtIds=[];
+                     var selectLength=$(".synthesis .userItem").length;
+                     for(var i=0;i<selectLength;i++){
+                         mtIds.push(
+                             {
+                                 "mt_id":$(".synthesis .itemView[type='"+(i+1)+"'] .userItem").attr("uid"),
+                                 "chn_idx": i,
+                                 "member_type": 1
+                             });
+					 }
+                     var params={
+                     	 confId:confId,
+                         params:{
+                             "mode":1,
+                             "voice_hint": 1,
+                             "broadcast": 1,
+                             "layout": 2,
+                             "show_alias": 1,
+                             "members": mtIds
+                         }
+                     }
+
+                     $.ajax({
+                         type: "POST",
+                         url:$.base + "/liveController/pictureSynthesiss",
+                         data:JSON.stringify(params),
+                         contentType:"application/json",
+                         success: function(data){
+                             switch(data.status){
+                                 case '1':
+                                     requestTip.success("画面合成成功！");
+                                     break;
+                                 default:
+                                     requestTip.error("画面合成失败！");
+                                     break;
+                             }
+                         },
+                         beforeSend:function(){
+                             requestTip.wait();
+                         },
+                         error:function(){
+                             requestTip.error();
+                         }
+                     });
+
+				 })
+
+
+			 });
+			//点击画面选看
+			 $(".screenIcon").unbind().on("click",function(){
+				 $(".screen").removeClass("disNone");
+				 $(".screen").siblings().addClass("disNone");
+                 $(".screenSubmit").click(function(){
+                	 var requestTip=base.requestTip({position:"center"});
+                     var confId = $("#confId").val();
+                     var srcMtId=$(".screen .itemView .userItem").attr("uid")
+					 if(!srcMtId){
+                         requestTip.error("请选择要选看的医院");
+					 }
+                     var params={
+                         confId:confId,
+                         params:{
+                             "mode": 1,
+                             "src": {
+                                 "type": 1,
+                                 "mt_id": srcMtId
+                             },
+                             "dst": {
+                                 "mt_id":thisMtId
+                             }
+                         }
+                     }
+                     $.ajax({
+                         type: "post",
+                         url:  $.base + "/liveController/choosePicture",
+                         data:JSON.stringify(params),
+                         contentType:"application/json",
+                         success: function(data){
+                             switch(data.status){
+                                 case '1':
+                                     requestTip.success("画面选看成功！");
+                                     break;
+                                 default:
+                                     requestTip.error("画面选看失败！");
+                                     break;
+                             }
+                         },
+                         beforeSend:function(){
+                             requestTip.wait();
+                         },
+                         error:function(){
+                             requestTip.error();
+                         }
+                     });
+
+				 })
+
+			 });
+
+             //更新直播间页面结束时间
+             function extendTime(){
+                 var delay_time=$("input[type='radio']:checked").val();
+                 if(delay_time==0){
+                     delay_time=$("#customMin").val();
+                 }
+                 param={
+                     liveId:$("#liveIdControlDetail").val(),
+                     "timeExpand":delay_time
+                 }
+                 $.ajax({
+                     type: "post",
+                     url:  $.base + "/liveBroadCastController/updateEndTime",
+                     data:JSON.stringify(param),
+                     contentType:"application/json",
+                     success: function(data){
+                         $("#liveEndTime").text(data);                      
+                     }
+                 });
+             }
+			 
+			//点击直播延时
+			 $(".delayIcon").unbind().on("click",function(){
+				 var confId = $("#confId").val();
+				 $(".delay").removeClass("disNone");
+				 $(".delay").siblings().addClass("disNone");
+				 //获取当前直播剩余时间
+				 var remindTime = end; //当前直播间的结束时间 
+				 var  str=remindTime.toString();
+                 str =  str.replace(/-/g,"/");
+			        var endTime = new Date(str);
+			         
+				function counter(endTime) { 
+				   var date = new Date();
+	
+				   /*转换成秒*/ 
+				   var time = (endTime - date) / 1000; 
+	
+				   var day = Math.floor(time / (24 * 60 * 60));
+
+				   var hour = Math.floor(time % (24 * 60 * 60) / (60 * 60));
+				   
+				   var minute = Math.floor(time % (24 * 60 * 60) % (60 * 60) / 60); 
+	
+				   // var second = Math.floor(time % (24 * 60 * 60) % (60 * 60) % 60);
+
+				   var str = day + "天" + hour + "时" + minute + "分";
+				   $("#remainingTime").text(str);
+				} 
+
+			   setInterval(function(){counter(endTime);}, 1000); 
+				 
+				//提交
+				 $(".delaySubmit").unbind().on("click",function(){
+					 var delay_time=$("input[type='radio']:checked").val();
+
+					 if(delay_time){
+						 if(delay_time==0){
+							 delay_time=$("#customMin").val();
+                             var r = /^\+?[1-9][0-9]*$/;
+                             var flag=r.test(delay_time);
+                             if(flag){
+							 }else{
+								 base.confirm({ 
+							    	  label:"提示",
+							    	  text:"<div style='text-align:center;font-size:13px;'>请输入正确的分钟数！</div>",
+						              confirmCallback:function(){}
+								 });
+								 return;
+                             }
+                         }
+						 var parmas={
+						    "confId":confId,
+							"delay_time":delay_time	 
+						 }
+						 var requestTip=base.requestTip({position:"center"});
+						 $.ajax({ 
+				               type: "post",
+				               url:  $.base + "/liveController/extendTime",
+							   data:JSON.stringify(parmas),
+		                       contentType:"application/json",
+				               success: function(data){
+					               switch(data.status){
+						            	 case '1':
+							            	requestTip.success("延时成功！");
+						            		 break;
+					            		 default:
+					            			 requestTip.error("延时失败！");
+					            		     break;
+					            	 }
+                                   extendTime();
+					             },
+					             beforeSend:function(){
+					            	 requestTip.wait();
+					             },
+				            	 error:function(){
+				            		 requestTip.error();
+					             }
+						 });
+					 }
+				 });
+				 
+				//取消
+				 $(".delayCancel").unbind().on("click",function(){
+					 $("input[type='radio']").attr("checked",false);
+		             $("#customMin").val("");
+				 });
+				 
+			 });
+			 
+			//关闭录像
+			 $(".closeVideo").unbind().on("click",function(){
+			   var requestTip=base.requestTip({position:"center"});
+			   $.ajax({ 
+	               type: "post",
+	              // url:  $.base + "/liveController/extendTime",
+				   data:JSON.stringify(parmas),
+                   contentType:"application/json",
+	               success: function(data){
+		               switch(data.status){
+			            	 case '1':
+			            		 requestTip.success("关闭录像成功！");
+			            		 break;
+		            		 default:
+		            			 requestTip.error("关闭录像失败！");
+		            		     break;
+		            	 }
+		             },
+		             beforeSend:function(){
+		            	 requestTip.wait();
+		             },
+	            	 error:function(){
+	            		 requestTip.error();
+		             }
+			    });
+			 });
+			 
+			//退出直播
+			 $(".outLive").unbind().on("click",function(){
+				 base.confirm({ 
+			    	  label:"提示",
+			    	  text:"<div style='text-align:center;font-size:13px;'>确定退出直播吗?</div>",
+		              confirmCallback:function(){
+	            		    var url=$.base+"/loginController/toLiveControlList";
+							$.ajax({ 
+				                type:"GET", 
+				                url:url, 
+				                error:function(){ 
+				                   alert("加载错误！"); 
+				                }, 
+				                success:function(data){
+                                    if(data.indexOf('06a5bb21-b8f0-4dfd-8004-4b4e17d4f81c')!==-1){
+                                        window.location.href=$.base+'/loginController/toLogin'
+                                        return
+                                    }
+                                    $(".middle").html(data);
+				                } 
+				             });
+		              }
+				 });
+			 });
+			 
+			//结束直播
+			 $(".endLive").unbind().on("click",function(){
+               var confId = $("#confId").val();
+               base.confirm({ 
+			    	  label:"提示",
+			    	  text:"<div style='text-align:center;font-size:13px;'>确定结束直播吗?</div>",
+		              confirmCallback:function(){
+		            	  var requestTip=base.requestTip({position:"center"});
+		            	  $.ajax({ 
+				               type: "post",
+				               url:  $.base + "/liveController/endLive",
+							   data:JSON.stringify({confId:confId}),
+							   dataType:'json',
+			                   contentType:"application/json",
+				               success: function(data){
+						            	if(data.status=='1'){
+						            		 requestTip.success("结束直播成功！");
+						            		 var url=$.base+"/loginController/toLiveControlList";
+												$.ajax({ 
+									                type:"GET", 
+									                url:url, 
+									                error:function(){ 
+									                   alert("加载错误！"); 
+									                }, 
+									                success:function(data){
+                                                        if(data.indexOf('06a5bb21-b8f0-4dfd-8004-4b4e17d4f81c')!==-1){
+                                                            window.location.href=$.base+'/loginController/toLogin'
+                                                            return
+                                                        }
+                                                        $(".middle").html(data);
+									                } 
+									             });
+						            	}else{
+						            		 requestTip.error("结束直播失败！");
+						            	}
+					            },
+				               beforeSend:function(){
+				            	 requestTip.wait();
+				               },
+			            	   error:function(){
+			            		 requestTip.error();
+				               }
+						    });
+		              }
+				 });
+			 });
+			 
+			//点击会场记录
+			 $(".recordIcon").unbind().on("click",function(){
+				 $(".record").removeClass("disNone");
+				 $(".record").siblings().addClass("disNone");
+				 $("#tblRecord").dataTable().fnDestroy();
+				 setTableRecord();
+			 });
+			 //点击申请发言
+			 $(".applySpeak").unbind().on("click",function () {
+                 hospitalsName = $("#userName").text() //获取当前医院
+			 	 var message=hospitalsName+"申请发言！";
+				 message=JSON.stringify({'message':message});
+				 ws.send(message);
+             });
+             //点击申请直播延时
+             $(".applyExtendTime").unbind().on("click",function () {
+                 hospitalsName = $("#userName").text() //获取当前医院
+                 var message=hospitalsName+"申请直播延时！";
+                 message=JSON.stringify({'message':message});
+                 ws.send(message);
+             });
+		 }
+		 
+		    var dragObj = null;
+			var x = -100;
+			var y = -100;
+			var touchView = null;
+			var isOnly = true;
+			var errorStr = "不能重复添加";
+			var errorStr2 = "已存在参与者";
+			document.body.onselectstart = document.body.ondrag = function(){
+				return false;
+			};
+
+			var initDrag = function(obj){
+				$(".dragObj").remove();
+				dragObj = document.createElement("div");
+				$(dragObj).addClass("dragObj");
+				$(dragObj).css("position","absolute");
+				$(dragObj).css("z-index","1001");
+				$(dragObj).attr("uid",$(obj).attr("uid"));
+				$(dragObj).attr("uv",$(obj).attr("uv"));
+				resetDrag();
+				$(dragObj).html("<i class='fa fa-user-circle'></i>"+$(obj).attr("uv"));
+				$("body").append(dragObj);
+				$(document).unbind("mouseup").on("mouseup",function(event){
+					$(obj).css("cursor","default");
+					$("body").css("cursor","default");
+					$(document).unbind("mousemove");
+					resetDrag();
+					if(touchView){
+						var viewContent = $(touchView).find(".viewContent");
+						$(touchView).find(".viewButtonbar").show();
+						var uid = $(dragObj).attr("uid");
+						var uv = $(dragObj).attr("uv");
+						if(isOnly){
+							if(viewContent.find("span").length==0){
+								viewContent.children("div:eq(0)").append("<span class='userItem' uid='"+uid+"' uv='"+uv+"'><i class='fa fa-user-circle' style='margin-right:5px;'></i>"+uv+
+							"<input type='hidden' value='"+uid+"' name='hv'/></span>");	
+							}else{
+								alert(errorStr2);
+							}
+						}else{
+							if(viewContent.find("span[uid='"+uid+"']").length==0){
+								viewContent.children("div:eq(0)").append("<span class='userItem' uid='"+uid+"' uv='"+uv+"'><i class='fa fa-user-circle' style='margin-right:5px;'></i>"+uv+
+							"<input type='hidden' value='"+uid+"' name='hv'/></span>");	
+								//alert("添加成功");
+							}else{
+								alert(errorStr);
+							}
+						}
+						
+						touchView = null;
+					}
+				});
+			};
+			var resetDrag = function(){
+				$(dragObj).css("left",x);
+				$(dragObj).css("top",y);
+				$(".itemView").removeClass("active");
+			};
+			var collision = function(a, b) {
+			    var ax = a.offsetLeft;
+			    var ay = a.offsetTop;
+			    var aw = a.offsetWidth;
+			    var ah = a.offsetHeight;
+			    var bx = b.offsetLeft;
+			    var by = b.offsetTop;
+			    var bw = b.offsetWidth;
+			    var bh = b.offsetHeight;
+			    return (ax + aw > bx && ax < bx + bw && ay + ah > by && ay < by + bh);
+			};
+			var setDrag = function(obj,event){
+				setPos(event);
+				$(document).unbind("mousemove").on("mousemove",function(event){
+					var event = arguments.callee.caller.arguments[0] || window.event;
+					window.setTimeout(function(){
+						setPos(event);
+						var touchObj =  event.target || event.srcElement;
+						if($(touchObj).hasClass("itemView")){
+							$(".itemView").removeClass("active");
+							$(touchObj).addClass("active");
+							touchView = $(touchObj);
+						}else if($(touchObj).parents(".itemView").length>0){
+							$(".itemView").removeClass("active");
+							$(touchObj).parents(".itemView").addClass("active");
+							touchView = $(touchObj).parents(".itemView");
+						}else{
+							touchView = null;
+						}
+					},100);
+					
+				});
+			};
+			var setHiddenValue = function(){
+				
+			};
+			var mouseCoords= function(event){ 
+				
+				if(event.pageX || event.pageY){ 
+					return {x:event.pageX, y:event.pageY}; 
+				}else{
+					return {x:0,y:0};
+				}
+			};
+			
+			var setPos= function(event) {
+			  var pos = mouseCoords(event);
+			  var intX = pos.x;
+			  var intY = pos.y;
+			  $(dragObj).css("left", intX -20 + "px");
+			  $(dragObj).css("top",intY-$(dragObj).height()-24 + "px");
+			  
+			};
+			function dragBannerDiv(){
+				$(".detailBannerLi").unbind("mousedown").on("mousedown",function(event){
+					var synthesisStatus=$(".imageView .synthesis").css("display");
+					var screenStatus=$(".imageView .screen").css("display");
+					if(synthesisStatus=="block"||screenStatus=="block"){
+						event.stopPropagation();
+						initDrag(this);
+						setDrag(this,event);
+						$(this).css("cursor","move");
+						$("body").css("cursor","move");
+						setDeleteDrag();
+					}
+				});
+			};
+			
+			function setDeleteDrag(){
+				$(".fa-trash-o").unbind("click").on("click",function(){
+					$(this).parent().css("display","none");
+					$(this).parent().next().find("div").empty();
+				});
+			}
+		 
+		return {
+			run:function(){
+				setLiveRoom();
+				userId();
+				setTableRecord();//设置会场记录
+				setChange();//设置点击切换
+			}
+		};
+})

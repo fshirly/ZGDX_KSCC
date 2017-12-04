@@ -1,0 +1,234 @@
+define(["base"],function(base){
+	var modal;
+	function add0(m){return m<10?'0'+m:m }
+	function formatDate(data) {
+        var time = new Date(data);
+        var year=time.getFullYear();
+        var month=time.getMonth()+1;
+        var date=time.getDate();
+        var hour=time.getHours();
+        var minute=time.getMinutes();
+        var second=time.getSeconds();
+        return year+'-'+add0(month)+'-'+add0(date)+' '+add0(hour)+':'+add0(minute);
+    }
+	
+	function setScroll(){
+		base.scroll({
+            container:".calDiv"
+        })
+	}
+	
+	//获得医院列表数据
+	function setTree(){
+		$.ajax({
+			   type: "GET", 
+               async: true, 
+               url:  $.base + "/hospital/selectHospitalInfo", 
+               dataType: "json",
+               success: function(data){
+            	   setZtree(data);//渲染医院列表
+               }
+	      });
+	}
+	var setting = {
+			view: {
+				selectedMulti:true,	
+			},
+			data: {
+				simpleData: {
+					enable: true,
+					pIdKey: "pid"
+				}
+			},
+			callback: {
+	            onClick: zTreeOnClick
+	        }
+	  };
+	function setZtree(zNodes,startTime,endTime){
+		require(["bootstrap","ztreeCore","ztreeExcheck","ztreeExedit"],function(){
+			$.fn.zTree.init($("#treeDemo2"), setting, zNodes);
+			treeObj = $.fn.zTree.getZTreeObj("treeDemo2");
+			treeObj.expandAll(true); 
+			searchTree();
+			setSearchEnter();
+		});
+	}
+	function  zTreeOnClick(event, treeId, treeNode){
+		var calenId;
+		var sNodes = treeObj.getSelectedNodes();
+		if(sNodes){
+			if (sNodes.length > 0) {
+				var node = sNodes[0].getParentNode();
+				if(node){
+					calenId=node.id;//获得医院的id
+				}else{
+					calenId=treeNode.id;//获得医院的id
+				}
+			}
+			getCalData(calenId);
+		}
+    }
+	
+	//根据医院id获得对应的直播日程
+	function getCalData(calenId){
+		$.ajax({
+			type: "GET", 
+            url:  $.base + "/broadcastMeeting/getBroadcastForSchedule/"+calenId, 
+            contentType:"application/json",
+            success: function(data){
+            	$.each(data,function(i,v){
+            		v.start=formatDate(v.start);
+            		v.end=formatDate(v.end);
+            	});
+            	setResourceCal(data);//加载资源日历
+            }
+	      });
+	}
+	
+	var calendar=null;
+	//加载资源日历    
+	function setResourceCal(data){
+		setScroll();//设置日历高度
+		if(calendar){
+			calendar.redraw(data);
+		}else{
+			calendar=base.calendar({
+				container:$("#resourceCal"),
+				data:data,
+				clickEvent:function(data){
+					var liveId=data.id;
+			        setModal(liveId);
+				},
+				calendarOption:{
+					header:{
+						left: 'prev,next today',
+						center: 'title',
+						right: null
+					},
+					weekNumbers: false
+				}
+			});
+		}
+	};
+
+	function searchTree(){
+		$("#searchBtnModel").off().on("click",function(){
+			setSearchModal();
+		});
+	}
+	
+	function setSearchEnter(){
+		$("#searchParticipantModal").keydown(function(e){
+		    var ev= window.event||e;
+		    //13是键盘上面固定的回车键
+		    if (ev.keyCode == 13) {
+		    	setSearchModal();//执行搜索方法
+		    }
+		  });
+	}
+	
+	function setSearchModal(){
+		$.ajax({
+        	url:$.base+"/hospital/findAllHospitalAndUser",
+        	type:"POST",
+        	contentType:"application/json",
+            dateType:"json",
+            data:JSON.stringify(
+                {
+                    "searchCon":$("#searchParticipantModal").val()
+                }
+			),
+        	success:function(data){
+            	 setZtree(data);//渲染医院列表
+        	},
+        	error:function(data){}
+		});
+	}
+	
+	function clickRootTree(){
+		$(".calList").off().on("click",function(){
+			getCalData(0);//加载所有日历
+		});
+	}
+	
+	
+	//直播详情模态框
+	function setModal(liveId){
+		modal=base.modal({
+			width:760,
+			height:480,
+			label:"直播详情",
+			url:$.base+"/loginController/toResourceModal",
+			callback:function(){
+				viewLiveDetail(liveId);//模态框直播详情
+			},
+			buttons:[ 
+			            { 
+			               label:"关闭", 
+			               cls:"btn btn-info", 
+			               clickEvent:function(){ 
+			            	   modal.hide();
+			               }
+				        }
+			         ]
+		});
+	}
+	
+	function viewLiveDetail(liveId) {
+        $.ajax({
+            type: "GET",
+            async: false,
+            url: $.base + "/liveBroadCastController/getLiveDetail/" + liveId,
+            contentType: "application/json",
+            success: function (data) {
+                var value = data.filePath;
+                var fileName = data.fileName;
+                $('#a1').attr('href', '../fileUpload/download?fileUrl=' + value + '&fileName=' + fileName);
+                $("#liveNameView").text(data.title);//直播名称
+                $("#liveNameView").attr("title", data.title);
+                $("#liveStartTimeView").text(formatDate(data.startTime));//直播开始时间
+                $("#liveEndTimeView").text(formatDate(data.endTime));//直播结束时间
+                $("#departmentView").text(data.departmentName);//科室名字
+                $("#phoneView").text(data.phone);//联系方式
+                $("#emailView").text(data.email);//邮箱地址
+                $("#hospitalURLView").text(data.hospitalWebsite);//医院网址
+                $("#hospitalURLView").attr("title", data.hospitalWebsite);
+                $("#liveIntroductionView").text(data.liveIntroduction);//直播简介
+                $("#liveIntroductionView").attr("title", data.liveIntroduction);
+
+                $("#enclosureView").text('');//附件
+                var aElement = $('#a1')
+                if (value) {
+                    aElement.attr('href', $.base + '/fileUpload/download?fileUrl=' + value + '&fileName=' + fileName);
+                    aElement.attr("title", fileName);
+                    aElement.html(fileName);
+                } else {
+                	aElement.attr('href','#');
+                    aElement.html("无附件");
+                    aElement.attr('title','');
+                    aElement.css({"cursor":"default","color":"rgb(69, 69, 69)"});
+                }
+
+                var hostParams = data.participants;//参与方数据
+                $("#liveParticipantView").empty();
+                $.each(hostParams, function (i, v) {
+                    if (v.serialNumber == 1) {
+                        $("#liveParticipantView").append("<li att='" + v.id + "' class='participantsLi'><span class='iconfont iconfontList'>&#xe61e;</span><span class='controlParti' title='" + v.hospitalName + "'>" + v.hospitalName + "</span><span class='iconfont iconfontImg' style='color:#ee453b;' title='第一主持人'>&#xe61c;</span></li>");
+                    } else if (v.serialNumber == 2) {
+                        $("#liveParticipantView").append("<li att='" + v.id + "' class='participantsLi'><span class='iconfont iconfontList'>&#xe61e;</span><span class='controlParti' title='" + v.hospitalName + "'>" + v.hospitalName + "</span><span class='iconfont iconfontImg' title='第二主持人'>&#xe61c;</span></li>");
+                    } else {
+                        $("#liveParticipantView").append("<li att='" + v.id + "' class='participantsLi'><span class='iconfont iconfontList'>&#xe61e;</span><span class='controlParti' title='" + v.hospitalName + "'>" + v.hospitalName + "</span></li>");
+                    }
+                });
+            }
+        });
+    }
+	
+	return {
+		run:function(){
+			setTree();
+			getCalData(0);//加载所有日历
+			clickRootTree();
+		}
+	};
+});

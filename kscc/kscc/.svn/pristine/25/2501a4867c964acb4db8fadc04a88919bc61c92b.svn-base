@@ -1,0 +1,58 @@
+package com.fable.kscc.bussiness.service.enrollMedT;
+
+import com.fable.kscc.api.medTApi.AuthenticThread;
+import com.fable.kscc.api.medTApi.MedTApi;
+import com.fable.kscc.api.utils.ThreadPoolUtils;
+import com.fable.kscc.api.utils.XmlGenerator;
+import com.fable.kscc.bussiness.mapper.livecodec.LiveCodecMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+
+/**
+ * @auther jiangmingjun
+ * @create 2017/10/25
+ * @description 系统重启之后重新开启鉴权线程
+ */
+@Service
+public class MEDTInit {
+
+    @Autowired
+    private LiveCodecMapper liveCodecMapper;
+
+    @Autowired
+    private MedTApi api;
+
+    private ExecutorService service = ThreadPoolUtils.getThreadPool();
+
+    private Logger logger = LoggerFactory.getLogger(MEDTInit.class);
+
+    @PostConstruct
+    public void init() {
+        List<Map<String,String>> loginQueue = liveCodecMapper.selectMedTProperties();
+        for (Map<String, String> login:loginQueue){
+            initMedT100(login);
+        }
+    }
+
+    public void initMedT100(Map<String, String> login){
+        login.put("authenticationid", api.getAuthenticationId(login));
+        XmlGenerator.generateRequestRoot(login);
+        api.Login(login);
+        api.SetSysTimeInfo(login);
+        try{
+            Runnable runnable = new AuthenticThread(login, api);
+            MedIdThreadMap.map.put(login.get("id"), runnable);
+            service.execute(runnable);
+        }catch (Exception e) {
+            logger.error("鉴权线程出错："+e);
+            e.printStackTrace();
+        }
+    }
+}

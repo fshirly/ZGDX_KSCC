@@ -1,0 +1,48 @@
+package com.fable.kscc.bussiness.controller.fbmenu;
+
+import com.fable.kscc.api.model.menu.FbsMenu;
+import com.fable.kscc.bussiness.service.fbmenu.FbsMenuService;
+import org.apache.http.HttpRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@RequestMapping("/FbsMenuController")
+@Controller
+public class FbsMenuController {
+    @Autowired
+    private FbsMenuService fbsMenuService;
+
+    /**
+     * 根据kscc管理员查看菜单(权限)
+     * @return
+     */
+    @RequestMapping("/findAllByRole")
+    @ResponseBody
+    public List<FbsMenu> findAllByRole(HttpServletRequest request){
+        String userId = request.getParameter("id");
+        return fbsMenuService.findAllByRole(userId);
+    }
+
+    /**
+     * 根据kscc管理员查看菜单(权限)
+     * @return
+     */
+    @RequestMapping(value = "/updateMenuByRole",produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public boolean updateMenuByRole(final String id){
+        int num = fbsMenuService.updateMenuByRole(new HashMap<String, Object>(){{put("ids",id);}});
+        if(num >0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+}

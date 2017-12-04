@@ -1,0 +1,453 @@
+define(["base","datatables.net","commonUtil","app/commonApp"],function(base,DataTable,commonUtil,common){
+	    var grid = null;
+        /*
+        * 定义一个数组对象 存放已经选中的直播选择
+        *   格式：{liveId:"liveId",name:"name"}
+        */
+        var liveArr = new Array();
+	    function getImgData(){
+	    	$.ajax({
+	            type:"post",
+	            async: false,
+	            url:$.base+"/liveBroadCastController/selectHomePage",
+	            success:function (data) {
+	            	   if(data.status==1){
+						   var res = data.data;
+						   if(res.length>0){
+							   $.each(res,function(index,item){
+								   var imgUrl = "";
+								   item.imageUrl!=null?imgUrl=$.base+"/loginController/showPic?name="+item.imageUrl : imgUrl=$.base+"/images/no-image.png";
+								   $(".uploadDiv:eq("+index+")").find("form").attr("editStatus",1);
+								   $(".uploadDiv:eq("+index+")").find(".imgPreview img").attr({"dataId":item.id,"src":imgUrl,"imgName":item.imageName,"imgUrl":item.imageUrl,"flag":1});
+								   $(".uploadDiv:eq("+index+")").find("select[name='liveChoose']").attr("disabled",true).prepend("<option value='"+item.liveId+"' id='"+item.liveId+"' selected='true'>"+item.title+"</option>");
+								   $(".uploadDiv:eq("+index+")").find("input[name='networkUrl']").attr("disabled",true).val(item.networkUrl);
+								   $(".uploadDiv:eq("+index+")").find("label.btnUpload,input").attr("disabled",true);
+								   $(".imgSubmit:eq("+index+")").html("修改");
+								   $(".imgCancel:eq("+index+")").html("清空").attr({"url":imgUrl,"imgName":item.imageName,"liveId":item.liveId,"networkUrl":item.networkUrl,"imgUrl":item.imageUrl});
+							   		liveArr[index] = {"liveId":item.liveId,"name":item.title};
+							   });
+							   amplifyImage();
+						   }
+					   }
+	            }
+			});
+	    }
+	    
+		function getUserId(){
+			$.ajax({
+	            type:"post",
+	            async: false,
+	            url:$.base+"/liveBroadCastController/getUserId",
+	            success:function (data) {
+	            	$("input[name='createId']").val(data.id);
+	            }
+			});
+		};
+	
+	function imgView(imgInput,imgDiv){
+		$("#"+imgInput).change(function(){
+			var imgPreview=document.getElementById(imgInput);
+			PreviewImage(imgPreview, null,imgDiv);
+		});
+	}
+	
+	// function  getModel(){
+	// 	$("a[type='button']").on("click",function(){
+	// 		var _this = this;
+	// 		$(this).attr({"data-toggle":"modal","data-target":"#selectLiveModal"});
+	// 		var selectId=$(this).next();
+	// 		var selectTxt=$(this).next().next();
+	// 		//清空
+	// 		$("#tLiveSelect").html("");
+	// 		var tableContent = "";
+	// 		$("#selectLiveModal").on("shown.bs.modal",function(){
+	// 			tableContent = '<table id="tblLiveSelect_'+$(_this).attr("num")+'" class="table table-striped kscc-grid"></table>';
+	// 			$("#tLiveSelect").html(tableContent);
+	// 			setTable(selectId,selectTxt,$(_this).attr("num"));
+	// 		});
+	// 	});
+	// }
+	
+	 // function setTable(selectId,selectTxt,value){
+		//  grid = $("#tblLiveSelect_"+value+"").DataTable({
+		// 		"searching":false,
+		// 		"lengthChange":false,
+		// 		"autoWidth":false,
+		// 		"serverSide":true,
+		// 		"paging":true,
+		// 		"ordering":false,
+		// 		"language":{"url":$.base+"/js/lib/chinese.json"},
+		// 		"ajax":{
+		// 		"type":"post",
+	 //            "url":$.base+"/liveBroadCastController/getSelectBroadcast",
+		// 		"contentType":"application/json",
+		// 		"dataType":"json",
+		// 		"data": function ( d ) {
+		//                var params={
+		//             		   "pageNo": d.start/d.length+1,
+		//             		   "pageSize": d.length,
+		// 					   "param": {
+		// 						   "title" : $('#searchLive').val()
+		// 						}
+		//                };
+		//               return JSON.stringify(params);
+		//             }
+		// 		},
+		// 		"columns":[
+		// 		           {"title":"","sWidth":"15%"},
+		// 		           {"title":"直播名称", "data":"title","sWidth":"85%"}
+		// 		           ],
+	 //           "columnDefs":[
+		// 					{
+		// 					    "render":function(data,type,row,meta){
+		// 					    	var html = "<input type='radio' name='result' value='"+row.id+"' att='"+row.title+"'>";
+		// 						       $("input[name='result']").parent().addClass("text-center");
+		// 						    return html;
+		// 					    },
+		// 					    "targets":0
+		// 					 }
+		// 	              ],
+		// 		"drawCallback":function(setting){
+		// 			//选择
+		// 			$(".saveSelect").unbind().on("click",function(){
+		// 				var selectLiveId=$("input[name='result']:checked").val();
+		// 				var selectLiveName=$("input[name='result']:checked").attr("att");
+		// 				selectId.val(selectLiveId);
+		// 				selectTxt.text(selectLiveName);
+		// 				$("#selectLiveModal").modal('hide');
+		// 			})
+		// 		}
+		//    });
+	 // }
+	//设置下拉框 input框的宽度
+	function setFormWidth(){
+		$(".left-input-box input,.left-input-box select").width(function(){
+			var width = $(this).parent(".form-inline").width()-150;
+			return width;
+		});
+	}
+	 //设置直播选择
+	function setLiveChoose(pos){
+		if(pos){
+			$("select[name='liveChoose']:eq("+(pos-1)+")").html("");
+		}else{
+			$("select[name='liveChoose']").html("");
+		}
+		$.ajax({
+			type:"POST",
+			url:$.base+"/liveBroadCastController/getSelectBroadcast",
+			dataType:"json",
+			data:function ( d ) {
+				var params={
+					"param": {
+						"title" : $('#searchLive').val()
+					}
+				};
+				return JSON.stringify(params);
+			},
+			error:function(){
+				alert("出错了！");
+			},
+			success:function(data){
+				if(data.status==1){
+					var res = data.data;
+					if(res.length>0){
+						var options = "";
+						// if(liveArr.length>index){
+						// 	 options = "<option value='"+liveArr[index].id+"' id='"+liveArr[index].id+"'>"+liveArr[index].title+"</option>";
+						// }
+						$.each(res,function(index,item){
+							options += "<option value='"+item.id+"' id='"+item.id+"'>"+item.title+"</option>";
+						});
+						if(pos){
+							$("select[name='liveChoose']:eq("+(pos-1)+")").append(options);
+						}else{
+							$("select[name='liveChoose']").append(options);
+						}
+					}
+				}else{
+					base.requestTip({
+						position:"center"
+					}).success(data.tips);
+				}
+			}
+		})
+
+	}
+
+	 function setImgSubmit(){
+		 setUploadDiv("imgSubmitFirst");
+		 setUploadDiv("imgSubmitSecond");
+		 setUploadDiv("imgSubmitThree");
+		 setUploadDiv("imgSubmitForth");
+	 }
+	 //提交
+	 function setUploadDiv(uploadBtn){
+		 $("#"+uploadBtn).off().on("click",function(){
+			 var _this = this;
+			 var parents = $(this).parents("form");
+			 if($(this).html()=="提交"){
+				 if($(parents).attr("editStatus")!=1&&(!$(parents).find("input[type='file']").val()||!$(parents).find("select").val())){
+					 var tips = "";
+					 if(!$(parents).find("input[type='file']").val()){
+						 //如果没有图片
+						 tips = "请先上传图片！";
+					 }else if(!$(parents).find("select").val()){
+						 //如果没有直播选择的数据
+						 tips = "没有可选择的直播，请先新建直播申请";
+ 					 }
+					 var modal = base.modal({
+						 label: "提示",
+						 context: "<div style='text-align:center;font-size:13px;'>"+tips+"</div>",
+						 width: 250,
+						 height: 80,
+						 buttons: [
+							 {
+								 label: "确定",
+								 cls: "btn btn-info",
+								 clickEvent: function () {
+									 modal.hide();
+								 }
+							 }
+						 ]
+					 });
+				 }else{
+					 var index = Number($(this).attr("num"));
+					 var oldImg = $(".imgPreview:eq("+index+") img").attr("imgName")?$(".imgPreview:eq("+index+") img").attr("imgName"):"";
+					 var params={
+						 "id":$(".imgPreview:eq("+index+") img").attr("dataId"),
+						 "imageName": $(".imgPreview:eq("+index+") img").attr("imgName")?$(".imgPreview:eq("+index+") img").attr("imgName"):"",
+						 "imageUrl": $(".imgPreview:eq("+index+") img").attr("imgUrl")?$(".imgPreview:eq("+index+") img").attr("imgUrl"):"",
+						 "creatorId": $("input[name='createId']").val(),
+						 "networkUrl":$("input[name='networkUrl']:eq("+index+")").val(),
+						 "liveId":$("select[name='liveChoose']:eq("+index+") option:selected").attr("id")
+					 }
+					 $.ajax({
+						 type:"post",
+						 url:$.base+"/liveBroadCastController/addHomePicture",
+						 contentType:"application/json",
+						 data:JSON.stringify(params),
+						 success:function (data){
+							 if(data.status==="1"){
+								 $(_this).html("修改");
+								 // setLiveChoose(index);//直播选择
+								 base.requestTip({
+									 position:"center"
+								 }).success("首页图片设置成功！");
+								 setTimeout(function(){
+									 backHome();
+								 },500);
+							 }
+						 }
+					 });
+				 }
+
+			 }else if($(this).html()=="修改"){
+				 $(this).parents("form").find("label.btnUpload,input,select").removeAttr("disabled");
+				 $(this).parents("form").find(".imgCancel").html("取消");
+				 $(this).html("提交");
+			 }
+		 })
+	 }
+	 //返回首页
+	function backHome(){
+		$.ajax({
+			type:"GET",
+			url:$.base + "/loginController/toHomePage",
+			error:function(){
+				alert("加载错误！");
+			},
+			success:function(data){
+				$("#topLi li").removeClass("active");
+				$("#topLi li:eq(0)").addClass("active");
+				if(data.indexOf('06a5bb21-b8f0-4dfd-8004-4b4e17d4f81c')!==-1){
+					window.location.href=$.base+'/loginController/toLogin'
+					return;
+				}
+				$(".middle").html(data);
+			}
+		});
+	}
+
+	//取消/清空
+	 function setCancel(){
+		 $(".imgCancel").off().on("click",function(){
+			 var _this = this;
+			 if($(this).html()=="清空"){
+				 var modal = base.modal({
+					 label: "提示",
+					 context: "<div style='text-align:center;font-size:13px;'>确定清空该设置吗？</div>",
+					 width: 250,
+					 height: 80,
+					 buttons: [
+						 {
+							 label: "确定",
+							 cls: "btn btn-info",
+							 clickEvent: function () {
+								 //清空设置接口
+								 $(_this).parents("form").find("label.btnUpload,input,select").removeAttr("disabled");
+								 $(_this).siblings(".imgSubmit").html("提交");
+								 //清空图片
+								 $(_this).parents("form").find(".imgPreview img").attr("src",$.base+"/images/no-image.png");
+								 //清空直播选择
+								 setLiveChoose($(_this).attr("pos"));
+								 //清空url链接
+								 $(_this).parents("form").find("input[name='networkUrl']").val("");
+
+								 $(_this).html("取消");
+								 modal.hide();
+							 }
+						 },{
+							 label:"取消",
+							 cls:"btn btn-warning",
+							 clickEvent:function(){
+								 modal.hide();
+							 }
+						 }
+					 ]
+				 });
+			 }else if($(this).html()=="取消"){
+				 var imgSrc = $(this).attr("url")?$(this).attr("url"):$.base+"/images/no-image.png";
+				 var imgName = $(this).attr("imgName")?$(this).attr("imgName"):"";
+				 var imgUrl = $(this).attr("imgUrl")?$(this).attr("imgUrl"):"";
+				 var liveId = $(this).attr("liveId")?$(this).attr("liveId"):"";
+				 var networkUrl = $(this).attr("networkUrl")?$(this).attr("networkUrl"):"";
+				 //按钮恢复原来状态
+				 $(this).html("清空");
+				 $(this).parents("form").find("label.btnUpload,input,select").attr("disabled",true);
+				 $(this).parents("form").find(".imgSubmit").html("修改");
+				 //背景恢复之前的图片
+				 $(this).parents("form").find(".imgPreview img").attr({"src":imgSrc,"imgName":imgName,"imgUrl":imgUrl});
+				 $(this).parents("form").find(".btn-box input").val("");
+				 //下拉框选中之前的选项
+				 $(this).parents("form").find("select[name='liveChoose']").val(liveId);
+				 //url链接
+				 $(this).parents("form").find("input[name='networkUrl']").val(networkUrl);
+			 }
+		 });
+	 }
+	 //上传图片
+	function fileInputClick(){
+		$("label.btnUpload").unbind().on("click",function(){
+			setImageUpload($(this).attr("box"),$(this).attr("for"));
+		})
+	}
+
+	function imgValidate(box){
+
+	}
+	//上传图片接口
+	function uploadImages(pictureView,id){
+		base.form.fileUpload({
+			url: $.base + "/loginController/upload",
+			id: id,
+			success: function (data) {
+				if (data.status == "1") {
+					var picturePath = data.data.fileUrl ? data.data.fileUrl : $("#" + pictureView).attr("imgUrl");
+					var pictureName = data.data.fileName ? data.data.fileName : $("#" + pictureView).attr("imgName");
+					$("#" + pictureView).attr({
+						"src": $.base + "/loginController/showPic?name=" + picturePath,
+						"imgName": pictureName,
+						"imgUrl": picturePath,
+						"flag": 1
+					})
+					base.requestTip({
+						position: "center"
+					}).success("附件上传成功！");
+					amplifyImage();
+					// $("#"+input).replaceWith('<input type="file" class="form-control form-width" name="file" id ="'+input+'" accept="image/jpg,image/png" />');
+				}
+			}
+		});
+	}
+    /**上传图片**/
+    function setImageUpload(pictureView,id){
+        $("#"+id).unbind().on("change",function() {
+			//校验图片格式
+			if(!base.form.validateFileExtname($("#"+id),"png,jpg")){
+				base.requestTip({position:"center"}).error("文件格式不正确");
+				return;
+			}
+			//校验图片大小
+			var img = $("#"+id)[0].files[0];
+			var reader = new FileReader();
+			reader.readAsDataURL(img);
+			reader.onload = function(theFile) {
+				debugger
+				var image = new Image();
+				image.src = theFile.target.result;
+				image.onload = function() {
+					if(this.width!=1140||this.height!=380){
+						var modal = base.modal({
+							label: "提示",
+							context: "<div style='text-align:center;font-size:13px;'>建议上传宽度为1024px且高度为600px的图片，确定继续上传吗？</div>",
+							width: 250,
+							height: 80,
+							buttons: [
+								{
+									label: "确定",
+									cls: "btn btn-info",
+									clickEvent: function () {
+										uploadImages(pictureView,id);
+										modal.hide();
+									}
+								},{
+									label:"取消",
+									cls:"btn btn-warning",
+									clickEvent:function(){
+										modal.hide();
+									}
+								}
+							]
+						});
+					}
+				};
+			};
+
+		})
+	};
+	//放大图片
+	function amplifyImage(){
+		$(".imgPreview img").unbind().on("click",function(){
+			var url = $(this).attr("src");
+			var flag =  $(this).attr("flag");
+			if(flag!=0){
+				var url = $(this).attr("src");
+				$("#imgModal").find(".modal-dialog").css("margin-top",0);
+				$("#imgModal").find(".amplify-img").attr("src",url);
+				$("#imgModal").modal("show").on("shown.bs.modal",function(){
+					var top = [parseInt($(window).height())-parseInt($("#imgModal .modal-dialog").height())]/2;
+					if(top>100){
+						$(this).find(".modal-dialog").animate({
+							"marginTop": (top-60) + "px"
+						},200);
+					}
+
+				});
+			}
+		});
+	}
+	//滚动条设置
+	function setScroll(){
+		var height = parseInt($(".middleContent").height()-15) * 0.5;
+		$(".uploadPictures").height(height);
+		$(".uploadPictures .uploadDiv").css({"padding-top":(height-196)/2,"padding-bottom":(height-196)/2});
+		base.scroll({
+			container:".middleContent"
+		})
+	}
+
+	return {
+		run:function(){
+			setFormWidth();
+			getUserId();
+			// getModel();
+			setImgSubmit();
+			setCancel();//取消
+			setLiveChoose();//直播选择
+			fileInputClick();//上传图片
+			getImgData();
+			setScroll();
+		}
+	};
+});

@@ -1,0 +1,151 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+ request.setCharacterEncoding("UTF-8");
+%>
+	<style>
+	input[type=file]{
+	display:inline-block;
+	}
+	button{
+	    background: #fff;
+	    width: 40px;
+	    height: 45px;
+	    border:0;
+	    }
+	</style>
+	      <div class="middleContent" style="height:100%;">
+			  <div class="uploadPictures">
+			      <div class="col-xs-6 col-sm-6 col-md-6 uploadDiv">
+			       <form role="form" id="uploadPicFormFirst" method="post" enctype="multipart/form-data" action="${pageContext.request.contextPath}/liveBroadCastController/addHomePicture">
+			         <input type="hidden"  name="createId"/>
+			         <div class="text-right">
+				        <button type="submit" class="imgSubmitFirst"><i class="iconfont" title="提交" style="font-size:36px;">&#xe648;</i></button>
+			            <button type="button" class="imgCancelFirst" style="margin-left:15px;"><i class="iconfont" title="取消" style="font-size:36px;">&#xe99c;</i></button>
+					 </div>
+			         <div style="margin-top:60px;margin-bottom:5px;">
+						<label class="text-center" for="pictureInputFirst">上传图片:</label>
+						<input type="file" class="form-control form-width" name="picture" id ="pictureInputFirst" value="" accept="image/jpg,image/png" />
+						<div id="imgPreviewFirst" class="imgPreview"></div>
+					 </div>
+					 <div style="margin-bottom:5px;">
+					    <label class="text-center">直播选择:</label>
+					    <a type="button" class="selectBtnFirst">直播选择</a>
+					    <input type="hidden"  name="liveId"/>
+					    <label class="selectTxtFirst"></label>
+					 </div>
+			         <div style="margin-bottom:5px;">
+			            <label class="text-center" for="networkUrl">URL链接:</label>
+					    <input type="text" class="form-control form-width" name="networkUrl" id ="networkUrl" value="" />
+					 </div>
+					 </form>
+			      </div>
+			      <div class="col-xs-6 col-sm-6 col-md-6 uploadDiv">
+			         <form role="form" id="uploadPicFormSecond" method="post" enctype="multipart/form-data" action="${pageContext.request.contextPath}/liveBroadCastController/addHomePicture">
+			         <input type="hidden"  name="liveId"/>
+			         <input type="hidden"  name="createId"/>
+			         <div class="text-right">
+				        <button type="submit" class="imgSubmitSecond"><i class="iconfont" title="提交" style="font-size:36px;">&#xe648;</i></button>
+			            <button type="button" class="imgCancelSecond" style="margin-left:15px;"><i class="iconfont" title="取消" style="font-size:36px;">&#xe99c;</i></button>
+					 </div>
+			         <div style="margin-top:60px;margin-bottom:5px;">
+						<label class="text-center" for="pictureInputSecond">上传图片:</label>
+						<input type="file" class="form-control form-width" name="picture" id ="pictureInputSecond" value="" accept="image/jpg,image/png" />
+						<div id="imgPreviewSecond" class="imgPreview"></div>
+					 </div>
+					 <div style="margin-bottom:5px;">
+					    <label class="text-center">直播选择:</label>
+					    <a type="button" class="selectBtnSecond">直播选择</a>
+					    <input type="hidden"  name="liveId"/>
+					    <label class="selectTxtSecond"></label>
+					 </div>
+			         <div style="margin-bottom:5px;">
+			            <label class="text-center" for="urlLinkSecond">URL链接:</label>
+					    <input type="text" class="form-control form-width" name="urlLinkSecond" id ="urlLinkSecond" value="" />
+					 </div>
+					 </form>
+			      </div>
+			  </div>
+			  <div class="uploadPictures">
+			      <div class="col-xs-6 col-sm-6 col-md-6 uploadDiv">
+			        <form role="form" id="uploadPicFormThree" method="post" enctype="multipart/form-data" action="${pageContext.request.contextPath}/liveBroadCastController/addHomePicture">
+			         <input type="hidden"  name="liveId"/>
+			         <input type="hidden"  name="createId"/>
+			         <div class="text-right">
+				        <button type="submit" class="imgSubmitThree"><i class="iconfont" title="提交" style="font-size:36px;">&#xe648;</i></button>
+			            <button type="button" class="imgCancelThree" style="margin-left:15px;"><i class="iconfont" title="取消" style="font-size:36px;">&#xe99c;</i></button>
+					 </div>
+			         <div style="margin-top:60px;margin-bottom:5px;">
+						<label class="text-center" for="pictureInputThree">上传图片:</label>
+						<input type="file" class="form-control form-width" name="picture" id ="pictureInputThree" value="" accept="image/jpg,image/png" />
+						<div id="imgPreviewThree" class="imgPreview"></div>
+					 </div>
+					 <div style="margin-bottom:5px;">
+					    <label class="text-center">直播选择:</label>
+					    <a type="button" class="selectBtnThree">直播选择</a>
+					    <input type="hidden"  name="liveId"/>
+					    <label class="selectTxtThree"></label>
+					 </div>
+			         <div style="margin-bottom:5px;">
+			            <label class="text-center" for="urlLinkThree">URL链接:</label>
+					    <input type="text" class="form-control form-width" name="urlLinkThree" id ="urlLinkThree" value="" />
+					 </div>
+					 </form>
+			      </div>
+			      <div class="col-xs-6 col-sm-6 col-md-6 uploadDiv">
+			         <form role="form" id="uploadPicFormThird" method="post" enctype="multipart/form-data" action="${pageContext.request.contextPath}/liveBroadCastController/addHomePicture">
+			         <input type="hidden"  name="liveId"/>
+			         <input type="hidden"  name="createId"/>
+			         <div class="text-right">
+				        <button type="submit" class="imgSubmitThird"><i class="iconfont" title="提交" style="font-size:36px;">&#xe648;</i></button>
+			            <button type="button" class="imgCancelThird" style="margin-left:15px;"><i class="iconfont" title="取消" style="font-size:36px;">&#xe99c;</i></button>
+					 </div>
+			         <div style="margin-top:60px;margin-bottom:5px;">
+						<label class="text-center" for="pictureInputThird">上传图片:</label>
+						<input type="file" class="form-control form-width" name="picture" id ="pictureInputThird" value="" accept="image/jpg,image/png" />
+						<div id="imgPreviewThird" class="imgPreview"></div>
+					 </div>
+					 <div style="margin-bottom:5px;">
+					    <label class="text-center">直播选择:</label>
+					    <a type="button" class="selectBtnThird">直播选择</a>
+					    <input type="hidden"  name="liveId"/>
+					    <label class="selectTxtThird"></label>
+					 </div>
+			         <div style="margin-bottom:5px;">
+			            <label class="text-center" for="urlLinkThird">URL链接:</label>
+					    <input type="text" class="form-control form-width" name="urlLinkThird" id ="urlLinkThird" value="" />
+					 </div>
+					 </form>
+			      </div>
+			  </div>
+		</div>
+<!--选择直播弹框-->
+<div class="modal fade" id="selectLiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">选择要宣传的直播</h4>
+            </div>
+            <div class="modal-body">
+		        <div >
+                     <input type="text" class="form-control" name="searchLive" id="searchLive" placeholder="直播名称" style="width:250px;">
+                     <span class="iconfont fuzzySearchBtn" style="top:15px;left:235px;">&#xe60a;</span>
+				   	 <div class="mt-10" id="tLiveSelect">
+				    	<table id="tblLiveSelect" class="table table-striped kscc-grid"></table>
+				    </div>
+				</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary saveSelect">确定</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<script>
+require(["app/homeConfig/homeConfigApp"],function(page){
+    page.run();
+})
+</script>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper  namespace="com.fable.kscc.bussiness.mapper.broadcastMeeting.BroadcastMeetMapper">
+	<sql id="Base_Column_List">
+		ID id,
+		TITLE title,
+		START_TIME startTime,
+		END_TIME endTime,
+		LIVE_INTRODUCTION liveIntroduction,
+		USER_ID userId,
+		PHONE phone,
+		EMAIL email,
+		HOSPITAL_WEBSITE hospitalWebsite,
+		APPROVAL_TIME approvalTime,
+		APPROVAL_STATUS approvalStatus,
+		PLAY_STATUS playStatus,
+		DEPARTMENT_ID departmentId,
+		CONF_ID confId,
+		ISGENERATED isgenerated,
+		MEETING_STATUS meetingStatus,
+		CREATOR_ID creatorId,
+		CREATED_TIME createdTime,
+		UPDATE_ID updateId,
+		UPDATED_TIME updatedTime,
+		FILE_NAME fileName,
+		FILE_PATH filePath,
+		NAME name
+	</sql>
+
+
+	<select id="getBroadcastMeetList" parameterType="hashmap" resultType="com.fable.kscc.api.model.livebroadcast.FbsLiveBroadcast">
+		SELECT
+		<include refid="Base_Column_List"/>
+		FROM (
+		SELECT flb.*,fhi.HOSPITAL_NAME NAME from
+		FBS_LIVE_BROADCAST flb
+		INNER JOIN FBS_USER fu ON flb.USER_ID = fu.ID
+		INNER JOIN FBS_HOSPITAL_INFORMATION fhi ON fu.HOSPITAL_ID=fhi.ID
+
+		UNION
+
+		SELECT flb.*,fu.USER_NAME NAME from
+		FBS_LIVE_BROADCAST flb
+		INNER JOIN FBS_USER fu ON flb.USER_ID = fu.ID
+		INNER JOIN FBS_USER_ROLE fur ON fu.ID=fur.USER_ID
+		INNER JOIN FBS_ROLE fr ON fr.ID = fur.ROLE_ID WHERE fr.ID=1) a
+		WHERE 1 = 1
+		<if test="id !=null and id !=''">
+			and ID = #{id}
+		</if>
+		<if test="userId !=null and userId !=''">
+			and USER_ID = #{userId}
+		</if>
+		<if test="liveName != null and liveName != ''">
+			and TITLE LIKE '%${liveName}%'
+		</if>
+		<if test="applicant != null and applicant !=''">
+			and NAME = #{applicant}
+		</if>
+		<if test="approvalStatus !=null and approvalStatus !=''">
+			and APPROVAL_STATUS = #{approvalStatus}
+		</if>
+		<if test="broadStartTime !=null and broadStartTime!=''">
+			and START_TIME >= #{broadStartTime}
+		</if>
+		<if test="broadEndTime !=null and broadEndTime !=''">
+			and START_TIME <![CDATA[<=]]>#{broadEndTime}
+		</if>
+		<if test="applyStartTime !=null and applyStartTime !=''">
+			and CREATED_TIME >= #{applyStartTime}
+		</if>
+		<if test="applyEndTime !=null and applyEndTime !=''">
+			and CREATED_TIME <![CDATA[<=]]> #{applyEndTime}
+		</if>
+		<if test="isDel !=null and isDel !=''">
+			and ISDEL = #{isDel}
+		</if>
+		AND  PLAY_STATUS = '0'
+		ORDER  BY START_TIME DESC
+
+	</select>
+
+	<update id="editBroadcastMeet" parameterType="com.fable.kscc.api.model.livebroadcast.FbsLiveBroadcast">
+		UPDATE
+		FBS_LIVE_BROADCAST SET
+		TITLE = #{title},
+		CREATED_TIME =#{createdTime},
+		START_TIME =#{startTime},
+		END_TIME =#{endTime}
+		WHERE ID = #{id}
+	</update>
+
+
+	<!--获取总条数-->
+	<select id="getBroadcastMeetListCount" parameterType="hashmap" resultType="int">
+		SELECT
+			count(*)
+		FROM (
+		SELECT flb.*,fhi.HOSPITAL_NAME NAME,fr.ROLE_NAME ROLENAME from
+		FBS_LIVE_BROADCAST flb
+		INNER JOIN FBS_USER fu ON flb.USER_ID = fu.ID
+		INNER JOIN FBS_USER_ROLE fur ON fu.ID=fur.USER_ID
+		INNER JOIN FBS_ROLE fr ON fr.ID = fur.ROLE_ID
+		INNER JOIN FBS_HOSPITAL_INFORMATION fhi ON fu.HOSPITAL_ID=fhi.ID) a
+		WHERE 1 = 1
+		<if test="id !=null and id !=''">
+			and ID = #{id}
+		</if>
+		<if test="liveName != null and liveName != ''">
+			and TITLE LIKE '%${liveName}%'
+		</if>
+		<if test="applicant != null and applicant !=''">
+			and NAME = #{applicant}
+		</if>
+		<if test="approvalStatus !=null and approvalStatus !=''">
+			and APPROVAL_STATUS = #{approvalStatus}
+		</if>
+		<if test="broadStartTime !=null and broadStartTime!=''">
+			and START_TIME >= #{broadStartTime}
+		</if>
+		<if test="broadEndTime !=null and broadEndTime !=''">
+			and START_TIME <![CDATA[<=]]>#{broadEndTime}
+		</if>
+		<if test="applyStartTime !=null and applyStartTime !=''">
+			and CREATED_TIME >= #{applyStartTime}
+		</if>
+		<if test="applyEndTime !=null and applyEndTime !=''">
+			and CREATED_TIME <![CDATA[<=]]> #{applyEndTime}
+		</if>
+	</select>
+	
+	<select id="getBroadcastForSchedule" parameterType="hashmap" resultType="java.util.Map"> 
+		SELECT a.* from (	SELECT flb.PLAY_STATUS, flb.id,flb.title,flb.START_TIME as start,flb.END_TIME as end,fhi.ID as hospitalid from
+		FBS_LIVE_BROADCAST flb
+		INNER JOIN FBS_USER fu ON flb.USER_ID = fu.ID
+		INNER JOIN FBS_HOSPITAL_INFORMATION fhi ON fu.HOSPITAL_ID=fhi.ID
+		union
+		SELECT  flb.PLAY_STATUS, flb.id,flb.title,flb.START_TIME as start,flb.END_TIME as end,'' as hospitalid from
+		FBS_LIVE_BROADCAST flb
+		INNER JOIN FBS_USER fu ON flb.USER_ID = fu.ID and fu.HOSPITAL_ID = '0')a
+		WHERE 1 = 1
+	 	<if test="hospitalid !=null and hospitalid != ''">
+			and a.ID  = #{hospitalid}
+		</if> 
+		ORDER  BY a.start DESC
+	</select>
+</mapper>

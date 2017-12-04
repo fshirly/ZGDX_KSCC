@@ -1,0 +1,47 @@
+package com.fable.kscc.api.utils;
+
+/**
+ * 通用常量
+ * Created by duyang 2017-08-05.
+ */
+public interface Constants {
+
+
+    interface KEDA_INTERFACE_ADDRESS {
+        String TOKEN = "api/v1/system/token"; //登陆认证token接口
+        String LOGIN = "api/v1/system/login"; //登陆接口
+    }
+
+    interface KEDA_INTERFACE_MSG {
+        String SUCCESS = "1"; //SUCCESS
+        String FAILURE = "0"; //FAILURE
+    }
+
+    interface MedT100 {
+        String authentication = "nvrcgi2/system/GetAuthenticationid";
+        String login = "nvrcgi2/system/Login";
+        String setSysTimeInfo = "nvrcgi/system/SetSysTimeInfo";
+        String heartBeat = "nvrcgi2/system/State";
+        String mp4BackupProgress = "nvrcgi2/svrmp4/Mp4BackupGetProgress";
+        String viewSelf = "nvrcgi2/svrvmt/SetVmtParam";
+        String mp4FileQuery = "nvrcgi2/svrmp4/Mp4FileQuery";
+        String mp4BackupStart = "nvrcgi2/svrmp4/Mp4BackupStart";
+        String getChnRecCfg = "nvrcgi/record/GetChnRecCfg";
+        String setChnRecCfg = "nvrcgi/record/SetChnRecCfg";
+        String mp4FilesDelete = "nvrcgi2/svrmp4/Mp4FilesDelete";
+        String getAllVideoAdjustScheme = "nvrcgi2/svredu/GetAllVideoAdjustScheme";
+        String setChnScheme = "nvrcgi2/svredu/SetChnScheme";
+        String getAllChnScheme = "nvrcgi2/svredu/GetAllChnScheme";
+    }
+
+    interface MedT100File{
+        String totalProgressFree = "0";
+        String totalProgressRun = "1";
+        String totalProgressOk = "2";
+        String channelProgressFree = "0";
+        String channelProgressRun = "1";
+        String channelProgressFail = "2";
+        String channelProgressOk = "3";
+    }
+
+}

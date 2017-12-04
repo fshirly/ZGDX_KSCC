@@ -1,0 +1,172 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+ request.setCharacterEncoding("UTF-8");
+%>
+				<input type="hidden" id="userId" name="userId"/>
+				<input type="hidden" id="exLiveName" name="exLiveName"/>
+				<input type="hidden" id="exStartTime" name="exStartTime"/>
+				<input type="hidden" id="exEndTime" name="exEndTime"/>
+				<form id="export" method="post">
+				<input type="hidden" id="tt" name="title"/>
+				<input type="hidden" id="subtitle" name="subtitle"/>
+				<input type="hidden" id="colNames" name="colNames"/>
+				<input type="hidden" id="colFields" name="colFields"/>
+				<input type="hidden" id="fileName" name="fileName"/>
+				<input type="hidden" id="colSpan" name="colSpan"/>
+				</form>
+			<div class="middleContent" style="height:100%;">
+			    <div class="searchBar">
+			       <div>
+			          <div>
+			              <input type="text" class="form-control" name="searchApprovalMessage" id="searchApprovalMessage" placeholder="请输入直播名称关键字" style="width:250px;"/>
+			              <span class="iconfont fuzzySearchBtn">&#xe60a;</span>
+			          </div>
+			          <a class="highSearch">高级搜索</a>
+			       </div>
+			    </div>
+			    <div id="searchDiv" style="clear:both;">
+				     <form class="form-inline" id="searchFormId">
+			       		<div class="row clearfix mt-10">
+				            <div class="form-group col-sm-3 col-md-3">
+				                <label class="text-right" for="liveName">直播名称：</label>
+				                <input id="liveName" name="liveName" class="form-control form-width" style="width: 50%;"/>
+				            </div>
+				            <div class="col-sm-6 col-md-6">
+			                    <label class="text-right" for="liveStartTime">直播开始时间：</label>
+			                    <div class="input-group date form_date" style="width:30%" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
+				                    <input class="form-control laydate-icon" id="liveStartTime" name="liveStartTime" value="" >
+				                </div>
+				                <span>-</span>
+				                <div class="input-group date form_date" style="width:30%" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+				                    <input class="form-control laydate-icon"  id="liveEndTime" name="liveEndTime" value="" >
+				                </div>
+				            </div>	
+				            <div class="form-group col-sm-3 col-md-3">
+				                <label class="text-left" for="applicant" style="width:80px;">申请方：</label>
+				                <select id="applicant" name="applicant" class="form-control form-width" style="width:50%;">
+				                	<option value=""></option>
+									<option value="kscc管理员">kscc管理员</option>
+		<!-- 							<option value="2">医院（从医院列表获取）</option> -->
+				                </select>
+				            </div>            
+				    	</div>
+			            <div class="row clearfix mt-10">
+				           <div class="form-group col-sm-3 col-md-3">
+				                <label class="text-right" for="approvalStatus">审批状态：</label>
+				                <select id="approvalStatus" name="approvalStatus" class="form-control form-width" style="width: 50%;"> 
+				                        <option value="">&nbsp;</option>   
+										<option value="0">待审核</option> 
+										<option value="1">已同意</option>
+										<option value="2">已拒绝</option>
+			                   </select>
+				           </div>            
+				           <div class="col-sm-6 col-md-6">
+			                    <label class="text-right" for="applicationStartTime">申请时间：</label>
+			                    <div class="input-group date form_date" style="width:30%" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
+				                    <input class="form-control laydate-icon" id="applicationStartTime" name="applicationStartTime" value="" >
+				                </div>
+				                <span>-</span>
+				                <div class="input-group date form_date" style="width:30%" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+				                    <input class="form-control laydate-icon"  id="applicationEndTime" name="applicationEndTime" value="" >
+				                </div>
+				            </div>
+				            <div class="col-sm-3 col-md-3 approvalBtn">
+				                <button id="searchBtn" type="button" class="btn btn-primary btn-search">搜索</button>
+				            	<button id="resetBtn" type="button"  class="btn btn-primary btn-warning" style="margin-left:20px;">重置</button>
+				            </div>
+			            </div>				
+				    </form>
+				</div>
+			    <div class="mt-10" id="tLive">
+				    <table id="tblLiveApproval" class="table table-striped kscc-grid"></table>
+				</div>
+			</div>    
+	<!--查看弹框-->
+	<div class="modal fade" id="liveViewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="modal-dialog modal-lg" style="width:800px;height:500px;">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                <h4 class="modal-title">申请单详情</h4>
+	            </div>
+	            <div class="modal-body" style="width:770px;height:470px;">
+	            	<ul id="myTab" class="nav nav-tabs">
+			           <li class="active">
+			              <a href="#wait" data-toggle="tab">基本信息</a>
+			           </li>
+			           <li>
+			              <a href="#yet" data-toggle="tab">申请单修改记录</a>
+			           </li>
+			        </ul>
+			        <div id="myTabContent" class="tab-content" style="margin-top:10px;">
+                       <div class="tab-pane fade in active" id="wait">
+                       	  <div class="col-xs-7 col-sm-7 col-md-7">
+				            	<form class="form-inline" id="liveViewform" method="post" action="">
+				            		<div class="clearfix mt-10">
+							            <label class="text-right">直播名称：</label>
+							            <label class="form-control form-label" id="liveNameView"></label>
+							        </div>
+							        <div class="clearfix mt-10">
+							            <label class="text-right">直播科室：</label>
+							            <label class="form-control form-label" id="departmentView"></label>
+							        </div>
+						            <div class="clearfix mt-10">
+						                <label class="text-right">开始时间：</label>
+						                <label class="form-control form-label" id="liveStartTimeView"></label>
+						            </div>
+						            <div class="clearfix mt-10">
+						                <label class="text-right">结束时间：</label>
+						                <label class="form-control form-label" id="liveEndTimeView"></label>
+						            </div>
+						            <div class="clearfix mt-10">
+						                <label class="text-right">联系方式：</label>
+						                <label class="form-control form-label" id="phoneView"></label>
+						            </div>
+									<div class="clearfix mt-10">
+										<label class="text-right">联系邮箱：</label>
+										<label class="form-control form-label" id="emailView"></label>
+									</div>
+						            <div class="clearfix mt-10">
+							            <label class="text-right">医院网址：</label>
+							            <label class="form-control form-label" id="hospitalURLView"></label>
+							        </div>
+						            <div class="clearfix mt-10">
+							            <label class="text-right">直播简介：</label>
+							            <label class="form-control form-label" id="liveIntroductionView"></label>
+							        </div>
+							        <div class="clearfix mt-10">
+							            <label class="text-right">附件：</label>
+							            <a id="a1"></a>
+							        </div>
+						        </form>
+					        </div>
+					        <div class="col-xs-5 col-sm-5 col-md-5">
+							   <div class="participantsList mb-10">参与方列表</div>
+						       <input type="text" class="form-control" name="searchParticipantView" id="searchParticipantView" placeholder="搜索参与方" />
+						       <span class="iconfont fuzzySearchBtnModal" id="searchBtnView" style="top:43px;right:20px;color:#00479d;">&#xe60a;</span>
+						       <div class="liveResults mt-10">
+						          <ul id="liveParticipant"></ul>
+						       </div>
+							</div>
+					   </div>
+					   <div class="tab-pane fade" id="yet">
+					   	 <div class="mt-10" id="tLiveView">
+					    	<table id="tblLiveModifyRecord" class="table table-striped kscc-grid"></table>
+					    </div>
+					   </div>
+					</div>
+					    
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	            </div>
+	        </div><!-- /.modal-content -->
+	    </div><!-- /.modal -->
+	</div>
+
+	<script>
+		require(["app/liveApproval/liveApprovalApp"],function(page){
+		    page.run();
+		})
+	</script>

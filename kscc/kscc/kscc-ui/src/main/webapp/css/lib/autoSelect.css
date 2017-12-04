@@ -1,0 +1,47 @@
+.autoSelect-suggestions {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	border: 1px solid #999;
+	background: #FFF;
+	cursor: default;
+	overflow: auto;
+	-webkit-box-shadow: 0 0 5px rgba(150, 150, 150, 0.64);
+	-moz-box-shadow:  0 0 5px rgba(150, 150, 150, 0.64);
+	box-shadow:  0 0 5px rgba(150, 150, 150, 0.64);
+	z-index:1000;
+}
+
+.autoSelect-suggestion {
+	padding: 2px 5px;
+	white-space: nowrap;
+	overflow: hidden;
+	background-image:url("../../images/add.png");
+	background-repeat:no-repeat;
+	background-position: right;
+}
+
+.autoSelect-no-suggestion {
+	padding: 2px 5px;
+}
+
+.autoSelect-selected {
+	background-image:url("../../images/add.png");
+	background-repeat:no-repeat;
+	background-position: right;
+	background-color: #F0F0F0;
+}
+
+.autoSelect-suggestions strong {
+	font-weight: bold;
+	color: #058dec;
+}
+
+.autoSelect-group {
+	padding: 2px 5px;
+	font-weight: bold;
+	font-size: 16px;
+	color: #000;
+	display: block;
+	border-bottom: 1px solid #000;
+}

@@ -1,0 +1,473 @@
+package com.fable.kscc.api.medTApi;
+
+import com.fable.kscc.api.cache.DataCache;
+import com.fable.kscc.api.utils.Constants;
+import com.fable.kscc.api.utils.HttpUtils;
+import com.fable.kscc.api.utils.XmlGenerator;
+
+import net.sf.json.JSONObject;
+import net.sf.json.xml.XMLSerializer;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import sun.rmi.log.LogInputStream;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+
+/**
+ * Created by Wanghairui on 2017/10/10.
+ */
+@Component
+public class MedTApi {
+
+    public static Logger logger = LoggerFactory.getLogger(MedTApi.class);
+
+    public static void main(String[] args) {
+       final Map<String, String> login = new HashMap<>();
+
+//        login.put("ip", "140.207.48.50");
+//        login.put("port","50081");
+
+
+        login.put("ip", "192.168.40.157");
+        login.put("port", "80");
+        login.put("username", "admin");
+        login.put("password", "admin123");
+        login.put("hospitalId", "1");
+        login.put("confId", "0105518");
+        login.put("startTime", "2017-10-30 10:08:34");
+        login.put("endTime", "2017-11-16 04:57:34");
+        final MedTApi api = new MedTApi();
+        String authenticationId=api.getAuthenticationId(login);
+        System.out.println("鉴权：：："+authenticationId);
+        api.setChnRecCfg(login);
+//        login.put("authenticationid", authenticationId);
+//        XmlGenerator.generateRequestRoot(login);
+//        api.Login(login);
+//      api.SetSysTimeInfo(login);
+//      api.Mp4BackupStart(login);
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (true){
+//                    try {
+//                        Thread.sleep(2000);
+//                        api.Mp4BackUpProgress(login);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }).start();
+//        api.mp4FilesDelete(login);
+        //api.Mp4FileQuery(login);
+//        System.out.println( api.getAllChnScheme(login));
+//        api.setChnRecCfg(login);
+//        System.out.println(api.Mp4BackUpProgress(login));
+//        System.out.println(api.viewSelfOrOther(login,1));
+    }
+
+    /**
+     *
+     * @param param
+     * @return 鉴权id
+     * @description 鉴权
+     */
+    public String getAuthenticationId(Map<String,String> param){
+        String response=HttpUtils.httpPostByNullXml(getSocketAddress(param)+Constants.MedT100.authentication);
+        System.out.println(response);
+        try {
+            Document doc = DocumentHelper.parseText(response);
+            return doc.getRootElement().elementText("Authenticationid");
+        } catch (DocumentException e) {
+            logger.error(param.get("hospitalName")+"的编解码器鉴权发生错误",e);
+            //threadRestart(param);
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param param
+     * @description 登陆
+     */
+    public void Login(Map<String,String> param){
+
+        String params = XmlGenerator.generateLoginParam(param);
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param) + Constants.MedT100.login, params);
+        try {
+            Document doc = DocumentHelper.parseText(xmlResponse);
+            String response=doc.getRootElement().elementText("statusstring");
+
+            String statusString = doc.getRootElement().elementText("substatusstring");
+            if (!"success".equals(response)) {
+                logger.info(param.get("hospitalName")+"的编解码器登陆失败："+statusString);
+            }
+        } catch (DocumentException e) {
+            logger.error(param.get("hospitalName")+"的编解码器登陆发生错误",e);
+        }
+    }
+
+    /**
+     *
+     * @param param
+     * @description 心跳
+     */
+    public  void heartBeat(Map<String,String> param){
+
+        String params = XmlGenerator.generateKeepHeartBeatParam(param);
+        try {
+            String response = HttpUtils.httpPostByXml(getSocketAddress(param)+Constants.MedT100.heartBeat, params);
+            Document doc = DocumentHelper.parseText(response);
+            String stateResp = doc.getRootElement().getName();
+            if (!"StateResp".equals(stateResp)) {
+                logger.error(param.get("hospitalId")+"的编解码器心跳");
+            }
+        }catch (Exception e) {
+            logger.error("心跳出错++++++++++++++++"+e);
+            threadRestart(param);
+        }
+
+
+    }
+
+    /**
+     *
+     * @param param
+     * @return 完成与否
+     * @description 录像文件备份进程
+     */
+    public String Mp4BackUpProgress(Map<String,String> param){
+
+        String params =XmlGenerator.generateHaveNotParam(param);
+
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param)+Constants.MedT100.mp4BackupProgress,params);
+        System.out.println(xmlResponse);
+        try {
+            Document document = DocumentHelper.parseText(xmlResponse);
+            Element root = document.getRootElement();
+            String state = root.elementText("State");
+            System.out.println("备份任务状态:"+state);
+            System.out.println("备份进度："+root.element("ChnStatList").element("ChnStat").elementText("Progress"));
+            logger.info(root.element("ChnStatList").element("ChnStat").elementText("Progress"));
+            if("2".equals(state)){
+                String Status=root.element("ChnStatList").element("ChnStat").elementText("Status");
+                if("2".equals(Status)){
+                    return "3";
+                }
+            }
+            return state;//0：空闲 1：运行中 2：已完成 3：备份失败
+        } catch (DocumentException e) {
+            logger.error(param.get("hospitalId")+"的编解码器查看备份进度错误",e);
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param param
+     * @return 成功与否
+     * @description 平台和编解码器之间输出画面通道切换
+     */
+    public String viewSelfOrOther(Map<String,String> param, int flag){
+        String params = XmlGenerator.generateSetVmtParam(param,flag);
+        System.out.println(params);
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param) + Constants.MedT100.viewSelf, params);
+        try {
+            Document doc = DocumentHelper.parseText(xmlResponse);
+
+            String response=doc.getRootElement().elementText("statusstring");
+
+            String statusString = doc.getRootElement().elementText("substatusstring");
+
+            if (!"success".equals(response)) {
+                logger.info(param.get("hospitalName")+"的编解码器设置DVI（4选2-1）输出到DVI2："+statusString);
+                return "fail";
+            }
+            return "success";
+        } catch (DocumentException e) {
+            logger.error(param.get("hospitalName")+"的编解码器登陆发生错误",e);
+        }
+        return "fail";
+    }
+
+    /**
+     *
+     * @param param
+     * @return 文件目录
+     * @description 查询备份好的MP4
+     * 文件
+     */
+    public String Mp4FileQuery(Map<String,String> param){
+        String params = XmlGenerator.generateMp4FileQueryParam(param);
+        System.out.println(params);
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param) + Constants.MedT100.mp4FileQuery, params);
+        System.out.println(xmlResponse);
+        String srcPath=null;
+        try {
+            Document document = DocumentHelper.parseText(xmlResponse);
+            Element MP4List=document.getRootElement().element("MP4List");
+            String fileNum = MP4List.attributeValue("num");
+            if("0".equals(fileNum)){
+                return null;
+            }
+            srcPath= MP4List.element("MP4Info").elementText("TitlePath");
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+        return srcPath;
+    }
+
+    /**
+     *
+     * @param param
+     * @description 让编解码器和服务器时间同步
+     */
+    public void SetSysTimeInfo(Map<String,String> param){
+        String params = XmlGenerator.generateSetSysTimeInfoParam(param);
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param) + Constants.MedT100.setSysTimeInfo, params);
+        try {
+            Document doc = DocumentHelper.parseText(xmlResponse);
+            String response=doc.getRootElement().elementText("statusstring");
+
+            String statusString = doc.getRootElement().elementText("substatusstring");
+            if (!"success".equals(response)) {
+                logger.info(param.get("hospitalName")+"的编解码器时间同步："+statusString);
+            }
+        } catch (DocumentException e) {
+            logger.error(param.get("hospitalName")+"的编解码器时间同步",e);
+        }
+    }
+
+    /**
+     *
+     * @param param
+     * @return 成功与否
+     * @description 录像开始备份
+     */
+    public String Mp4BackupStart(Map<String,String> param){
+        String params = XmlGenerator.generateMp4BackupStartParam(param);
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param)+Constants.MedT100.mp4BackupStart,params);
+        System.out.println(xmlResponse);
+        String response=null;
+        try {
+            Document doc = DocumentHelper.parseText(xmlResponse);
+            response=doc.getRootElement().elementText("statusstring");
+
+            String statusString = doc.getRootElement().elementText("substatusstring");
+            if (!"success".equals(response)) {
+                logger.info(param.get("hospitalName")+"的编解码器开始备份MP4文件："+statusString);
+            }
+        } catch (DocumentException e) {
+            logger.error(param.get("hospitalName")+"的编解码器开始备份MP4文件",e);
+        }
+        return response;
+    }
+
+    /**
+     *
+     * @param param
+     * @return String
+     * @description   结束备份
+     */
+    public String Mp4BackupStop(Map<String,String> param){
+        String params = XmlGenerator.generateHaveNotParam(param);
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param)+Constants.MedT100.mp4BackupStop,params);
+        System.out.println(xmlResponse);
+        return xmlResponse;
+    }
+
+    /**
+     *
+     * @param param
+     * @return 设置通道参数
+     * @description 获取编解码通道录像配置
+     */
+    public String getChnRecCfg(Map<String,String> param){
+        String params = XmlGenerator.generateGetChnRecCfgParam(param);
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param)+Constants.MedT100.getChnRecCfg,params);
+        String mode = null;
+        try {
+            Element elementVoid = (Element)(DocumentHelper.parseText(xmlResponse).getRootElement().element("CfgList").elements().get(0));
+            mode = elementVoid.elementText("Mode");
+            return mode;
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+        return "获取编解码器录像通道失败";
+    }
+
+    /**
+     *
+     * @param param
+     * @return 成功与否
+     * @description 开始录像或者停止录像
+     */
+    public String setChnRecCfg(Map<String,String> param){
+        param.put("CfgList", getChnRecCfglist(param));
+        String params = XmlGenerator.generateSetChnRecCfgParam(param);
+        System.out.println(params);
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param)+Constants.MedT100.setChnRecCfg,params);
+        String response;
+        try {
+            Document doc = DocumentHelper.parseText(xmlResponse);
+            response=doc.getRootElement().elementText("statusstring");
+            if ("success".equals(response)) {
+                logger.info(param.get("hospitalName")+"录像通道配置成功！");
+                return "success";
+            }
+                return "fail";
+        } catch (DocumentException e) {
+            logger.error(param.get("hospitalName")+"录像通道配置失败",e);
+            return "fail";
+        }
+    }
+
+    public String getChnRecCfglist(Map<String,String> param){
+        String params = XmlGenerator.generateGetChnRecCfgParam(param);
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param)+Constants.MedT100.getChnRecCfg,params);
+        try {
+            Document doc = DocumentHelper.parseText(xmlResponse);
+            Element CfgList=doc.getRootElement().element("CfgList");
+            Element cfg = CfgList.element("Cfg");
+            cfg.remove(cfg.element("TimeList"));
+            return CfgList.asXML();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return "获取通道配置发生异常";
+        }
+    }
+    /**
+     *
+     * @param param
+     * @return 成功与否
+     * @description 编解码器上的文件删除
+     */
+    public Map<String,String>  mp4FilesDelete(Map<String,String> param){
+        String params = XmlGenerator.generateMp4FilesDeleteParam(param);
+        System.out.println("params："+params);
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param)+Constants.MedT100.mp4FilesDelete,params);
+        System.out.println(xmlResponse);
+        String response;
+        try {
+            Document doc = DocumentHelper.parseText(xmlResponse);
+            response=doc.getRootElement().elementText("statusstring");
+            final String message = doc.getRootElement().elementText("substatusstring");
+            if ("success".equals(response)) {
+                logger.info("删除备份录像成功！");
+                return new HashMap<String,String>(){{put("success","1");}};
+            }
+            else {
+                return new HashMap<String,String>(){{put("success","0");put("message",message);}};
+            }
+        } catch (final  DocumentException e) {
+            logger.error("删除备份录像失败",e);
+            return new HashMap<String,String>(){{put("success","0");put("message",e.getMessage());}};
+        }
+
+    }
+
+    /**
+     *
+     * @param param
+     * @return 所有预案信息
+     * @description   获取所有预案信息
+     */
+    public String getAllVideoAdjustScheme(Map<String,String> param){
+        String params = XmlGenerator.generateHaveNotParam(param);
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param)+Constants.MedT100.getAllVideoAdjustScheme,params);
+        return xmlResponse;
+    }
+
+    /**
+     *
+     * @param param
+     * @return 所有通道对应预案信息
+     * @description   获取所有通道对应预案信息
+     */
+    public String getAllChnScheme(Map<String,String> param){
+        String params = XmlGenerator.generateHaveNotParam(param);
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param)+Constants.MedT100.getAllChnScheme,params);
+        String SchID = null;
+        try {
+            Element element = (Element)(DocumentHelper.parseText(xmlResponse).getRootElement().element("ChnSchemeList").elements().get(5));
+            SchID = element.elementText("SchID");
+            return SchID;
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+        return "获取所有通道对应预案信息失败";
+
+    }
+
+    /**
+     *
+     * @param param
+     * @return 成功与否
+     * @description   hd/spies切换
+     */
+    public String setChnScheme(Map<String,String> param){
+        String params = XmlGenerator.generateSetChnSchemeParam(param);
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param) + Constants.MedT100.setChnScheme, params);
+        System.out.println(xmlResponse);
+        String response;
+        try {
+            Document doc = DocumentHelper.parseText(xmlResponse);
+            response=doc.getRootElement().elementText("statusstring");
+
+            if ("success".equals(response)) {
+                logger.info(param.get("hospitalName")+"图像切换设置成功！");
+                return "success";
+            }
+            return "fail";
+        } catch (DocumentException e) {
+            logger.error(param.get("hospitalName")+"图像切换设置失败",e);
+        }
+        return "fail";
+    }
+
+    /**
+     *
+     * @param xml
+     * @return JSONObject
+     * @description   xml转json
+     */
+    public  JSONObject xmlToJson(String xml){
+        //api.xmlToJson(xmlResponse).get("Authenticationid").toString()
+        XMLSerializer xmlSerializer=new XMLSerializer();
+        return  (JSONObject)xmlSerializer.read(xml);
+    }
+
+
+    /**
+     *
+     * @param param
+     * @return JSONObject
+     * @description   获取地址
+     */
+    public String getSocketAddress(Map<String,String> param){
+        return String.format("http://%s:%s/", param.get("ip"), param.get("port"));
+    }
+
+    private void threadRestart(Map<String,String> param) {
+        try{
+            MedTApi medTApi = new MedTApi();
+            ExecutorService service = (ExecutorService) DataCache.getInstance().getCache("threadPool");
+            param.put("authenticationid", medTApi.getAuthenticationId(param));
+            XmlGenerator.generateRequestRoot(param);
+            medTApi.Login(param);
+            medTApi.SetSysTimeInfo(param);
+            service.execute(new AuthenticThread(param,medTApi));
+        }catch (Exception e) {
+            logger.error("重启线程出错");
+            threadRestart(param);
+        }
+    }
+}

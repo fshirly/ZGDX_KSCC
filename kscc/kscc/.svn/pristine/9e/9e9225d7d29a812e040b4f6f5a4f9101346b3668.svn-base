@@ -1,0 +1,336 @@
+package com.fable.kscc.api.model.livebroadcast;
+
+import com.fable.kscc.api.model.participant.FbsLiveParticipant;
+import com.fable.kscc.api.model.user.FbsUser;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 创建直播 实体类
+ */
+public class FbsLiveBroadcast {
+  private Integer id;				//编号
+  private String title;				//主题
+  private String startTime;			//直播开始时间
+  private String endTime;			//直播结束时间
+  private String liveIntroduction;	//直播简介
+  private Integer userId;			//申请人id
+  private String phone;			//电话号码
+  private String email;				//邮箱
+  private String hospitalWebsite;	//网址
+  private String approvalTime;		//审批时间
+  private String approvalStatus="0";//审批状态 0待审批，1通过2拒绝
+  private String playStatus="0";	//直播状态 0未开始直播，1直播中，2结束直播，
+  private Integer departmentId;		//科室id
+  private String confId;			//会场id
+  private String isGenerated="2";	//文件落地,1已经落地成功 2还未落地
+  private String meetingStatus="2";	//会场结束状态 1：结束 2未结束
+  private String creatorId;			//创建者
+  private String createdTime;		//创建时间
+  private String updateId;			//修改者
+  private String updatedTime;		//修改时间
+  private String file_name;			//文件名
+  private String filePath;			//文件路径
+  private String isdel="0";			//是否删除，0未删除 1已删除
+  private String pictureName;
+  private String picturePath;
+  //直播会议需要添加的字段
+  private String departmentName;    //科室名字
+  private String name;
+  private List<FbsLiveParticipant> participants;
+
+  public List<FbsLiveParticipant> getParticipants() {
+    return participants;
+  }
+
+  public void setParticipants(List<FbsLiveParticipant> participants) {
+    this.participants = participants;
+  }
+
+  public void setDepartmentName(String departmentName) {
+    this.departmentName = departmentName;
+  }
+
+  public String getDepartmentName() {
+
+    return departmentName;
+  }
+
+  //直播信息修改前的名称,时间
+  private String exLiveName;
+  private String exStartTime;
+  private String exEndTime;
+  private List<Map<String,Object>> participantNames;
+
+  public String getIsdel() {
+	return isdel;
+}
+
+public void setIsdel(String isdel) {
+	this.isdel = isdel;
+}
+
+  public String getPictureName() {
+    return pictureName;
+  }
+
+  public void setPictureName(String pictureName) {
+    this.pictureName = pictureName;
+  }
+
+  public String getPicturePath() {
+    return picturePath;
+  }
+
+  public void setPicturePath(String picturePath) {
+    this.picturePath = picturePath;
+  }
+
+  public List<Map<String,Object>> getParticipantNames() {
+    return participantNames;
+  }
+
+  public void setParticipantNames(List<Map<String,Object>> participantNames) {
+    this.participantNames = participantNames;
+  }
+
+  public String getExStartTime() {
+	return exStartTime;
+}
+
+public void setExStartTime(String exStartTime) {
+	this.exStartTime = exStartTime;
+}
+
+public String getExEndTime() {
+	return exEndTime;
+}
+
+public void setExEndTime(String exEndTime) {
+	this.exEndTime = exEndTime;
+}
+
+public String getExLiveName() {
+	return exLiveName;
+}
+
+public void setExLiveName(String exLiveName) {
+	this.exLiveName = exLiveName;
+}
+
+private Integer observerId;
+
+  private String LiveType; //相对于医院用户查看历史记录时候直播的类型
+
+  public Integer getObserver() {
+    return observerId;
+  }
+
+  public void setObserver(Integer observerId) {
+    this.observerId = observerId;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  private List<FbsLiveParticipant> liveParticipants;
+
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String getStartTime() {
+    return startTime;
+  }
+
+  public void setStartTime(String startTime) {
+    this.startTime = startTime;
+  }
+
+  public String getEndTime() {
+    return endTime;
+  }
+
+  public void setEndTime(String endTime) {
+    this.endTime = endTime;
+  }
+
+  public String getLiveIntroduction() {
+    return liveIntroduction;
+  }
+
+  public void setLiveIntroduction(String liveIntroduction) {
+    this.liveIntroduction = liveIntroduction;
+  }
+
+  public Integer getUserId() {
+    return userId;
+  }
+
+  public void setUserId(Integer userId) {
+    this.userId = userId;
+  }
+
+  public String getPhone() {
+    return phone;
+  }
+
+  public void setPhone(String phone) {
+    this.phone = phone;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getHospitalWebsite() {
+    return hospitalWebsite;
+  }
+
+  public void setHospitalWebsite(String hospitalWebsite) {
+    this.hospitalWebsite = hospitalWebsite;
+  }
+  public String getApprovalTime() {
+    return approvalTime;
+  }
+
+  public void setApprovalTime(String approvalTime) {
+    this.approvalTime = approvalTime;
+  }
+
+  public String getApprovalStatus() {
+    return approvalStatus;
+  }
+
+  public void setApprovalStatus(String approvalStatus) {
+    this.approvalStatus = approvalStatus;
+  }
+
+  public String getPlayStatus() {
+    return playStatus;
+  }
+
+  public void setPlayStatus(String playStatus) {
+    this.playStatus = playStatus;
+  }
+
+  public Integer getDepartmentId() {
+    return departmentId;
+  }
+
+  public void setDepartmentId(Integer departmentId) {
+    this.departmentId = departmentId;
+  }
+
+  public String getConfId() {
+    return confId;
+  }
+
+  public void setConfId(String confId) {
+    this.confId = confId;
+  }
+
+  public String getIsGenerated() {
+    return isGenerated;
+  }
+
+  public void setIsGenerated(String isGenerated) {
+    this.isGenerated = isGenerated;
+  }
+
+  public String getMeetingStatus() {
+    return meetingStatus;
+  }
+
+  public void setMeetingStatus(String meetingStatus) {
+    this.meetingStatus = meetingStatus;
+  }
+
+  public String getCreatorId() {
+    return creatorId;
+  }
+
+  public void setCreatorId(String creatorId) {
+    this.creatorId = creatorId;
+  }
+
+  public String getCreatedTime() {
+    return createdTime;
+  }
+
+  public void setCreatedTime(String createdTime) {
+    this.createdTime = createdTime;
+  }
+
+  public String getUpdateId() {
+    return updateId;
+  }
+
+  public void setUpdateId(String updateId) {
+    this.updateId = updateId;
+  }
+
+  public String getUpdatedTime() {
+    return updatedTime;
+  }
+
+  public void setUpdatedTime(String updatedTime) {
+    this.updatedTime = updatedTime;
+  }
+
+  public String getFile_name() {
+    return file_name;
+  }
+
+  public void setFile_name(String file_name) {
+    this.file_name = file_name;
+  }
+
+  public String getFilePath() {
+    return filePath;
+  }
+
+  public void setFilePath(String filePath) {
+    this.filePath = filePath;
+  }
+
+  public List<FbsLiveParticipant> getLiveParticipants() {
+    return liveParticipants;
+  }
+
+  public void setLiveParticipants(List<FbsLiveParticipant> liveParticipants) {
+    this.liveParticipants = liveParticipants;
+  }
+
+  public String getLiveType() {
+    return LiveType;
+  }
+
+  public void setLiveType(String liveType) {
+    LiveType = liveType;
+  }
+
+}

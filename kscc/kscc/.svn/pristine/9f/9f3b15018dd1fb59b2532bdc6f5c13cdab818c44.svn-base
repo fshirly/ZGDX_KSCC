@@ -1,0 +1,114 @@
+define(["base","datatables.net","app/commonApp"],function(base,DataTable,common){
+    function getBase() {
+        $.ajax({
+            type: "post",
+            async:true,
+            url:$.base+"/hospital/getHospitalInfoById",
+            contentType:"application/json",
+            data:JSON.stringify({
+                "hospitalIds":$("#idstr").val()
+            }),
+            dataType: "json",
+            success:function(data){
+            	$("#hospitalInfoForm input").attr("disabled","disabled");
+            	$(".setBtns").html("<button class='btn btn-primary editHos'>编辑</button>");
+                $("#hospitalName").val(data.hospitalName);
+                $("#hospitalUrl").val(data.hospitalUrl);
+                $("#logoUrl").val(data.logoUrl);
+                $("#hospitalContent").val(data.hospitalContent);
+            }
+        });
+    }
+    
+    //编辑医院信息
+    function editHos(){
+    	$(".setBtns").off().on("click",function(){
+    		var strs="<button class='btn btn-primary saveHosEdit'>保存</button><button class='btn btn-primary cancelHosEdit' style='margin-left:8px;'>取消</button>";
+    		$(".setBtns").html(strs);
+    		$("#hospitalInfoForm input").removeAttr("disabled");
+    		//保存
+    		$(".saveHosEdit").off().on("click",function(){
+            	var params={
+                        "hospitalName":$("#hospitalName").val(),
+                        "hospitalUrl":$("#hospitalUrl").val(),
+                        "hospitalContent":$("#hospitalContent").val(),
+                        "hospitalIds":$("#idstr").val()
+                    }
+                    var requestTip=base.requestTip({position:"center"});
+                    $.ajax({
+                       //url:$.base+"/fbsUser/updateFbUser",
+                        type:"POST",
+                        contentType:"application/json",
+                        dateType:"json",
+                        data:JSON.stringify(params),
+                        success:function(data){
+                            switch(data.status){
+	                            case '1':
+	                                requestTip.success("修改医院信息成功！");
+	                                break;
+	                            default:
+	                                requestTip.error("修改医院信息失败！");
+	                                break;
+                            }
+                        },
+                        error:function(){
+                            requestTip.error();
+                        }
+                    });
+    		});
+    		//取消
+    		$(".cancelHosEdit").off().on("click",function(){
+    			getBase();//获得先前数据
+    			$("#hospitalInfoForm input").attr("disabled","disabled");
+    			$(".setBtns").html("<button class='btn btn-primary editHos'>编辑</button>");
+    		});
+    	});
+    }
+
+    //新增医院
+    function  addHospital(){
+    	$(".hospitalAdd").off().on("click",function(){
+            var codecId=$(this).attr("rowId");
+            $(this).attr({"data-toggle":"modal","data-target":"#addModal"});
+            //新增确定按钮
+            $(".saveAdd1").off().on("click",function(){
+                var params={
+                    "hospitalName":$("#hospitalNameAdd").val(),
+                    "hospitalContent":$("#hospitalContentAdd").val(),
+                    "hospitalUrl":$("#hospitalUrlAdd").val(),
+                }
+                var requestTip=base.requestTip();
+                $.ajax({
+                    url:$.base+"/hospital/insertHospitalInfo",
+                    type:"post",
+                    contentType:"application/json",
+                    data:JSON.stringify(params),
+                    success:function(data){
+                        if(data.status=='1'){
+                            requestTip.success();
+                            $("#addModal").modal("hide");
+                            common.refreshGrid(grid);
+                        }else {
+                            requestTip.error(data.tips);
+                        }
+                    },
+                    beforeSend:function(){
+                        requestTip.wait();
+                    },
+                    error:function(){
+                        requestTip.error();
+                    }
+                });
+            });
+        });
+    }
+    
+
+    return {
+        run:function(){
+            getBase();
+            addHospital();
+            editHos();
+        }
+    };
+})

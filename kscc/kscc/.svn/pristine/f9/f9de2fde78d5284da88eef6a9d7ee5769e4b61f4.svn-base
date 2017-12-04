@@ -1,0 +1,24 @@
+define(["base"],function(base){
+	//加载资源日历    
+	function setResourceCal(){
+		base.ajax({
+			url:$.base+"/js/app/resourceCalendar/schedule.json",
+			type:"get",
+			success:function(data){
+				base.calendar({
+					container:$("#resourceCal"),
+					data:data,
+					clickEvent:function(data){
+						console.log(data);
+					}
+				});
+			}
+		});
+	};
+
+	return {
+		run:function(){
+			setResourceCal();//加载资源日历
+		}
+	};
+});

@@ -1,0 +1,40 @@
+package com.fable.kscc.bussiness.service.apiService;
+
+import com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation;
+import com.fable.kscc.api.model.page.ResultKit;
+import com.fable.kscc.api.model.page.ServiceResponse;
+import com.fable.kscc.bussiness.mapper.hospitalInformation.HospitalInformationMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * <p>
+ * Title :
+ * </p>
+ * <p>
+ * Description:
+ * </p>
+ * <p>
+ * Author :Hairui
+ * Date :2017/11/15
+ * Time :15:36
+ * </p>
+ * <p>
+ * Department :
+ * </p>
+ * <p> Copyright : 江苏飞博软件股份有限公司 </p>
+ */
+@Service
+public class ApiServiceImpl implements IApiService {
+
+    @Autowired
+    HospitalInformationMapper hospitalInformationMapper;
+
+    @Override
+    public ServiceResponse getAllHospitalList() {
+        return ResultKit.serviceResponse(hospitalInformationMapper.getAllHospitalList());
+    }
+
+}

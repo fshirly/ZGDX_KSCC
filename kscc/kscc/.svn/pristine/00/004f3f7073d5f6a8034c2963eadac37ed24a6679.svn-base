@@ -1,0 +1,652 @@
+define(["BaseApp","base","datatables.net","commonUtilOld","laydate"],function(baseApp,base,DataTable,commonUtilOld){
+	var treeObj;
+	var filePath="";
+	var fileName="";
+	var picturePath="";
+	var pictureName="";
+	var baseParamss=null;
+	var roleName="";
+	var oldStartTime;
+	var oldEndTime;
+    
+    var userId=$('#createIdEdit').val();
+	var ids=[];
+	var nodesObj=[];
+	var belongId;
+	var belongName;
+	//获得申请人所属医院
+	function affiliatedHospital(){
+		
+		$.ajax({
+        	url:$.base+"/hospital/getHospitalInfoByUser",
+        	type:"GET",
+        	async:false,
+        	success:function(data){
+        		belongId=data.id;
+        		belongName=data.hospitalName;
+        		$("#backBtn").unbind().on("click",function(){
+        			var url=$.base+$("#siteEdit").val();
+        			
+        			$.ajax({ 
+    	                type:"GET", 
+    	                url:url, 
+    	                error:function(){ 
+    	                   alert("加载错误！"); 
+    	                }, 
+    	                success:function(data){
+                            if(data.indexOf('06a5bb21-b8f0-4dfd-8004-4b4e17d4f81c')!==-1){
+                                window.location.href=$.base+'/loginController/toLogin'
+                                return
+                            }
+                            $(".middle").html(data);
+    	                } 
+    	             });
+                });
+        	},
+        	error:function(e){}
+		});
+	}
+	
+	//获得底部菜单
+	function getMenus(){
+			$.ajax({
+	            type:"post",
+	            async: false,
+	            url:$.base+"/liveBroadCastController/getUserId",
+	            success:function (data) {
+	            	roleName=data.roleName;
+	            }
+			});
+		};
+		
+        var getEditData = function(roleName){
+	    //获取先前编辑的数据
+		if($("#liveIdEdit").val()){
+	        $.ajax({ 
+	        		   type: "post",
+	        		   url:  $.base + "/kscc/liveBroadApprove/toViewLiveApprove?id="+$("#liveIdEdit").val(),
+	                   contentType:"application/json",
+		               success: function(data){
+		            	   ids=[];
+		            	   nodesObj=[];
+		            	   var baseParams=data.baseParams;//表单数据
+                           $("#userId").val(baseParams.userId); //userId用于消息信息
+		            	   $("#liveId").val(liveId);
+		            	   $("#liveName").val(baseParams.title);//直播名称
+		            	   $("#department").find("option[value='"+baseParams.departmentId+"']").attr("selected",true); //科室
+						   oldStartTime=baseParams.startTime.substring(0,16)
+						   oldEndTime=baseParams.endTime.substring(0,16)
+		            	   $("#startTime").val(baseParams.startTime.substring(0,16));//开始时间
+		            	   $("#endTime").val(baseParams.endTime.substring(0,16));//结束时间
+		            	   $("#phone").val(baseParams.phone);//联系方式
+		            	   $("#email").val(baseParams.email);//邮箱
+		            	   $("#hospitalURL").val(baseParams.hospitalWebsite);//医院网址
+		            	   $("#liveIntroduction").val(baseParams.liveIntroduction);//直播简介
+		            	   if(baseParams.file_name){
+		            		   $("#enclosureDiv").show();
+			            	   $("#enclosureObj").text(baseParams.file_name);//附件
+			            	   $(".enclosureNew").text("重新上传:");
+		            	   }
+
+		            	   var hostParams=data.hostParams;//参与方数据
+
+                           //修改前的值放入隐藏域中
+                           baseParamss=data;
+
+                           $("#liveParticipant").empty();
+                           var selectStrs="";
+                           $.each(hostParams,function(i,v){
+                        	   
+								if(v.serialNumber==1){
+									$("#liveParticipant").append("<li att='"+v.hospitalId+"' class='participantsLi'><span class='iconfont iconfontList'>&#xe61e;</span><span class='controlParti' title='"+v.hospitalName+"'>"+v.hospitalName+"</span><span class='iconfont iconfontImg' style='color:#ee453b;' title='第一主持人'>&#xe61c;</span></li>");
+									$("#selectResult").append("<li att='"+v.hospitalId+"' class='partisLimodal'><span class='iconfont iconfontList'>&#xe61e;</span><span class='selectSpan'>"+v.hospitalName+"</span><span class='iconfont iconfontImg' style='color:#ee453b;' title='第一主持人'>&#xe61c;</span></li>");
+								}else if(v.serialNumber==2){
+									$("#liveParticipant").append("<li att='"+v.hospitalId+"' class='participantsLi'><span class='iconfont iconfontList'>&#xe61e;</span><span class='controlParti' title='"+v.hospitalName+"'>"+v.hospitalName+"</span><span class='iconfont iconfontImg' title='第二主持人'>&#xe61c;</span></li>");
+									$("#selectResult").append("<li att='"+v.hospitalId+"' class='partisLimodal'><span class='iconfont iconfontList'>&#xe61e;</span><span class='selectSpan'>"+v.hospitalName+"</span><span class='iconfont iconfontImg' title='第二主持人'>&#xe61c;</span></li>");
+								}else{
+									$("#liveParticipant").append("<li att='"+v.hospitalId+"' class='participantsLi'><span class='iconfont iconfontList'>&#xe61e;</span><span class='controlParti' title='"+v.hospitalName+"'>"+v.hospitalName+"</span></li>");
+									$("#selectResult").append("<li att='"+v.hospitalId+"' class='partisLimodal'><span class='iconfont iconfontList'>&#xe61e;</span><span class='selectSpan'>"+v.hospitalName+"</span></li>");
+								}
+								nodesObj.push({
+									"id":v.hospitalId,
+									"name":v.hospitalName,
+									"serialNumber":v.serialNumber,
+									"liveId":$("#liveIdEdit").val()
+								});
+								ids.push(v.hospitalId);
+		            	   }); 
+       	            	   $("#selectNum").text($("#selectResult").find("li").length);
+       	            	   setLi();
+		            	   searchMain(nodesObj);
+		            	   if(roleName=="kscc管理员"){
+		            		   var strs="<div class='form-group' id='uploadPic'>"+
+						       				"<label class='text-center imgNew'>上传图片:</label>"+
+						    				"<input type='file' class='form-control form-width' name='file' id ='pictureInput'  accept='image/jpg,image/png' />"+
+						    				"<button class='btn btn-primary' id='imgBtn' onclick='return false;'>上传</button>"+
+						    				"<div style='padding-left:120px;font-size:10px;color:#c0c9d8;'>系统仅支持标准格式(jpg、png)的照片</div>"+
+						    			"</div>"+
+						    			"<div class='form-group' id='imgPreview' style='padding-left:120px;'></div>";
+		            		   $("#addImgDiv").append(strs);
+                               setImageUpload();
+                               var imgOldStr="<div class='form-group'>"+
+                                   "<label class='text-center'>图片:</label>"+
+                                   "<img src='' id='pictureView' style='width:120px;height:120px;' />"+
+                                   "</div>";
+                               $("#uploadPic").before(imgOldStr);
+		            		   if(baseParams.pictureName){
+		            			   $(".imgNew").text("重新上传:");
+		            			   $("#pictureView").attr("src",$.base+'/loginController/showPic?name='+baseParams.picturePath);
+		            		   }
+		            		   else{
+                                   $("#pictureView").attr("src",$.base+"/images/noPicture.png");
+							   }
+		            	   }
+		               }
+				});
+		}
+}   
+		function selectParticipant(){
+			$(".addParticipant").off().on("click",function(){
+				$("#selectNum").text($("#selectResult").find("li").length);
+				var startTime=$("#startTime").val();//开始时间
+				var endTime=$("#endTime").val();//结束时间
+				
+				var startTimeTmp = startTime.replace(new RegExp("-","gm"),"/");
+			    var startTimeHaoMiao = (new Date(startTimeTmp)).getTime();
+			    var endTimeTmp = endTime.replace(new RegExp("-","gm"),"/");
+			    var endTimeHaoMiao = (new Date(endTimeTmp)).getTime();
+				if(startTimeHaoMiao>=endTimeHaoMiao){
+					$("#tipMessage4").show();
+					return false;
+				}else{
+					$("#tipMessage4").hide();
+				}
+				
+				if(startTime!=""&&endTime!=""){
+					$("#selectModal").modal("show");
+					//获得医院列表数据
+					$.ajax({
+						   type: "GET", 
+			               async: true, 
+			               url:  $.base + "/hospital/selectHospitalInfo", 
+			               dataType: "json",
+			               success: function(data){
+			            	 var zNodes =data; 
+			            	 setZtree(zNodes,startTime,endTime);//渲染医院列表
+			               }
+				      });
+				}
+				else{
+				    $("#selectModal").modal("hide");
+					base.confirm({ 
+				    	  label:"提示",
+				    	  text:"<div style='text-align:center;font-size:13px;'>开始时间，结束时间不能为空!</div>"
+	   				});
+				}
+			});
+		}
+		var setting = {
+				view: {
+					selectedMulti:true,	
+				},
+				data: {
+					simpleData: {
+						enable: true,
+						pIdKey: "pid"
+					}
+				}
+		  };
+		function setZtree(zNodes,startTime,endTime){
+			require(["bootstrap","ztreeCore","ztreeExcheck","ztreeExedit"],function(){
+				$.fn.zTree.init($("#treeDemo1"), setting, zNodes);
+				treeObj = $.fn.zTree.getZTreeObj("treeDemo1");
+				treeObj.expandAll(true); 
+				setSelect(zNodes,startTime,endTime);
+				searchTree(startTime,endTime);//模态框医院列表数据搜索
+			});
+		}
+
+	//所属科室
+    function findAllDepartment(){
+        $.ajax({
+            url:$.base+"/FbsDepartment/findAllDepartment",
+            type:"POST",
+            contentType:"application/json",
+            dateType:"json",
+            success:function(data){
+                $("#department").html("");
+                var html = "";//初始化
+                $.each(data,function(index,item){
+                    html+="<option value='"+item.id+"'>"+item.departmentName+"</option>";
+                })
+                $("#department").html(html);
+            },
+            error:function(data){}
+        });
+    }
+
+
+		function searchTree(startTime,endTime){
+			$("#searchBtnModel").unbind().on("click",function(){
+				$.ajax({
+		        	url:$.base+"/hospital/findAllHospitalAndUser",
+		        	type:"POST",
+		        	contentType:"application/json",
+                    dateType:"json",
+                    data:JSON.stringify(
+                        {
+                            "searchCon":$("#searchParticipantModal").val()
+                        }
+					),
+		        	success:function(data){
+		        		 var zNodes =data; 
+		            	 setZtree(zNodes,startTime,endTime);//渲染医院列表
+		        	},
+		        	error:function(data){}
+				});
+			});
+		}
+		
+		//左右选择框
+		function setSelect(zNodes,startTime,endTime){
+			
+			//从左往右单选
+			$("#LTRSingle").unbind().on("click",function(){
+				var sNodes = treeObj.getSelectedNodes();
+				if(sNodes){
+					if (sNodes.length > 0) {
+						var node = sNodes[0].getParentNode();
+					}
+					var importId;
+					if(node!=null){
+						importId=node.id;
+					}
+					else{
+						importId=sNodes[0].id;
+					}
+					var data={
+							"startTime":startTime,
+							"endTime":endTime,
+						    "oldStartTime":oldStartTime,
+							"oldEndTime":oldEndTime,
+							"ids":importId
+					}; 
+					scheduleCheck(data,belongId,belongName);
+				}
+			});
+			
+			//从右往左单选
+			$("#RTLSingle").unbind().on("click",function(){
+				setLi();
+				var selectLiId=$("#selectResult li.cur").attr("att");
+				if(selectLiId){
+					if(selectLiId!=belongId){
+						var index=$.inArray(parseInt(selectLiId),ids);
+						ids.splice(index,1);
+						nodesObj.splice(index,1);
+						
+						$("#selectResult").empty();
+						$.each(nodesObj,function(i,v){
+							if(i==0){
+								v.serialNumber=1;
+								$("#selectResult").append("<li att='"+v.id+"' class='partisLimodal'><span class='iconfont iconfontList'>&#xe61e;</span><span class='selectSpan'>"+v.name+"</span><span class='iconfont iconfontImg' style='color:#ee453b;' title='第一主持人'>&#xe61c;</span></li>");
+							}else if(i==1){
+								v.serialNumber=2;
+								$("#selectResult").append("<li att='"+v.id+"' class='partisLimodal'><span class='iconfont iconfontList'>&#xe61e;</span><span class='selectSpan'>"+v.name+"</span><span class='iconfont iconfontImg' title='第二主持人'>&#xe61c;</span></li>");
+							}else{
+								$("#selectResult").append("<li att='"+v.id+"' class='partisLimodal'><span class='iconfont iconfontList'>&#xe61e;</span><span class='selectSpan'>"+v.name+"</span></li>");
+							}
+		            	});
+						$("#selectNum").text($("#selectResult").find("li").length);
+						setLi();
+					}
+				}
+			});
+			
+     		//关闭模态框
+//			$('#selectModal').on('hidden.bs.modal', function () {
+//				$("#selectResult").empty();
+//				if(belongId){
+//					$("#selectResult").append("<li att='"+belongId+"' class='partisLimodal'>"+belongName+"<span class='iconfont iconfontImg' style='color:#ee453b;' title='第一主持人'>&#xe61c;</span></li>");
+//				}
+//				$("#selectNum").text($("#selectResult").find("li").length);
+//			});
+			
+			//模态框确定按钮
+			$(".selectBtn").unbind().on("click",function(){
+				if(ids.length==0){
+					base.confirm({ 
+				    	  label:"提示",
+				    	  text:"<div style='text-align:center;font-size:13px;'>请选择第一、第二主持人！</div>"
+	   				});
+				}
+				else if(ids.length==1){
+					base.confirm({ 
+				    	  label:"提示",
+				    	  text:"<div style='text-align:center;font-size:13px;'>请再选择一个主持人！</div>"
+	   				});
+				}else{
+					$("#selectModal").modal("hide");
+                    $("#liveParticipant").empty();
+					$.each(nodesObj,function(i,v){
+						if(i==0){
+							v.serialNumber=1;
+							$("#liveParticipant").append("<li att='"+v.id+"' class='participantsLi'><span class='iconfont iconfontList'>&#xe61e;</span><span class='controlParti' title='"+v.name+"'>"+v.name+"</span><span class='iconfont iconfontImg' style='color:#ee453b;' title='第一主持人'>&#xe61c;</span></li>");
+						}else if(i==1){
+							v.serialNumber=2;
+							$("#liveParticipant").append("<li att='"+v.id+"' class='participantsLi'><span class='iconfont iconfontList'>&#xe61e;</span><span class='controlParti' title='"+v.name+"'>"+v.name+"</span><span class='iconfont iconfontImg' title='第二主持人'>&#xe61c;</span></li>");
+						}else{
+							$("#liveParticipant").append("<li att='"+v.id+"' class='participantsLi'><span class='iconfont iconfontList'>&#xe61e;</span><span class='controlParti' title='"+v.name+"'>"+v.name+"</span></li>");
+						}
+	            	});
+					$("#searchParticipant").val(JSON.stringify(nodesObj));
+					searchMain(nodesObj);//页面搜索框
+				}
+			});
+		}
+
+		function setLi(){
+			if($("#selectResult li").length>0){
+				$("#selectResult li").click(function(){
+					$(this).addClass("cur").siblings().removeClass("cur")
+				});
+			}
+		}
+		
+		//日程校验
+		function scheduleCheck(data,belongId,belongName){
+			$.ajax({
+				type: "POST", 
+	            url:  $.base + "/hospital/modifyCheckHospital",
+	            async:false,
+	            data: data,
+	            success: function(data){
+	            	
+	            	if(data[0].nonConformity){
+	            		base.confirm({ 
+					    	  label:"提示",
+					    	  text:"<div style='text-align:center;font-size:13px;'>直播时间冲突！</div>"
+		   				});
+	            	}
+	            	var effectiveList=data[0].list;
+	            	if(effectiveList){
+	            	if(effectiveList.length>0){
+	                	 if(ids.length==0){
+	                		ids.push(effectiveList[0].id);
+	                		nodesObj.push({
+	                			"id":effectiveList[0].id,
+	                			"name":effectiveList[0].hospitalName,
+	                			"serialNumber":1,
+	                			"liveId":$("#liveIdEdit").val()
+	                		});
+	                		$("#selectResult").append("<li att='"+effectiveList[0].id+"' class='partisLimodal'><span class='iconfont iconfontList'>&#xe61e;</span><span class='selectSpan'>"+effectiveList[0].hospitalName+"</span><span class='iconfont iconfontImg' style='color:#ee453b;' title='第一主持人'>&#xe61c;</span></li>");
+	                	 }
+	                	 else if(ids.length==1){
+	                		 if($.inArray(effectiveList[0].id,ids)==-1){
+	 		                		ids.push(effectiveList[0].id);
+	 		                		nodesObj.push({
+	 		                			"id":effectiveList[0].id,
+	 		                			"name":effectiveList[0].hospitalName,
+	 		                			"serialNumber":2,
+	 		                			"liveId":$("#liveIdEdit").val()
+	 		                		});
+	 		                		$("#selectResult").append("<li att='"+effectiveList[0].id+"' class='partisLimodal'><span class='iconfont iconfontList'>&#xe61e;</span><span class='selectSpan'>"+effectiveList[0].hospitalName+"</span><span class='iconfont iconfontImg' title='第二主持人'>&#xe61c;</span></li>");
+	 		                	}
+	                	 }
+	                	 else{
+	                		 if($.inArray(effectiveList[0].id,ids)==-1){
+	 		                		ids.push(effectiveList[0].id);
+	 		                		nodesObj.push({
+	 		                			"id":effectiveList[0].id,
+	 		                			"name":effectiveList[0].hospitalName,
+	 		                			"liveId":$("#liveIdEdit").val()
+	 		                		});
+	 		                		$("#selectResult").append("<li att='"+effectiveList[0].id+"' class='partisLimodal'><span class='iconfont iconfontList'>&#xe61e;</span><span class='selectSpan'>"+effectiveList[0].hospitalName+"</span></li>");
+	 		                	}
+	                	    }
+	 	                }
+	            	$("#selectNum").text($("#selectResult").find("li").length);
+	            	setLi();
+	              }
+	            }
+	       });
+		}
+		
+		//页面参与方列表搜索框
+		function searchMain(nodesObj){
+			$("#searchBtnMain").on("click",function(){
+				var condition=$("#searchBox").val();
+				$("#liveParticipant").empty();
+				var container=[];
+				$.each(nodesObj,function(i,v){
+					if(v.name.indexOf(condition)>-1){
+						container.push(v);
+					}
+				});
+				$.each(container,function(i,v){
+					if(v.serialNumber==1){
+						$("#liveParticipant").append("<li att='"+v.id+"' class='participantsLi'><span class='iconfont iconfontList'>&#xe61e;</span><span class='controlParti' title='"+v.name+"'>"+v.name+"</span><span class='iconfont iconfontImg' style='color:#ee453b;' title='第一主持人'>&#xe61c;</span></li>");
+					}
+					else if(v.serialNumber==2){
+						$("#liveParticipant").append("<li att='"+v.id+"' class='participantsLi'><span class='iconfont iconfontList'>&#xe61e;</span><span class='controlParti' title='"+v.name+"'>"+v.name+"</span><span class='iconfont iconfontImg' title='第二主持人'>&#xe61c;</span></li>");
+					}
+					else{
+						$("#liveParticipant").append("<li att='"+v.id+"' class='participantsLi'><span class='iconfont iconfontList'>&#xe61e;</span><span class='controlParti' title='"+v.name+"'>"+v.name+"</span></li>");
+					}
+			    });
+			});
+		}
+		//提交
+		function submitForm(){
+			$("#submitBtn").on("click",function(){
+				base.form.validate({ 
+	                 form:$("#editLiveForm"), 
+	                 passCallback:function(){
+					var liveName = $("#liveName").val();
+					var pattern = new RegExp("[`~!@#$^&*()=|{}' :;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]");
+					if(pattern.test(liveName)) {
+						$("#tipMessage5").show();
+						return false;
+					}else{
+						$("#tipMessage5").hide();
+					}
+					var startTimeTmp=$("#startTime").val();
+					var endTimeTmp=$("#endTime").val();
+					var startTime = startTimeTmp.replace(new RegExp("-","gm"),"/");
+				    var startTimeHaoMiao = (new Date(startTime)).getTime();
+				    var endTime = endTimeTmp.replace(new RegExp("-","gm"),"/");
+				    var endTimeHaoMiao = (new Date(endTime)).getTime();
+					if(startTimeHaoMiao>=endTimeHaoMiao){
+						$("#tipMessage4").show();
+						return false;
+					}else{
+						$("#tipMessage4").hide();
+					}
+						
+					$("#tipMessage1").hide();			
+					var phoneStr=$("#phone").val();
+					var result=phoneStr.match(/^((0\d{2,3}-\d{7,8})|(1[3584]\d{9}))$/);
+					if(result==null){ 
+						$("#tipMessage1").show();
+					}else{
+						$("#tipMessage1").hide();
+						if(ids.length<2){
+							base.confirm({ 
+						    	  label:"提示",
+						    	  text:"<div style='text-align:center;font-size:13px;'>请保证至少有两个参与方！</div>"
+			   				});
+						}else{
+							//日程校验
+							var data={
+									"startTime":$("#startTime").val(),
+									"endTime":$("#endTime").val(),
+									"ids":ids.join(","),
+									"liveId":$("#liveIdEdit").val()
+							};
+							$.ajax({
+								type: "POST", 
+					            url:  $.base + "/hospital/checkHospital", 
+					            async:false,
+					            data: data,
+					            success: function(data){
+					            	if(data[0].nonConformity){
+					            		base.confirm({ 
+									    	  label:"提示",
+									    	  text:"<div style='text-align:center;font-size:13px;'>"+data[0].nonConformity+"'      直播时间冲突！'</div>"
+						   				});
+					            	}
+					            	else{
+				   					     base.confirm({ 
+				   					    	  label:"提示",
+				   					    	  text:"<div style='text-align:center;font-size:13px;'>确定提交?</div>",
+				   				              confirmCallback:function(){
+				   				            	 var requestTip=base.requestTip({position:"center"}); 
+				   				            	 var newLive={
+				   				            	 	        "liveId":$("#liveIdEdit").val(),
+						   				            		"liveName":$("#liveName").val(),
+						   				            		"department":$("#department").find("option:selected").val(),
+						   				            		"startTime":$("#startTime").val(),
+						   				            		"endTime":$("#endTime").val(),
+						   				            		"phone":$("#phone").val(),
+						   				            		"email":$("#email").val(),
+						   				            		"hospitalURL":$("#hospitalURL").val(),
+						   				            		"liveIntroduction":$("#liveIntroduction").val(),
+						   				            		"filePath":filePath,
+							   								"fileName":fileName,
+							   								"picturePath":picturePath,
+							   								"pictureName":pictureName,
+													 		"updateId":userId
+						   				            	  };
+				   				            	 var newParticipant=nodesObj;
+				   				            	 var oldLive=baseParamss.baseParams;
+				   				            	 var oldParticipant=baseParamss.hostParams;
+				   				            	 var param={newLive:newLive,newParticipant:newParticipant,oldLive:oldLive,oldParticipant:oldParticipant}
+				   				            	$.ajax({
+								                	url:$.base+"/liveBroadCastController/modifyBroadcast",
+										        	type:"POST",
+										        	contentType:"application/json",
+										        	data:JSON.stringify(param),
+										        	success:function(data){
+										        		if(data.status==='1'){
+										        			var url=$.base+$("#siteEdit").val();
+										        			
+										        			$.ajax({ 
+							                	                type:"GET", 
+							                	                url:url, 
+							                	                error:function(){ 
+							                	                   alert("加载错误！"); 
+							                	                }, 
+							                	                success:function(data){
+                                                                    if(data.indexOf('06a5bb21-b8f0-4dfd-8004-4b4e17d4f81c')!==-1){
+                                                                        window.location.href=$.base+'/loginController/toLogin'
+                                                                        return
+                                                                    }
+                                                                    $(".middle").html(data);
+							                	                } 
+							                	             });
+														}
+										        	},
+									            	error:function(){
+									            		requestTip.error();
+										            }
+										        });
+				   				              }
+						   				});
+					            	}
+								 }
+							  });
+							}
+					      }
+					    } 
+					  });
+	                }); 
+	              }
+		
+		 function setPage(){
+	    	//时间插件
+	    	//开始时间
+	    	var startTime = {
+	  			  elem: '#startTime',
+	  			  format: 'YYYY-MM-DD hh:mm',
+	  			  min: laydate.now(), //设定最小日期为当前日期
+	  			  max: '2099-06-16 23:59', //最大日期
+	  			  istime: true,
+	  			  istoday: false,
+		  			};
+		  	$("#startTime").on("click",function(){
+		  		laydate(startTime);
+		  	});
+		  	//结束时间
+		  	var endTime = {
+		  			  elem: '#endTime',
+		  			  format: 'YYYY-MM-DD hh:mm',
+		  			  min: laydate.now(), //设定最小日期为当前日期
+		  			  max: '2099-06-16 23:59', //最大日期
+		  			  istime: true,
+		  			  istoday: false,
+		  			};
+		  	$("#endTime").on("click",function(){
+		  		laydate(endTime);
+		  	});
+        };
+
+    /**上传附件**/
+    var setFileUpload = function(){
+        $("#fileBtn").on("click",function(){
+            base.form.fileUpload({
+                url:$.base+"/loginController/upload",
+                id:"file",
+                success:function(data){
+                    switch(data.status){
+                        case "1":
+                        	filePath=data.data.fileUrl;
+							fileName=data.data.fileName;
+                            base.requestTip({
+                                position:"center"
+                            }).success("附件上传成功！");
+                            break;
+                        default:
+                            base.requestTip({
+                                position:"center"
+                            }).error("附件上传失败！");
+                            break;
+                    }
+
+                }
+            });
+        });
+    };
+
+    /**上传图片**/
+    var setImageUpload = function(){
+        $("#imgBtn").on("click",function() {
+            base.form.fileUpload({
+                url: $.base + "/loginController/upload",
+                id: "pictureInput",
+                success: function (data) {
+                	if(data.status==="1"){
+                        picturePath=data.data.fileUrl;
+                        pictureName=data.data.fileName;
+                        $('#pictureView').attr("src",$.base+"/loginController/showPic?name="+picturePath)
+                        base.requestTip({
+                            position:"center"
+                        }).success("附件上传成功！");
+					}
+                }
+            });
+        });
+    };
+		return {
+			run:function(){
+				affiliatedHospital();//获得所属医院
+				getMenus();//获得底部菜单
+				selectParticipant();
+				setPage();
+				submitForm();//页面提交按钮
+                findAllDepartment();
+                setFileUpload();
+                getEditData(roleName);
+
+			}
+		};
+});

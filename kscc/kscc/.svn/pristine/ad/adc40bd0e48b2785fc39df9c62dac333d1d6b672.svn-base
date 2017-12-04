@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper  namespace="com.fable.kscc.bussiness.mapper.hospitalInformation.HospitalInformationMapper">
+	<select id="findAllPageLiveHospitalList" resultType="com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation" parameterType="com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation">
+		SELECT
+			ID id,
+			HOSPITAL_CONTENT hospitalContent,
+			HOSPITAL_URL hospitalUrl,
+			HOSPITAL_NAME hospitalName,
+			PARENT_ID parentId,
+			CREATOR_ID creatorId,
+			CREATOR_TIME creatorTime,
+			UPDATE_ID updateId,
+			UPDATE_TIME updateTime,
+			LOGO_URL logoUrl
+		FROM FBS_HOSPITAL_INFORMATION
+		WHERE 1=1
+	</select>
+	<select id="getHospitalInformationList" parameterType="string" resultType="com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation">
+		SELECT 
+			ID id,
+			HOSPITAL_CONTENT hospitalContent,
+			HOSPITAL_URL hospitalUrl,
+			HOSPITAL_NAME hospitalName,
+			PARENT_ID parentId,
+			CREATOR_ID creatorId,
+			CREATOR_TIME creatorTime,
+			UPDATE_ID updateId,
+			UPDATE_TIME updateTime,
+			LOGO_URL logoUrl
+		From
+		FBS_HOSPITAL_INFORMATION
+		WHERE 1=1
+		<if test="id !=null and id !=''">
+			AND ID = #{id}
+		</if>
+	</select>
+	
+<!-- 	(医院日程校验并查询符合条件医院) -->
+	<resultMap type="com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation" id="hospitalInfo">
+		<id column="ID" property="id" jdbcType="INTEGER"/>
+		<id column="HOSPITAL_NAME" property="hospitalName" jdbcType="VARCHAR"/>
+		<id column="codec_ownership" property="codec_ownership" jdbcType="VARCHAR"/>
+		<id column="pid" property="pid" jdbcType="INTEGER"/>
+		<id column="codecid" property="codecid" jdbcType="INTEGER"/>
+	</resultMap>
+	<!--ISDEL为0则不会去校验为1(已删除)状态的时间-->
+	<select id="findAllHospitalInfo" resultMap="hospitalInfo" parameterType="java.util.Map">
+
+		SELECT
+		FHI.ID,
+		FHI.HOSPITAL_NAME,
+		FLC.CODEC_OWNERSHIP codec_ownership,
+		FLC.ID codecid,
+		FLC.HOSPITAL_ID PID
+		FROM FBS_HOSPITAL_INFORMATION FHI
+		LEFT JOIN FBS_LIVE_CODEC FLC ON FLC.HOSPITAL_ID = FHI.ID
+		WHERE FHI.ID NOT IN ( SELECT DISTINCT (HOSPITAL_ID) FROM FBS_LIVE_PARTICIPANT
+		WHERE
+		LIVE_ID IN (
+		SELECT ID FROM fbs_live_broadcast
+		WHERE
+		NOT ( START_TIME <![CDATA[ >= ]]> #{params.endTime}
+		OR
+		END_TIME<![CDATA[ <= ]]>#{params.startTime}
+		)
+		AND ISDEL = '0'
+		AND PLAY_STATUS<![CDATA[ <> ]]>'2'
+		AND APPROVAL_STATUS<![CDATA[ <> ]]> '2'
+		<if test="params.liveId != null and params.liveId != ''">
+			AND ID != #{params.liveId}
+		</if>
+		)
+		AND PARTICIPATION<![CDATA[ <> ]]>'2'
+		)
+		<if test="params.name != null and params.name != ''">
+			AND HOSINFO.HOSPITAL_NAME LIKE '%${params.name}%'
+		</if>;
+
+	</select>
+<!-- 	查询所有医院信息 -->
+	<select id="selectHospitalInfo" resultMap="hospitalInfo">
+			SELECT HOSINFO.ID,HOSINFO.HOSPITAL_NAME,CODECINFO.CODEC_OWNERSHIP codec_ownership,
+			CODECINFO.ID codecid,CODECINFO.HOSPITAL_ID PID
+			FROM FBS_HOSPITAL_INFORMATION HOSINFO
+			LEFT JOIN FBS_LIVE_CODEC CODECINFO ON CODECINFO.HOSPITAL_ID = HOSINFO.ID WHERE HOSINFO.ID NOT IN(
+				SELECT h.ID FROM FBS_USER u 
+				LEFT JOIN FBS_HOSPITAL_INFORMATION h ON u.HOSPITAL_ID = h.ID WHERE u.ID IN(
+				SELECT ID FROM FBS_LIVE_BROADCAST WHERE '' BETWEEN START_TIME AND END_TIME)
+		)
+	</select>
+
+<!-- 	获取当前用户所属医院 -->
+	<resultMap type="com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation" id="hospital">
+		<id column="ID" property="id" jdbcType="INTEGER"/>
+		<id column="HOSPITAL_NAME" property="hospitalName" jdbcType="VARCHAR"/>
+	</resultMap>
+	<select id="getHospitalInfoByUser" resultMap="hospital" parameterType="java.lang.Integer">
+		SELECT ID,HOSPITAL_NAME FROM FBS_HOSPITAL_INFORMATION WHERE ID =
+		 (SELECT HOSPITAL_ID FROM FBS_USER WHERE ID = #{id})
+	</select>
+	
+<!-- 	根据id查询医院名称 -->
+	<select id="findAllById" resultType="java.lang.String" parameterType="java.lang.Integer">
+		SELECT HOSPITAL_NAME FROM FBS_HOSPITAL_INFORMATION WHERE ID = ${id}
+	</select>
+	
+	<select id="getAllHospitalList" resultType="com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation">
+		SELECT
+			ID id,
+			HOSPITAL_CONTENT hospitalContent,
+			HOSPITAL_URL hospitalUrl,
+			HOSPITAL_NAME hospitalName,
+			PARENT_ID parentId,
+			CREATOR_ID creatorId,
+			CREATOR_TIME creatorTime,
+			UPDATE_ID updateId,
+			UPDATE_TIME updateTime,
+			LOGO_URL logoUrl
+		From
+		FBS_HOSPITAL_INFORMATION
+	</select>
+	<!-- 	(搜索医院)医院信息 -->
+	<select id="selectHospital" resultMap="hospitalInfo" parameterType="java.util.Map">
+			SELECT HOSINFO.ID,HOSINFO.HOSPITAL_NAME,CODECINFO.CODEC_OWNERSHIP codec_ownership,
+			CODECINFO.ID codecid,CODECINFO.HOSPITAL_ID PID
+			FROM FBS_HOSPITAL_INFORMATION HOSINFO
+			LEFT JOIN FBS_LIVE_CODEC CODECINFO ON CODECINFO.HOSPITAL_ID = HOSINFO.ID WHERE HOSINFO.ID NOT IN(
+				SELECT h.ID FROM FBS_USER u 
+				LEFT JOIN FBS_HOSPITAL_INFORMATION h ON u.HOSPITAL_ID = h.ID WHERE u.ID IN(
+				SELECT ID FROM FBS_LIVE_BROADCAST WHERE '' BETWEEN START_TIME AND END_TIME)
+		) AND HOSINFO.HOSPITAL_NAME LIKE '%${params.searchCon}%'
+	</select>
+	<select id="getHospitalIdByName" parameterType="string" resultType="com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation">
+	     	SELECT
+			ID id,
+			HOSPITAL_CONTENT hospitalContent,
+			HOSPITAL_URL hospitalUrl,
+			HOSPITAL_NAME hospitalName,
+			PARENT_ID parentId,
+			CREATOR_ID creatorId,
+			CREATOR_TIME creatorTime,
+			UPDATE_ID updateId,
+			UPDATE_TIME updateTime,
+			LOGO_URL logoUrl
+		From
+		FBS_HOSPITAL_INFORMATION
+		where 1=1
+		AND
+		HOSPITAL_NAME=#{hospitalName,jdbcType=VARCHAR}
+	</select>
+	<!--根据医院id查询医院-->
+	<select id="selectHospitalById" resultType="com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation" parameterType="java.util.Map">
+		SELECT ID id,HOSPITAL_NAME hospitalName,HOSPITAL_CONTENT hospitalContent,HOSPITAL_URL hospitalUrl,LOGO_URL logoUrl FROM FBS_HOSPITAL_INFORMATION WHERE ID IN (#{params.hospitalIds})
+	</select>
+	<!--新增医院信息-->
+	<insert id="insertFbsHospitalInfo" useGeneratedKeys="true" keyProperty="id" parameterType="com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation">
+		INSERT INTO FBS_HOSPITAL_INFORMATION (
+			HOSPITAL_CONTENT,
+			HOSPITAL_URL,
+			HOSPITAL_NAME,
+			BUCKET)
+		VALUES (
+		#{hospitalContent},
+		#{hospitalUrl},
+		#{hospitalName},
+		#{bucket}
+		)
+	</insert>
+
+	<update id="updateLiveHospital" parameterType="java.util.Map">
+		update FBS_HOSPITAL_INFORMATION
+		SET
+			HOSPITAL_NAME = #{params.hospitalName},
+			HOSPITAL_URL = #{params.hospitalUrl},
+			HOSPITAL_CONTENT =#{params.hospitalContent},
+			LOGO_URL =#{params.logoUrl}
+		WHERE  ID = #{params.id}
+	</update>
+
+	<select id="queryLiveHospital" parameterType="com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation" resultType="com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation">
+		select
+		ID id,HOSPITAL_NAME hospitalName,
+		HOSPITAL_CONTENT hospitalContent,
+		HOSPITAL_URL hospitalUrl
+		FROM FBS_HOSPITAL_INFORMATION
+		where 1=1
+		<if test="id !=null and id !=''">
+			and ID = #{id}
+		</if>
+	</select>
+	<delete id="deleteLiveHospital">
+		DELETE FROM FBS_HOSPITAL_INFORMATION WHERE ID =#{id}
+	</delete>
+
+	<select id="getHospitalForAddParticipant" parameterType="list" resultType="com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation">
+		SELECT
+		FHI.ID id,
+		FHI.HOSPITAL_NAME hospitalName,
+		FLC.CODEC_OWNERSHIP codec_ownership,
+		FLC.ID codecid,
+		FLC.HOSPITAL_ID pid,
+		FLC.NEWVIDEO_NUM newVideoNum
+		FROM FBS_HOSPITAL_INFORMATION FHI
+		LEFT JOIN FBS_LIVE_CODEC FLC ON FLC.HOSPITAL_ID = FHI.ID
+		WHERE FHI.ID NOT IN
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+	</select>
+	<select id="queryHospitalListByName" parameterType="java.lang.String" resultType="com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation">
+		SELECT * FROM FBS_HOSPITAL_INFORMATION FHI
+		WHERE FHI.HOSPITAL_NAME LIKE '%${hospitalName}%'
+	</select>
+</mapper>

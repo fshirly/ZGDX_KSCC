@@ -1,0 +1,21 @@
+package com.fable.kscc.bussiness.service.fbmenu;
+
+import com.fable.kscc.api.model.menu.FbsMenu;
+
+import java.util.List;
+import java.util.Map;
+
+public interface FbsMenuService {
+    /**
+     * 根据kscc管理员查看菜单(权限)
+     * @return
+     */
+    List<FbsMenu> findAllByRole(String userId);
+
+    /**
+     * 更改kscc管理员的菜单
+     * @param params
+     * @return
+     */
+    int updateMenuByRole(Map<String,Object> params);
+}

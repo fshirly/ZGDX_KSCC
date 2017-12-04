@@ -1,0 +1,91 @@
+package com.fable.kscc.bussiness.websocket;
+
+/**
+ * <p>
+ * Title :
+ * </p>
+ * <p>
+ * Description:
+ * </p>
+ * <p>
+ * Author :王海瑞 2016/11/17
+ * </p>
+ * <p>
+ * Department :
+ * </p>
+ * <p> Copyright : 江苏飞博软件股份有限公司 </p>
+ */
+
+import com.fable.kscc.api.utils.ApplicationContextBeanUtil;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+@ServerEndpoint("/websocket")
+public class WebSocketService {
+
+    private static int onlineCount = 0;
+    private Session session;
+    private static CopyOnWriteArraySet<Session> sessions = new CopyOnWriteArraySet<Session>();
+    private Sender sender = ApplicationContextBeanUtil.getBeanByType(Sender.class);
+    @OnOpen
+    public void onOpen(Session session) {
+        sender.getSessions().add(session);
+        sessions.add(session);
+        this.session = session;
+        addOnlineCount();           //在线数加1
+        System.out.println("有新连接加入！当前在线人数为" + getOnlineCount());
+    }
+
+    @OnClose
+    public void onClose() {
+        sender.getSessions().remove(session);
+        sessions.remove(session);
+        subOnlineCount();           //在线数减1
+        System.out.println("有一连接关闭！当前在线人数为" + getOnlineCount());
+    }
+
+
+    //收到客户端端消息时触发
+    @OnMessage
+    public void onMessage(String message, Session session) {
+        for(Session link:sessions){
+            try {
+                link.getBasicRemote().sendText(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @OnError
+    public void onError(Session session, Throwable error) {
+        System.out.println("发生错误");
+        error.printStackTrace();
+    }
+  /*  private void sendMessage(String message) throws IOException{
+        this.session.getBasicRemote().sendText(message);
+    }*/
+
+    private static synchronized int getOnlineCount() {
+        return onlineCount;
+    }
+
+    private static synchronized void addOnlineCount() {
+        WebSocketService.onlineCount++;
+    }
+
+    private static synchronized void subOnlineCount() {
+        WebSocketService.onlineCount--;
+    }
+
+}

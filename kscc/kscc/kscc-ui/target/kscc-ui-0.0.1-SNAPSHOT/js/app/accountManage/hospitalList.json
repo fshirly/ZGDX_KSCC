@@ -1,0 +1,16 @@
+[
+  {"id":"1","pid":"1","name":"鼓楼医院","address":"/loginController/toHospitalInfo"},
+  {"id":"2","pid":"1","name":"管理员","address":"/loginController/toHospitalAdmin"},
+  {"id":"3","pid":"1","name":"医生用户","address":"/loginController/toDoctorUser"},
+  {"id":"4","pid":"1","name":"编解码器","address":"/loginController/toCodec"},
+
+  {"id":"2","pid":"2","name":"儿童医院","address":"/loginController/toHospitalInfo"},
+  {"id":"3","pid":"2","name":"管理员","address":"/loginController/toHospitalAdmin"},
+  {"id":"4","pid":"2","name":"医生用户","address":"/loginController/toDoctorUser"},
+  {"id":"5","pid":"2","name":"编解码器","address":"/loginController/toCodec"},
+
+  {"id":"3","pid":"3","name":"江苏省人民医院","address":"/loginController/toHospitalInfo"},
+  {"id":"4","pid":"3","name":"管理员","address":"/loginController/toHospitalAdmin"},
+  {"id":"5","pid":"3","name":"医生用户","address":"/loginController/toDoctorUser"},
+  {"id":"6","pid":"3","name":"编解码器","address":"/loginController/toCodec"}
+]

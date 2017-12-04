@@ -1,0 +1,7 @@
+package com.fable.kscc.bussiness.service.uploadfile;
+
+public interface UploadFileService {
+	void uploadFile();
+	
+	void deleteFile(String bucket,String key);
+}

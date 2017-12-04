@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.kscc.bussiness.mapper.uploadfile.UploadFileMapper">
+	 
+	<select id="getUploadFileInfo" resultType="com.fable.kscc.api.model.upload.UploadBean">
+		 SELECT live.id,live.CONF_ID as confId,
+		 		hospital.BUCKET as bucket
+				from FBS_LIVE_BROADCAST live 
+		   LEFT JOIN FBS_LIVE_PARTICIPANT   flp ON
+			 live.ID = flp.LIVE_ID  
+		   LEFT JOIN FBS_HOSPITAL_INFORMATION hospital ON
+			 hospital.ID = flp.HOSPITAL_ID
+		   LEFT JOIN  FBS_LIVE_CODEC codec ON
+			 codec.HOSPITAL_ID = hospital.ID
+		   where live.ISGENERATED = '1'	
+		   		 and live.CONF_ID is not null and hospital.BUCKET is not null
+		   		 and (live.isupload  is null or   live.isupload <![CDATA[<> ]]> '1')
+	</select>
+	
+	
+	<update id="updateUpload" parameterType="com.fable.kscc.api.model.upload.UploadBean" >
+	        update FBS_LIVE_BROADCAST   set   
+               isupload = '1'
+            where id IN     
+            <foreach collection="list" index="index" item="item" open="(" separator="," close=")" >
+                #{item.id}    
+            </foreach>  
+	</update>
+
+	<insert id="insertIntoFile" parameterType="hashmap">
+		INSERT INTO fbs_live_file(CONF_ID,HOSPITAL_ID,CODEC_ID,FILE_NAME,FILE_PATH,OLDFILE_STATUS,UPLOAD_STATUS,STOREFILE_STATUS) VALUES
+        VALUES(#{confId},#{hospitalId},#{codecId},#{fileName},#{filePath},'0','0','0')
+	</insert>
+
+	 
+</mapper>

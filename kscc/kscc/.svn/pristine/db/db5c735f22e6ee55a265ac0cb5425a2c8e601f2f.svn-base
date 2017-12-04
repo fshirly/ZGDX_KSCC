@@ -1,0 +1,136 @@
+package com.fable.kscc.bussiness.service.livebroadapprove;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.fable.kscc.api.model.participant.FbsLiveParticipant;
+import com.fable.kscc.bussiness.mapper.livebroadcast.LiveBroadCastMapper;
+import com.fable.kscc.bussiness.mapper.liveparticipant.LiveParticiPantMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fable.kscc.api.model.livebroadcast.FbsLiveBroadcast;
+import com.fable.kscc.api.model.message.FbsLiveMessage;
+import com.fable.kscc.api.model.page.PageRequest;
+import com.fable.kscc.api.model.page.PageResponse;
+import com.fable.kscc.api.model.user.FbsUser;
+import com.fable.kscc.bussiness.mapper.LiveMessage.LiveMessageMapper;
+import com.fable.kscc.bussiness.mapper.hospitalInformation.HospitalInformationMapper;
+import com.fable.kscc.bussiness.mapper.fbsUser.FbsUserMapper;
+import com.fable.kscc.bussiness.mapper.livebroadapprove.LiveBroadApproveMapper;
+import com.fable.kscc.bussiness.mapper.liveoperationlog.LiveOperationLogMapper;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+@Service("liveBroadApproveServiceImpl")
+public class LiveBroadApproveServiceImpl implements LiveBroadApproveService {
+
+	@Autowired
+	LiveBroadApproveMapper LiveBroadApproveMapper;
+
+	@Autowired
+    FbsUserMapper ksUserMapper;
+
+	@Autowired
+	LiveMessageMapper liveMessageMapper;
+
+	@Autowired
+	LiveParticiPantMapper liveParticiPantMapper;
+
+	@Autowired
+	LiveBroadCastMapper liveBroadCastMapper;
+
+	@Override
+	public PageResponse<FbsLiveBroadcast> queryFbsLiveBroadList(PageRequest<Map<String,Object>> pageRequest) {
+		Map<String,Object> map=pageRequest.getParam();
+		Page<FbsLiveBroadcast> result = PageHelper.startPage(pageRequest.getPageNo(), pageRequest.getPageSize());
+		LiveBroadApproveMapper.queryFbsLiveBroadList(map);
+		return PageResponse.wrap(result);
+	}
+	
+	@Override
+	public FbsLiveBroadcast queryFbsLiveBroadById(Integer id) {
+		return LiveBroadApproveMapper.queryFbsLiveBroadById(id);
+	}
+
+	@Override
+	public int deleteFbsLiveBroadById(Integer id) {
+		return LiveBroadApproveMapper.deleteFbsLiveBroadById(id);
+	}
+
+	@Override
+	public Map<String,Object> updateFbsLiveBroadById(FbsLiveBroadcast fbsLiveBroadcast) {
+		Map<String, Object> map = new HashMap<>();
+		//String name = fbsLiveBroadcast.getName();
+		final int id = fbsLiveBroadcast.getId();//直播id
+		String approveStatus = fbsLiveBroadcast.getApprovalStatus();
+		int user_Id = fbsLiveBroadcast.getUserId();
+
+		Date currentTime = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String dateString = formatter.format(currentTime);
+
+		FbsLiveMessage message = new FbsLiveMessage();
+		if(approveStatus.equals("2")){//已拒绝
+			//通过直播id查询相应的用户id
+			Map<String, Object> mapValue = new HashMap<>();
+			mapValue.put("liveId",id);
+			Map<String, Object> mapParam = liveBroadCastMapper.queryLiveById(mapValue);
+			int userId = Integer.parseInt(mapParam.get("userId").toString());
+			String liveTitle = mapParam.get("title").toString();
+
+			message.setUserId(userId);//接受消息方
+			message.setCreatorId(String.valueOf(user_Id));//系统管理员
+			message.setCreatedTime(currentTime);
+			message.setMtype("2");//其它消息信息
+			message.setLiveId(id);
+			message.setStatus("1");
+
+			message.setContent("您申请的直播（"+liveTitle+"）已被拒绝");
+			liveMessageMapper.insertLiveMessage(message);
+
+		}else if(approveStatus.equals("1")){//已同意
+			//查询所属直播的所有已参与的参与方（）
+			List<FbsLiveParticipant> participantsList =  liveParticiPantMapper.queryFbsLiveParti(id);
+			FbsLiveMessage messageSecond = new FbsLiveMessage();
+			//通过医院id查询相应的用户信息
+			for(FbsLiveParticipant partiBean : participantsList){
+				//过滤没参加直播的参与方
+				String participation = partiBean.getParticipation();
+				if(participation.equals("0")||participation.equals("1")){ //已参与的未表态的参与方
+					int hospitalId = partiBean.getHospitalId();
+					FbsUser userBean = ksUserMapper.getFbUserByhospitalId(hospitalId);
+					int userId = userBean.getId();
+					//入消息信息-创建直播信息
+					messageSecond.setUserId(userId);//接受消息方
+					messageSecond.setCreatorId(String.valueOf(user_Id));//系统管理员
+					messageSecond.setCreatedTime(currentTime);
+					messageSecond.setMtype("2");//其它类型
+					messageSecond.setLiveId(id);
+					messageSecond.setStatus("1");
+					//通过直播id查询相应的直播间名称
+					Map<String,Object> mapValue = liveBroadCastMapper.queryLiveById(new HashMap<String, Object>(){{put("liveId",id);}});
+					String liveTitle = mapValue.get("title").toString();
+					messageSecond.setContent("您申请的直播（"+liveTitle+"）审批通过");
+					liveMessageMapper.insertLiveMessage(messageSecond);
+				}
+			}
+		}
+
+		//根据同意拒绝更新approveStatus状态和更新APPROVAL_TIME的时间
+		fbsLiveBroadcast.setApprovalTime(dateString);
+        Boolean status = LiveBroadApproveMapper.updateFbsLiveBroadById(fbsLiveBroadcast) !=0;
+        map.put("success",status);
+        if(status){
+            map.put("message","修改成功");
+        }else {
+            map.put("message","修改失败");
+        }
+        return map;
+	}
+	
+}

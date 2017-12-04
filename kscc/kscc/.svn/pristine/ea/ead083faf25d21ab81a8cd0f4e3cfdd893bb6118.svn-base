@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper  namespace="com.fable.kscc.bussiness.mapper.fbuserrole.FabUserRoleMapper">
+    <insert id="insertFabUserRole" useGeneratedKeys="true" keyProperty="id" parameterType="com.fable.kscc.api.model.userRole.FbsUserRole">
+        INSERT INTO FBS_USER_ROLE (
+        USER_ID,ROLE_ID
+        )VALUES (
+        #{userId,jdbcType=VARCHAR},
+        #{roleId,jdbcType=VARCHAR}
+        )
+    </insert>
+    <select id="queryRoleByUserId" parameterType="java.lang.Integer" resultType="com.fable.kscc.api.model.userRole.FbsUserRole">
+        SELECT USER_ID userId,ROLE_ID roleId FROM FBS_USER_ROLE WHERE USER_ID = #{id}
+    </select>
+    <delete id="deleteUserRoleById">
+        DELETE  FROM  FBS_USER_ROLE WHERE 1=1
+        AND USER_ID = #{userId}
+    </delete>
+</mapper>

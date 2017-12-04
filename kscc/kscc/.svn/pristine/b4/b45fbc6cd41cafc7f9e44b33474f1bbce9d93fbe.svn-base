@@ -1,0 +1,47 @@
+package com.fable.kscc.api.medTApi;
+
+import com.fable.kscc.api.utils.HttpUtils;
+import com.fable.kscc.api.utils.MD5Encrypt;
+import com.fable.kscc.api.utils.RestHepler;
+import com.fable.kscc.api.utils.XmlGenerator;
+import net.sf.json.JSONObject;
+import net.sf.json.xml.XMLSerializer;
+import org.apache.xmlbeans.impl.util.Base64;
+import org.springframework.stereotype.Component;
+
+/**
+ * Created by Wanghairui on 2017/10/10.
+ */
+@Component
+public class MedTApi {
+    private static String ipAndPort="http://202.127.28.81:50080/";
+    private static String username="admin";
+    private static String password="admin123";
+    private static String authenticationId;
+    public static void main(String[] args) {
+        //获取鉴权id
+        String str=  HttpUtils.httpGet(ipAndPort+"nvrcgi2/system/GetAuthenticationid");
+        System.out.println(str);
+        authenticationId = xmlToJson(str).get("Authenticationid").toString();
+        String str1=new String(Base64.encode(
+                (Str2HexString(MD5Encrypt.encode(username + "," + password + "," + authenticationId))).getBytes()));
+        String param = XmlGenerator.generateLoginParam(username, str1, authenticationId);
+        System.out.println(param);
+        String result = HttpUtils.httpPostByXml(ipAndPort + "nvrcgi2/system/Login", param);
+        System.out.println(result);
+
+    }
+    private static JSONObject xmlToJson(String xml){
+        XMLSerializer xmlSerializer=new XMLSerializer();
+        return  (JSONObject)xmlSerializer.read(xml);
+    }
+    private static String Str2HexString(String str) {
+        char[] strChar=str.toCharArray();
+        StringBuilder result=new StringBuilder();
+        for(char c:strChar){
+            result.append(Integer.toHexString(c));
+        }
+        return result.toString();
+    }
+
+}

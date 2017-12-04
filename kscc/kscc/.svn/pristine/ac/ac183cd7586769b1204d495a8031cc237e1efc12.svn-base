@@ -1,0 +1,20 @@
+package com.fable.kscc.api.medTApi;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/**
+ * @auther jiangmingjun
+ * @create 2017/11/6
+ * @description 单例模式创建线程池，保证程序中只创建一个线程池
+ */
+public class ThreadPoolUtils {
+    private ThreadPoolUtils() {
+    }
+    private static final ExecutorService threadPool = Executors.newCachedThreadPool();
+
+    public static ExecutorService getThreadPool() {
+        return threadPool;
+
+    }
+}

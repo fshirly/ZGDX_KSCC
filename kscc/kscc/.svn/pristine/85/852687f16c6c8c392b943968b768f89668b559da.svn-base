@@ -1,0 +1,53 @@
+package com.fable.kscc.bussiness.service.enrollMedT;
+
+import com.fable.kscc.bussiness.mapper.livebroadcast.LiveBroadCastMapper;
+import com.fable.kscc.bussiness.mapper.livecodec.LiveCodecMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @auther jiangmingjun
+ * @create 2017/10/25
+ * @description 系统重启之后重新开启鉴权线程
+ */
+@Service
+public class MEDTInit {
+    @Autowired
+    LiveBroadCastMapper liveBroadCastMapper;
+
+    @Autowired
+    private LiveCodecMapper liveCodecMapper;
+
+    @PostConstruct
+    public void init() {
+        List<Map<String,String>> participants = liveBroadCastMapper.queryParticipantsInLive();
+        if (null != participants) {
+             /*2、分组算法**/
+            Map<String, List<Map<String,String>>> participantsMap = new HashMap<>();
+            for (Map<String,String> map : participants) {
+                List<Map<String,String>> tempList = participantsMap.get(map.get("confId"));
+      /*如果取不到数据,那么直接new一个空的ArrayList**/
+                if (tempList == null) {
+                    tempList = new ArrayList<>();
+                    tempList.add(map);
+                    participantsMap.put(map.get("confId"), tempList);
+                }
+                else {
+        /*某个map之前已经存放过了,则直接追加数据到原来的List里**/
+                    tempList.add(map);
+                }
+            }
+            int size = liveCodecMapper.selectMedTProperties().size();
+            for (String confId : participantsMap.keySet()) {
+                EnrollMedT.threadStart(size,participantsMap.get(confId),confId);
+            }
+            System.out.println("kaishi****************");
+        }
+    }
+}

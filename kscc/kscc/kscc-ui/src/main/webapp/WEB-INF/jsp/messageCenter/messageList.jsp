@@ -1,0 +1,78 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+ request.setCharacterEncoding("UTF-8");
+%>
+	          <div class="middleContent" style="height:100%;">
+		        <div class="searchBar">
+			       <div>
+			          <div style="float:right;">
+			              <input type="text" class="form-control" name="searchConferenceMessage" id="searchConferenceMessage" placeholder="请输入发信人关键字" style="width:250px;"/>
+			              <span class="iconfont fuzzySearchBtn">&#xe60a;</span>
+			          </div>
+			       </div>
+			    </div>
+				<ul id="myTab" class="nav nav-tabs">
+		           <li class="active">
+		              <a href="#wait" data-toggle="tab">未读消息</a>
+		           </li>
+		           <li>
+		              <a href="#yet" data-toggle="tab">已读消息</a>
+		           </li>
+		        </ul>
+		        <div id="myTabContent" class="tab-content mt-10">
+	                <div class="tab-pane fade in active" id="wait">
+					    <!-- <div class="clearfix">
+					       <button class="btn btn-primary batchDelete">批量删除</button>
+					       <button class="btn btn-primary batchRead">批量已读</button>
+				        </div> -->
+					    <div id="unReadInfo">
+					    	<table id="unReadInfoTable" class="table table-striped kscc-grid" ></table>
+					    </div>
+	                </div>
+	                <div class="tab-pane fade" id="yet">
+					    <!-- <div class="clearfix">
+					        <button class="btn btn-primary batchDeleteRead">批量删除</button>
+				        </div> -->
+					    <div id="readInfo">
+					    	<table id="readInfoTable" class="table table-striped kscc-grid"></table>
+					    </div>
+	                </div>
+	            </div>
+            </div>
+	<!--查看弹框-->
+	<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="modal-dialog modal-lg" style="width:800px;height:550px;">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                <h4 class="modal-title">消息详情</h4>
+	            </div>
+	            <div class="modal-body" style="width:770px;height:480px;">
+	            	<form class="form-inline" id="messageFormView" method="post" action="">
+	            		<div class="clearfix mt-10">
+				            <label class="text-right">发信人：</label>
+				            <label class="form-control form-label" id="addresserView" style="width:65%;"></label>
+				        </div>
+				        <div class="clearfix mt-10">
+				            <label class="text-right">时间：</label>
+				            <label class="form-control form-label" id="timeView" style="width:65%;"></label>
+				        </div>
+			            <div class="clearfix mt-10">
+			                <label class="text-right">消息内容：</label>
+			                <label class="form-control form-label" id="contentView" style="width:65%;height:150px;"></label>
+			            </div>
+			        </form>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default messageClose" data-dismiss="modal">关闭</button>
+	            </div>
+	        </div><!-- /.modal-content -->
+	    </div><!-- /.modal -->
+	</div>
+	
+	<script>
+		require(["app/messageCenter/messageListApp"],function(page){
+		    page.run();
+		})
+	</script>

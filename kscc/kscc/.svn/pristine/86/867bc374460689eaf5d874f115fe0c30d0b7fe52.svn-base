@@ -1,0 +1,97 @@
+package com.fable.kscc.bussiness.controller.aws;
+
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.fable.kscc.api.model.page.PageRequest;
+import com.fable.kscc.api.model.page.PageResponse;
+import com.fable.kscc.api.model.page.ResultKit;
+import com.fable.kscc.api.model.page.ServiceResponse;
+import com.fable.kscc.api.model.upload.FbsLiveFile;
+import com.fable.kscc.api.skyCloud.Common;
+import com.fable.kscc.bussiness.service.uploadfile.UploadFileService;
+
+@RequestMapping("/awsFile")
+@Controller
+public class AwsFileController {
+    @Autowired
+    private UploadFileService uploadFileService;
+
+    /**
+     * 删除文件
+     */
+    @RequestMapping("/deleteFile/{key}/{id}/{bucket}")
+    @ResponseBody
+    public ServiceResponse deleteFile(@PathVariable String bucket,@PathVariable String key,@PathVariable String id) throws Exception {
+    	try {
+    		uploadFileService.deleteFile(bucket, key,id);
+    		return ResultKit.success();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResultKit.fail("删除失败");
+		}
+    }
+    
+    /**
+     * 下载链接
+     */
+    @RequestMapping("/getFile/{key}/{bucket}")
+    @ResponseBody
+    public String getFile(@PathVariable String bucket,@PathVariable String key) throws Exception {
+    	try {
+    		AmazonS3Client client = Common.getClient();
+    		GeneratePresignedUrlRequest httpRequest=new GeneratePresignedUrlRequest(bucket, key);
+    		String url=client.generatePresignedUrl(httpRequest).toString();//临时链接
+    		return url;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "操作失败";
+		}
+    }
+    
+    /**
+     * 修改文件名
+     */
+    @RequestMapping("/renameFile/{key}/{name}/{id}/{bucket}")
+    @ResponseBody
+    public ServiceResponse renameFile(@PathVariable String bucket,@PathVariable String key,@PathVariable String name,@PathVariable String id) throws Exception {
+    	try {
+    		uploadFileService.renameFile(bucket, key, name,id);
+    		return ResultKit.success();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResultKit.fail("操作失败");
+		}
+    }
+    
+    
+    /**
+     * @param   title  
+    	   hospital 
+    	  uploadstatus 
+    	    timeBegin timeEnd  
+     *  pageRequest
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value="/listFile", method=RequestMethod.POST)
+	@ResponseBody
+	public PageResponse<FbsLiveFile> listFile(@RequestBody PageRequest<Map<String,Object>> pageRequest) throws Exception {
+    	//public PageResponse<FbsLiveFile> listFile() throws Exception {
+    	try {
+    		return uploadFileService.getLiveFileList(pageRequest);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new PageResponse<FbsLiveFile>();
+		}
+	}
+}

@@ -1,0 +1,26 @@
+import com.fable.kscc.api.medTApi.MedTApi;
+import com.fable.kscc.api.utils.XmlGenerator;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @auther jiangmingjun
+ * @create 2017/10/26
+ */
+public class Test1 {
+    public static void main(String[] args) {
+        final Map<String, String> login = new HashMap<>();
+        login.put("ip", "58.240.21.178");
+        login.put("port", "60081");
+        login.put("username", "admin");
+        login.put("password", "admin123");
+        login.put("hospitalId", "1");
+        final MedTApi api = new MedTApi();
+        login.put("authenticationid",api.getAuthenticationId(login));
+        XmlGenerator.generateRequestRoot(login);
+        api.Login(login);
+        api.SetSysTimeInfo(login);
+        api.viewSelfOrOther(login,1);
+    }
+}

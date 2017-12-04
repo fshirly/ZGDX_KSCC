@@ -1,0 +1,16 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+ request.setCharacterEncoding("UTF-8");
+%>
+	<link href="${pageContext.request.contextPath}/css/lib/fullcalendar.min.css" rel="stylesheet" type="text/css">
+	<link href="${pageContext.request.contextPath}/css/lib/fullcalendar.print.min.css" rel="stylesheet" type="text/css" media='print'>
+<div class="middleContent heightFull" id="resourceCal">
+
+</div>
+
+<script>
+require(["app/resourceCalendar/resourceCalendarApp"],function(page){
+    page.run();
+})
+</script>

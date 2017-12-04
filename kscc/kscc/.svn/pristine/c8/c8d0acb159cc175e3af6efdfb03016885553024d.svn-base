@@ -1,0 +1,282 @@
+package com.fable.kscc.bussiness.service.liveMessage;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation;
+import com.fable.kscc.api.model.participant.FbsLiveParticipant;
+import com.fable.kscc.api.model.user.FbsUser;
+import com.fable.kscc.api.utils.StringUtil;
+import com.fable.kscc.bussiness.mapper.fbsUser.FbsUserMapper;
+import com.fable.kscc.bussiness.mapper.hospitalInformation.HospitalInformationMapper;
+import com.fable.kscc.bussiness.mapper.livebroadcast.LiveBroadCastMapper;
+import com.fable.kscc.bussiness.mapper.liveparticipant.LiveParticiPantMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.fable.kscc.api.model.message.FbsLiveMessage;
+import com.fable.kscc.api.model.page.PageRequest;
+import com.fable.kscc.api.model.page.PageResponse;
+import com.fable.kscc.bussiness.mapper.LiveMessage.LiveMessageMapper;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+
+
+@Service
+public class LiveMessageServiceImpl implements LiveMessageService {
+
+	@Autowired
+	private LiveMessageMapper liveMessageMapper;
+	@Autowired
+	private FbsUserMapper fbsUserMapper;
+
+	@Autowired
+	private LiveBroadCastMapper liveBroadCastMapper;
+
+	@Autowired
+	private LiveParticiPantMapper liveParticiPantMapper;
+	@Autowired
+	private HospitalInformationMapper hospitalInformationMapper;
+
+	//根据状态和发言人模糊查询消息信息
+	@Override
+	public PageResponse<FbsLiveMessage> findMessageByStatus(HttpServletRequest request,PageRequest<Map<String,Object>> pageRequest) {
+		Map<String,Object> map=pageRequest.getParam();
+		Page<FbsLiveMessage> result = PageHelper.startPage(pageRequest.getPageNo(), pageRequest.getPageSize());
+		liveMessageMapper.findMessageByStatus(map);
+		for (FbsLiveMessage success : result){
+			//查询所有的管理员用户 hostIds
+			List<FbsUser> hostUserList = fbsUserMapper.findAllHostUserList();
+			List<Integer> hostList = new ArrayList<Integer>();
+			for (FbsUser userBean : hostUserList) {
+				int id = userBean.getId();
+				hostList.add(id);
+			}
+			//根据created_id查询发信人
+			String creatId = success.getCreatorId();
+			/*user.setId(Integer.parseInt(creatId));
+			FbsUser userbean = fbsUserMapper.queryFbUser(user);
+			success.setHospitalName(userbean.getUserName());*/
+			if(hostList.contains(Integer.parseInt(creatId))){
+				success.setHospitalName("管理员");
+			}else{
+				FbsHospitalInformation bean = hospitalInformationMapper.getHospitalInfoByUser(Integer.parseInt(creatId));
+				success.setHospitalName(bean.getHospitalName());
+			}
+
+			SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String date = sDateFormat.format(success.getCreatedTime());
+			success.setUniversalTime(date);
+		}
+		return PageResponse.wrap(result);
+	}
+
+	@Override
+	public PageResponse<FbsLiveMessage> findMessageBySpeaker(HttpServletRequest request, PageRequest<Map<String, Object>> pageRequest) {
+		List<FbsUser> hostUserList = fbsUserMapper.findAllHostUserList();
+		Map<String,Object> map=pageRequest.getParam();
+		String userName = map.get("userName").toString();//A医院，管理员
+		//模糊查询所有的医院id
+		List<FbsHospitalInformation> hosBeanList = hospitalInformationMapper.queryHospitalListByName(userName);
+		List<Integer> userList = new ArrayList<Integer>();
+		for (FbsHospitalInformation hosBean : hosBeanList) {
+			int id = hosBean.getId();
+			//通过医院id指向相应的用户id
+			FbsUser userBean = fbsUserMapper.getFbUserByhospitalId(id);
+			userList.add(userBean.getId());
+		}
+		Page<FbsLiveMessage> result = PageHelper.startPage(pageRequest.getPageNo(), pageRequest.getPageSize());
+		//通过输入名称查询相应的管理员和医院信息
+
+		String strValue = "";
+		String strCreatId = "";
+		if(!"".equals(userName) && "管理员".indexOf(userName) != -1){
+			//查询所有的管理员的creatId
+			List<Integer> hostList = new ArrayList<Integer>();
+			for (FbsUser userBean : hostUserList) {
+				int id = userBean.getId();
+				hostList.add(id);
+			}
+			for (int i = 0; i < hostList.toArray().length; i++) {
+				String str = hostList.toArray()[i].toString();
+				strValue += str + ',';
+				strCreatId = strValue.substring(0, strValue.length() - 1);
+			}
+			map.put("strCreatId",strCreatId);
+			liveMessageMapper.findMessageByStatus(map);
+			//8888888（全是管理员用户）
+			for (FbsLiveMessage success : result){
+				//根据created_id查询发信人
+				success.setHospitalName("管理员");
+				SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				String date = sDateFormat.format(success.getCreatedTime());
+				success.setUniversalTime(date);
+			}
+		}else if(!"".equals(userName) && "管理员".indexOf(userName) == -1){
+			//拼接creatId
+			for (int i = 0; i < userList.toArray().length; i++) {
+				String str = userList.toArray()[i].toString();
+				strValue += str + ',';
+				strCreatId = strValue.substring(0, strValue.length() - 1);
+			}
+			map.put("strCreatId",strCreatId);
+			liveMessageMapper.findMessageByStatus(map);
+			//8888888888(全是医院用户)
+			for (FbsLiveMessage success : result){
+				//根据created_id查询发信人
+				String creatId = success.getCreatorId();
+				FbsHospitalInformation bean = hospitalInformationMapper.getHospitalInfoByUser(Integer.parseInt(creatId));
+				success.setHospitalName(bean.getHospitalName());
+
+				SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				String date = sDateFormat.format(success.getCreatedTime());
+				success.setUniversalTime(date);
+			}
+
+		}else if("".equals(userName)){
+			liveMessageMapper.findMessageByStatus(map);
+			for (FbsLiveMessage success : result){
+				//查询所有的管理员用户 hostIds
+				List<Integer> hostList = new ArrayList<Integer>();
+				for (FbsUser userBean : hostUserList) {
+					int id = userBean.getId();
+					hostList.add(id);
+				}
+				//根据created_id查询发信人
+				String creatId = success.getCreatorId();
+				if(hostList.contains(Integer.parseInt(creatId))){
+					success.setHospitalName("管理员");
+				}else{
+					FbsHospitalInformation bean = hospitalInformationMapper.getHospitalInfoByUser(Integer.parseInt(creatId));
+					success.setHospitalName(bean.getHospitalName());
+				}
+
+				SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				String date = sDateFormat.format(success.getCreatedTime());
+				success.setUniversalTime(date);
+			}
+		}
+		return PageResponse.wrap(result);
+	}
+
+	//批量已读
+	@Override
+	public int updateLiveMessageStatus(String id) {
+		String[] ids = id.split(",");
+		int[] num = new int[ids.length];
+		for(int i=0; i<ids.length;i++){
+			num[i] = Integer.parseInt(ids[i]) ;
+		}
+		return liveMessageMapper.updateLiveMessageStatus(num);
+	}
+
+	//批量删除
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED)
+	public int deleteLiveMessageStatus(String id) {
+		String[] ids = id.split(",");
+		int[] num = new int[ids.length];
+		for(int i=0; i<ids.length;i++){
+			num[i] = Integer.parseInt(ids[i]) ;
+		}
+		return liveMessageMapper.deleteLiveMessageStatus(num);
+	}
+
+	//根据id读取单条消息
+	@Override
+	public FbsLiveMessage findMessageById(Integer id) {
+		FbsLiveMessage f = new FbsLiveMessage();
+		f = liveMessageMapper.findMessageById(id);
+		return f;
+	}
+
+	@Override
+	public int queryExtendCount(Map<String, Object> param) {
+
+		return liveMessageMapper.queryExtendCount(param);
+	}
+
+	@Override
+	public void markExtendMessages(Map<String, Object> param) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String endTime = "";
+		//获取原结束时间
+		String oldEndTime = liveBroadCastMapper.searchEndTime(Integer.parseInt(String.valueOf(param.get("liveId"))));
+		//获取需要延长的时间
+		int time = Integer.parseInt(String.valueOf(param.get("timeExpand")));
+		try {
+			long millionSeconds = sdf.parse(oldEndTime).getTime() + time * 1000 * 60;//毫秒
+			Date date = new Date(millionSeconds);
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			endTime = dateFormat.format(date).toString();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("endTime", endTime);
+		map.put("liveId", Integer.parseInt(String.valueOf(param.get("liveId"))));
+		//产生延时的消息信息
+		insertExtendLiveTime(String.valueOf(param.get("liveId")),endTime,String.valueOf(param.get("userid")),time);
+	}
+
+	public void insertExtendLiveTime(String liveId, String extendTime, String userid,int time){
+		Date timedata = new Date();
+
+		//查询所有的管理员用户 hostIds
+		List<FbsUser> hostUserList = fbsUserMapper.findAllHostUserList();
+		List<Integer> hostList = new ArrayList<Integer>();
+		for (FbsUser userBean : hostUserList) {
+			int id = userBean.getId();
+			hostList.add(id);
+		}
+		if (!"".equals(extendTime)) {
+			FbsLiveMessage message = new FbsLiveMessage();
+			List<FbsLiveParticipant> participantsList = liveParticiPantMapper.queryFbsLiveParti(Integer.parseInt(liveId));
+			for (FbsLiveParticipant partiBean : participantsList) {
+				//过滤没参加直播的参与方
+				String participation = partiBean.getParticipation();
+				if (participation.equals("0") || participation.equals("1")) { //已参与的
+					int hospitalId1 = partiBean.getHospitalId();
+					FbsUser userBean = fbsUserMapper.getFbUserByhospitalId(hospitalId1);
+					int userId1 = userBean.getId();
+					message.setUserId(userId1);
+					message.setCreatorId(userid);
+					message.setMtype("2");//消息信息通知其它参与者
+					message.setStatus("1");
+					message.setAddressee(-1);
+					message.setContent("直播延时"+time+"分钟，请管理员批准！");
+					message.setLiveId(Integer.parseInt(liveId));
+					message.setCreatedTime(timedata);
+					liveMessageMapper.insertLiveMessage(message);
+				}
+			}
+			for (int userId : hostList) {
+				//给管理员发送通知
+				message.setLiveId(Integer.parseInt(liveId));
+				message.setContent("直播延时"+time+"分钟，请管理员批准！");
+				message.setUserId(userId);
+				message.setCreatorId(userid);
+				message.setMtype("2");
+				message.setStatus("1");
+				message.setAddressee(-1);
+				message.setCreatedTime(timedata);
+				liveMessageMapper.insertLiveMessage(message);
+			}
+		}
+	}
+
+	public static void main(String[] args) {
+		String a = "管理员";
+		if(a.indexOf("管理员") == -1){
+			System.out.println(111);
+		}else{
+			System.out.println(222);
+		}
+	}
+}

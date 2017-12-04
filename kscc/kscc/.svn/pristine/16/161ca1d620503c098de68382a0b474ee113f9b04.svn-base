@@ -1,0 +1,139 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+    request.setCharacterEncoding("UTF-8");
+%>
+<%
+    Object id = request.getAttribute("id");
+%>
+<div class="hospitalListDiv">
+    <input type="hidden" id="idstr" value="<%=id %>"/>
+    <div class="clearfix">
+        <button class="btn btn-primary hospitalAdd">新增</button>
+    </div>
+
+    <div id="tHospital">
+        <table id="tblHospital" class="table table-striped kscc-grid"></table>
+    </div>
+</div>
+
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">新增医院</h4>
+            </div>
+            <div class="modal-body hospitalAll">
+	            <!-- <ul class="nav nav-wizard pull-right">
+			        <li class="active">
+			                               医院信息
+			        </li>
+			        <li class="">
+			                              医院管理员信息
+			        </li>
+			        <li class="">
+			                             医院编解码器
+			        </li>
+				</ul> -->
+                <div class="hosAdd active">
+                    <form id="hosAddForm">
+	                    <div class="clearfix mt-10">
+	                        <label class="text-right">医院名称：</label>
+	                        <input class="form-control form-width" id="hospitalNameAdd" style="width:65%;" role="{required:true}"><dfn>*</dfn>
+	                    </div>
+	                    <div class="clearfix mt-10">
+	                        <label class="text-right">医院简介：</label>
+	                        <input class="form-control form-width" id="hospitalContentAdd" style="width:65%;">
+	                    </div>
+	                    <div class="clearfix mt-10">
+	                        <label class="text-right">网站链接：</label>
+	                        <input class="form-control form-width" id="hospitalUrlAdd" style="width:65%;">
+	                    </div>
+                    </form>
+                </div>
+                <div class="hosAdminAdd">
+                   <form id="hosAdminAddForm">
+	                   <div class="clearfix mt-10">
+	                        <label class="text-right">登录名称：</label>
+	                        <input class="form-control form-width" id="loginNameAdd" style="width:65%;" role="{required:true}"><dfn>*</dfn>
+	                    </div>
+	                    <div class="clearfix mt-10">
+	                        <label class="text-right">登录密码：</label>
+	                        <input class="form-control form-width" id="passwordAdd" style="width:65%;" role="{required:true}"><dfn>*</dfn>
+	                    </div>
+	                    <div class="clearfix mt-10">
+	                        <label class="text-right">联系电话：</label>
+	                        <input class="form-control form-width" id="telephoneAdd" style="width:65%;" role="{required:true}"><dfn>*</dfn>
+	                    </div>
+	                    <div class="clearfix mt-10">
+	                        <label class="text-right">邮箱：</label>
+	                        <input class="form-control form-width" id="emailAdd" style="width:65%;">
+	                    </div>
+                    </form>
+                </div>
+                <div class="codecAdd">
+                    <form id="codecAddForm">
+	                    <div class="clearfix mt-10">
+				            <label class="text-right">编解码器归属：</label>
+				            <input class="form-control form-width" id="ownershipAdd" style="width:65%;"><dfn>*</dfn>
+				        </div>
+				        <div class="clearfix mt-10">
+				            <label class="text-right">新视通账号：</label>
+				            <input class="form-control form-width" id="accountAdd" style="width:65%;"><dfn>*</dfn>
+				        </div>
+			            <div class="clearfix mt-10">
+			                <label class="text-right">IP地址：</label>
+			                <input class="form-control form-width" id="IPAddressAdd" style="width:65%;"><dfn>*</dfn>
+			            </div>
+			            <div class="clearfix mt-10">
+			                <label class="text-right">mac地址：</label>
+			                <input class="form-control form-width" id="MACAddressAdd" style="width:65%;"><dfn>*</dfn>
+			            </div>
+			        </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary saveAddHospital">确定</button> -->
+                <button type="button" class="btn btn-primary hosNext">下一步</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">编辑</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-inline" id="codecFormEdit" method="post" action="">
+                    <div class="clearfix mt-10">
+                        <label class="text-right">医院名称：</label>
+                        <input class="form-control form-width" id="hospitalNameEdit" style="width:65%;">
+                    </div>
+                    <div class="clearfix mt-10">
+                        <label class="text-right">医院简介：</label>
+                        <input class="form-control form-width" id="hospitalContentEdit" style="width:65%;">
+                    </div>
+                    <div class="clearfix mt-10">
+                        <label class="text-right">网站链接：</label>
+                        <input class="form-control form-width" id="hospitalUrlEdit" style="width:65%;">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary saveEdit">确定</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script>
+    require(["app/accountManage/hospitalList"],function(page){
+        page.run();
+    })
+</script>

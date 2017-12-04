@@ -1,0 +1,77 @@
+package com.fable.kscc.bussiness.service.liveMessage;
+
+import java.text.SimpleDateFormat;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.fable.kscc.api.model.message.FbsLiveMessage;
+import com.fable.kscc.api.model.page.PageRequest;
+import com.fable.kscc.api.model.page.PageResponse;
+import com.fable.kscc.bussiness.mapper.LiveMessage.LiveMessageMapper;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+
+
+@Service
+public class LiveMessageServiceImpl implements LiveMessageService {
+
+	@Autowired
+	private LiveMessageMapper liveMessageMapper;
+
+	//根据状态和发言人模糊查询消息信息
+	@Override
+	public PageResponse<FbsLiveMessage> findMessageByStatus(HttpServletRequest request,PageRequest<Map<String,Object>> pageRequest) {
+		Map<String,Object> map=pageRequest.getParam();
+		Page<FbsLiveMessage> result = PageHelper.startPage(pageRequest.getPageNo(), pageRequest.getPageSize());
+		liveMessageMapper.findMessageByStatus(map);
+		for (FbsLiveMessage success : result) {
+			if(success.getHospitalName()==""||success.getHospitalName()==null){
+				success.setHospitalName("系统管理员");
+			}
+			SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String date = sDateFormat.format(success.getCreatedTime());
+			success.setUniversalTime(date);
+		}
+		return PageResponse.wrap(result);
+	}
+
+	//批量已读
+	@Override
+	public int updateLiveMessageStatus(String id) {
+		String[] ids = id.split(",");
+		int[] num = new int[ids.length];
+		for(int i=0; i<ids.length;i++){
+			num[i] = Integer.parseInt(ids[i]) ;
+		}
+		return liveMessageMapper.updateLiveMessageStatus(num);
+	}
+
+	//批量删除
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED)
+	public int deleteLiveMessageStatus(String id) {
+		String[] ids = id.split(",");
+		int[] num = new int[ids.length];
+		for(int i=0; i<ids.length;i++){
+			num[i] = Integer.parseInt(ids[i]) ;
+		}
+		return liveMessageMapper.deleteLiveMessageStatus(num);
+	}
+
+	//根据id读取单条消息
+	@Override
+	public FbsLiveMessage findMessageById(Integer id) {
+		FbsLiveMessage f = new FbsLiveMessage();
+		f = liveMessageMapper.findMessageById(id);
+		return f;
+	}
+
+
+
+}

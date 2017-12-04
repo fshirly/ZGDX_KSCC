@@ -1,0 +1,54 @@
+package com.fable.kscc.bussiness.service.enrollMedT;
+
+import com.fable.kscc.api.medTApi.MedTApi;
+import com.fable.kscc.api.utils.HttpUtils;
+import com.fable.kscc.api.utils.XmlGenerator;
+import com.fable.kscc.bussiness.mapper.livecodec.LiveCodecMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/**
+ * Created by Wanghairui on 2017/10/11.
+ */
+@Service
+public class EnrollMedT {
+
+    @Autowired
+    private LiveCodecMapper mapper;
+
+    @Autowired
+    private MedTApi medTApi;
+
+//    @PostConstruct
+    public void init(){
+
+        List<Map<String, String>> loginQueue = mapper.selectMedTProperties();
+
+        ExecutorService service = Executors.newFixedThreadPool(loginQueue.size());
+        for (final Map<String, String> login:loginQueue){
+            String ip = login.get("ip");
+            String str= HttpUtils.httpPostByNullXml(ip+"nvrcgi2/system/GetAuthenticationid");
+            String authenticationid=medTApi.xmlToJson(str).get("Authenticationid").toString();
+            login.put("authenticationid", authenticationid);
+            XmlGenerator.generateRequestRoot(login);
+            medTApi.Login(login);
+            service.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(50000);
+                        medTApi.heartBeat(login);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
+}

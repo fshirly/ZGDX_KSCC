@@ -1,0 +1,74 @@
+package com.fable.kscc.bussiness.service.uploadfile;
+
+import java.io.File;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fable.kscc.api.model.upload.UploadBean;
+import com.fable.kscc.api.utils.ApplicationContextBeanUtil;
+import com.fable.kscc.bussiness.mapper.uploadfile.UploadFileMapper;
+import com.fable.kscc.bussiness.service.uploadfile.jobmanage.MeetingUploadTask;
+
+@Service("uploadFileServiceImpl")
+public class UploadFileServiceImpl implements UploadFileService {
+	@Autowired
+	UploadFileMapper  uploadFileMapper;
+	
+	@Override
+	public void uploadFile(){
+		try {
+			List<UploadBean> list = uploadFileMapper.getUploadFileInfo();
+			
+			if(list==null||list.isEmpty())
+			{
+				return;
+			}
+			
+			String url = System.getProperty("user.dir");
+			for (UploadBean up : list) {
+				// 所属目录
+				String pathDst = url.substring(0, url.lastIndexOf(File.separator)) + File.separator + "record"
+						+ File.separator + up.getConfId();
+				//String pathDst = "C:/file";
+				//获取所有文件
+				FilesGetter fg = new FilesGetter();
+				fg.getFiles(pathDst);
+				//上传文件
+				doUpload(up.getBucket(),fg.getFilelist());
+			}
+			
+			uploadFileMapper.updateUpload(list);
+			
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	private void doUpload(String bucket,List<String> filelist)
+	{
+		if(filelist==null || filelist.isEmpty())
+		{
+			return;
+		}
+		
+		ExecutorService pool = Executors.newFixedThreadPool(filelist.size());
+		
+		try {
+			for(String path : filelist)
+			{
+				MeetingUploadTask mut = (MeetingUploadTask) ApplicationContextBeanUtil.getBean("meetingUploadTask");
+				mut.setBucket(bucket);
+				mut.setPath(path);
+				pool.submit(mut);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+ 
+
+}

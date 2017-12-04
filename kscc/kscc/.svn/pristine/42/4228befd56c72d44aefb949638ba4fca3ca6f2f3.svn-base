@@ -1,0 +1,81 @@
+package com.fable.kscc.bussiness.service.fbmenu;
+
+import com.fable.kscc.api.model.menu.FbsMenu;
+import com.fable.kscc.api.model.page.ResultKit;
+import com.fable.kscc.api.model.page.ServiceResponse;
+import com.fable.kscc.bussiness.mapper.fbmenu.FbMenuMapper;
+import com.sun.org.apache.regexp.internal.RE;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class FbsMenuServiceImpl implements FbsMenuService{
+
+    @Autowired
+    private FbMenuMapper fbMenuMapper;
+
+    @Override
+    public List<FbsMenu> findAllByRole(String userId) {
+        //根据用户id查询是超级管理员还是普通管理员
+        return fbMenuMapper.findAllByRole();
+    }
+
+    @Override
+    @Transactional(propagation= Propagation.REQUIRED)
+    public ServiceResponse updateMenuByRole(Map<String,Object> params) {
+        fbMenuMapper.InitializationMenuRole();//初始化kscc管理员
+
+        Map<String,Object> paramMap = new HashMap<>();
+        paramMap.put("roleId",params.get("roleId"));
+        paramMap.put("userId",params.get("userId"));
+
+        //已勾选
+        String ids = params.get("id").toString();
+        if (!"".equals(ids)){
+            String[] id = ids.split(",");
+            int[] num = new int[id.length];
+            for(int i=0; i<id.length;i++){
+                num[i] = Integer.parseInt(id[i]) ;
+                paramMap.put("menuId",num[i]);
+                paramMap.put("hostRole","1");
+                try {
+                    fbMenuMapper.updateMenuByRole(paramMap);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return ResultKit.fail("更新失败");
+                }
+            }
+        }
+
+        //未勾选
+        String idF = params.get("idF").toString();
+        if (!"".equals(idF)){
+            String[] idFs = idF.split(",");
+            int[] numF= new int[idFs.length];
+            for(int i=0; i<idFs.length;i++){
+                numF[i] = Integer.parseInt(idFs[i]) ;
+                paramMap.put("menuId",numF[i]);
+                paramMap.put("hostRole","0");
+                try {
+                    fbMenuMapper.updateMenuByRole(paramMap);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return ResultKit.fail("更新失败");
+                }
+            }
+        }
+        return ResultKit.success();
+    }
+
+    @Override
+    public ServiceResponse findMenuAllByRole(Map<String, Object> params) {
+        List<Map<String,Object>> menuList = fbMenuMapper.findMenuAllByRole(params);
+        return ResultKit.serviceResponse(menuList);
+    }
+}

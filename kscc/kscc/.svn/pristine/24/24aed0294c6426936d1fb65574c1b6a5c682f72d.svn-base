@@ -1,0 +1,381 @@
+package com.fable.kscc.api.utils;
+
+import com.google.common.collect.Lists;
+import com.fable.kscc.api.beans.LoginMcuConfig;
+import com.fable.kscc.api.beans.LoginMcuResp;
+import net.sf.json.JSONObject;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.HttpHostConnectException;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author administrator HTTP请求工具类，包含POST和GET请求,
+ *         对于POST请求：包含以JSON格式和以From表单形式提交的两种POST请求
+ *         如果请求出现异常或尝试，则返回包含exception字段的json数据，调用者根据此字段判断是否调用正常。
+ */
+public final class HttpUtils {
+
+	private static Logger logger = LoggerFactory.getLogger("API");
+
+	private static Map<String, String> COOKIES = new HashMap<>();
+	public static final int CONNECTION_REQUEST_TIMEOUT = 1000 * 45;
+	public static final int CONNECT_TIMEOUT = 1000 * 45;
+	public static final int SOCKET_TIMEOUT = 1000 * 45;
+
+	public static final String EXCEPTION_NODE = "exception";
+	public static final String SUCCESS = "success";
+
+	public static final String MSG_TAG = "msg";
+
+	public static final String CONNECTTIMEDOUT_NODE = "connect_timed_out";
+	public static final String CONNECT_TIMED_OUT = "connect timed out";
+	public static final String HTTP_HOST_CONNECT_ERROR = "视讯服务器无法连接";
+	public static final String READ_TIME_OUT_ERROR = "请求视讯服务器超时，请重新操作";
+
+	/**
+	 * HTTP Get请求
+	 * @param urlWithParams 包含queryString的URL
+	 * @return jsonResponse 返回值为json格式的字符串
+	 */
+	public static String httpGet(String urlWithParams) {
+		HttpGet httpGet = null;
+		try {
+			CloseableHttpClient httpclient = HttpClientBuilder.create().build();
+			httpGet = new HttpGet(urlWithParams);
+			httpGet.setConfig(config());
+
+			Header head = new BasicHeader("Cookie", COOKIES.get(httpGet.getURI().getHost()));
+			logger.info("httpget请求中的cookie值为：" + COOKIES.get(httpGet.getURI().getHost()));
+			httpGet.addHeader(head);
+
+			CloseableHttpResponse response = httpclient.execute(httpGet);
+			logger.info(String.format("the get request statuscode is %s for url:%s", response.getStatusLine().getStatusCode(),
+					urlWithParams));
+			HttpEntity entity = response.getEntity();
+			String jsonResp = EntityUtils.toString(entity, "utf-8");
+			return jsonResp;
+		} catch (HttpHostConnectException e) {
+			logger.error(String.format("[httpPostByJson has exception] error url is %s", urlWithParams));
+			return exceptionJson(HTTP_HOST_CONNECT_ERROR, true);
+		} catch (SocketTimeoutException e) {
+			e.printStackTrace();
+			logger.error(String.format("[httpPostByJson has exception] error url is %s", urlWithParams));
+			return exceptionJson(READ_TIME_OUT_ERROR);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(String.format("[httpGet has exception] error url is %s", urlWithParams));
+			return exceptionJson(e.getMessage());
+		} finally {
+			if (httpGet != null) {
+				httpGet.releaseConnection();
+				httpGet = null;
+			}
+		}
+	}
+
+	private static String checkHttpStatusCode(int statusCode) {
+		if (statusCode == 502) {
+			return exceptionJson("Bad GateWay:请确认httpagent.fcgi是否启动!");
+		}
+		if (statusCode == 500) {
+			return exceptionJson("Server Error:服务器错误，或apiserver进程未启动!");
+		}
+		if (statusCode == 504) {
+			return exceptionJson("Gateway Time-out:网关超时异常!");
+		}
+		if ((statusCode + "").startsWith("50")) {
+			return exceptionJson("Server Error:服务器错误, 请联系开发人员!");
+		}
+		return null;
+	}
+
+	private static String execHttpReqeust(String url, HttpPost httpPost, CloseableHttpClient httpclient) throws IOException,
+			ClientProtocolException {
+		CloseableHttpResponse response = httpclient.execute(httpPost);
+		logger.info(String.format("the post request statuscode is %s for url:%s", response.getStatusLine().getStatusCode(), url));
+		if (checkHttpStatusCode(response.getStatusLine().getStatusCode()) != null) {
+			return checkHttpStatusCode(response.getStatusLine().getStatusCode());
+		}
+		HttpEntity entity = response.getEntity();
+		String jsonResponse = EntityUtils.toString(entity, "utf-8");
+		return jsonResponse;
+	}
+
+	/**
+	 * 获取token的请求响应
+	 * @param url
+	 * @param params
+	 * @return
+	 */
+	public static String getTokenHttpPostByForm(String url, Map<String, String> params) {
+		HttpPost httpPost = null;
+		try {
+			CloseableHttpClient httpclient = HttpClientBuilder.create().build();
+			httpPost = new HttpPost(url);
+			httpPost.setConfig(config());
+			httpPost.setEntity(new UrlEncodedFormEntity(convertParams(params), "UTF-8"));
+
+			CloseableHttpResponse response = httpclient.execute(httpPost);
+			HttpEntity entity = response.getEntity();
+			String jsonResponse = EntityUtils.toString(entity, "utf-8");
+			return jsonResponse;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(String.format("[httpPostByForm has exception] error url is %s, the params is %s", url, params.toString()));
+			return exceptionJson(e.getMessage());
+		} finally {
+			if (httpPost != null) {
+				httpPost.releaseConnection();
+				httpPost = null;
+			}
+		}
+	}
+
+	/**
+	 * 登陆5.0平台的请求响应 获得5.0平台回复的cookies
+	 * @param url
+	 * @param params
+	 * @return
+	 */
+	public static LoginMcuResp loginHttpPostByForm(String url, Map<String, String> params) {
+		LoginMcuConfig loginMcuConfig = new LoginMcuConfig();
+		logger.info("登录用户名:" + loginMcuConfig.getUsername() + "密码:" + loginMcuConfig.getPassword());
+		HttpPost httpPost = null;
+		try {
+			// 设定参数
+			CloseableHttpClient httpclient = HttpClientBuilder.create().build();
+			httpPost = new HttpPost(url);
+			httpPost.setConfig(config());
+			httpPost.setEntity(new UrlEncodedFormEntity(convertParams(params), "UTF-8"));
+			// 发送请求
+			CloseableHttpResponse response = httpclient.execute(httpPost);
+
+			// 获得实体
+			HttpEntity entity = response.getEntity();
+			String jsonResponse = EntityUtils.toString(entity, "utf-8");
+			logger.info("HttpResponse,json值为:" + jsonResponse);
+
+			// 保存实体
+			LoginMcuResp loginMcuResp = null;
+			if (JsonUtils.isJson(jsonResponse)) {
+				loginMcuResp = LoginMcuResp.setLoginMcuResp(JsonUtils.toBean(jsonResponse, LoginMcuResp.class));
+				logger.info("登陆5.0平台的回复值为:" + loginMcuResp);
+
+				// 结果判断
+				if (loginMcuResp.getSuccess() == 0) {
+					logger.error("登陆5.0平台失败, errocode=%s", loginMcuResp.getError_code());
+					return null;
+				} else if (loginMcuResp.getSuccess() == 1 && loginMcuConfig.getUsername().trim().equals(loginMcuResp.getUsername())) {
+					logger.info("登陆5.0平台成功");
+
+					// 获得、保存cookie
+					StringBuffer cks = new StringBuffer();
+					Header[] headers = response.getHeaders("Set-Cookie");
+					for (Header header : headers) {
+						cks.append(header.getValue()).append(";");
+					}
+					COOKIES.put(httpPost.getURI().getHost(), cks.toString()) ;
+					loginMcuResp.setCookie(cks.toString()) ;
+					logger.info("5.0平台回复信息中的headers值为:" + COOKIES.get(httpPost.getURI().getHost()));
+					return loginMcuResp;
+				} else {
+					logger.error("5.0平台错误！");
+					return null;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(String.format("[loginHttpPostByForm] 出现异常,e:%s", e.getLocalizedMessage()));
+			throw new RuntimeException(e);
+		} finally {
+			if (httpPost != null) {
+				httpPost.releaseConnection();
+				httpPost = null;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * HTTP Post请求，以JSON格式提交请求参数
+	 * @param url  post请求的url
+	 * @param jsonParams  JSON格式的参数值
+	 * @return jsonResponse 返回值为json格式的字符串
+	 */
+	public static String httpPostByJson(String url, String jsonParams) {
+		HttpPost httpPost = null;
+		try {
+			CloseableHttpClient httpclient = HttpClientBuilder.create().build();
+			httpPost = new HttpPost(url);
+			httpPost.addHeader("Content-Type", "application/json; charset=UTF-8");
+			httpPost.setConfig(config());
+			logger.info(jsonParams);
+			httpPost.setEntity(new StringEntity(jsonParams, "UTF-8"));
+			return execHttpReqeust(url, httpPost, httpclient);
+		} catch (HttpHostConnectException e) {
+			logger.error(String.format("[httpPostByJson has exception] error url is %s, the params is %s", url, jsonParams));
+			return exceptionJson(HTTP_HOST_CONNECT_ERROR, true);
+		} catch (SocketTimeoutException e) {
+			e.printStackTrace();
+			logger.error(String.format("[httpPostByJson has exception] error url is %s, the params is %s", url, jsonParams));
+			return exceptionJson(READ_TIME_OUT_ERROR);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(String.format("[httpPostByJson has exception] error url is %s, the params is %s", url, jsonParams));
+			return exceptionJson(e.getMessage());
+		} finally {
+			if (httpPost != null) {
+				httpPost.releaseConnection();
+				httpPost = null;
+			}
+		}
+	}
+
+	/**
+	 * HTTP Post请求，以Form表单形式提交请求参数
+	 * @param url post请求的url
+	 * @param params 键值对格式参数值
+	 * @return jsonResponse 返回值为json格式的字符串
+	 */
+	public static String httpPostByForm(String url, Map<String, String> params) {
+		HttpPost httpPost = null;
+		try {
+			CloseableHttpClient httpclient = HttpClientBuilder.create().build();
+			httpPost = new HttpPost(url);
+			httpPost.setConfig(config());
+			httpPost.setEntity(new UrlEncodedFormEntity(convertParams(params), "UTF-8"));
+			return execHttpReqeust(url, httpPost, httpclient);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(String.format("[httpPostByForm has exception] error url is %s, the params is %s", url, params.toString()));
+			return exceptionJson(e.getMessage());
+		} finally {
+			if (httpPost != null) {
+				httpPost.releaseConnection();
+				httpPost = null;
+			}
+		}
+	}
+	
+	public static String httpPostByFormWithCookie(String url, String cookie, Map<String, String> params) throws Exception {
+		HttpPost httpPost = null;
+		try {
+			CloseableHttpClient httpclient = HttpClientBuilder.create().build();
+			httpPost = new HttpPost(url);
+			httpPost.setConfig(config());
+			httpPost.setEntity(new UrlEncodedFormEntity(convertParams(params), "UTF-8"));
+			Header head = new BasicHeader("Cookie", cookie);
+			httpPost.addHeader(head);
+			CloseableHttpResponse response = httpclient.execute(httpPost);
+			HttpEntity entity = response.getEntity();
+			String jsonResponse = EntityUtils.toString(entity, "utf-8");
+			return jsonResponse;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(String.format("[httpPostByFormWithCookie]  exception=%s", e.getLocalizedMessage()));
+			throw e;
+		} finally {
+			if (httpPost != null) {
+				httpPost.releaseConnection();
+				httpPost = null;
+			}
+		}
+	}
+
+	/**
+	 * 调用接口时携带cookie值
+	 * @param url
+	 * @param params
+	 * @throws Exception
+	 */
+	public static String httpPostByFormWithCookie(String url, Map<String, String> params) throws Exception {
+		HttpPost httpPost = null;
+		try {
+			CloseableHttpClient httpclient = HttpClientBuilder.create().build();
+			httpPost = new HttpPost(url);
+			httpPost.setConfig(config());
+			httpPost.setEntity(new UrlEncodedFormEntity(convertParams(params), "UTF-8"));
+
+			Header head = new BasicHeader("Cookie", COOKIES.get(httpPost.getURI().getHost()));
+			logger.info("http post请求中的cookie值为：" + COOKIES.get(httpPost.getURI().getHost()));
+			httpPost.addHeader(head);
+
+			CloseableHttpResponse response = httpclient.execute(httpPost);
+			logger.info(String.format("the post request statuscode is %s for url:%s", response.getStatusLine().getStatusCode(),
+					url));
+
+			HttpEntity entity = response.getEntity();
+			String jsonResponse = EntityUtils.toString(entity, "utf-8");
+			logger.info("调用5.0平台接口时，返回参数jsonResponse：" + jsonResponse);
+			return jsonResponse;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info(String.format("[httpPostByForm has exception] error url is %s, the params is %s", url, params.toString()));
+			throw e;
+		} finally {
+			if (httpPost != null) {
+				httpPost.releaseConnection();
+				httpPost = null;
+			}
+		}
+	}
+
+	private static RequestConfig config() {
+		// 配置请求的超时设置
+		RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT)
+				.setConnectTimeout(CONNECTION_REQUEST_TIMEOUT).setSocketTimeout(CONNECTION_REQUEST_TIMEOUT).build();
+		return requestConfig;
+	}
+
+	public static RequestConfig buildConfig(int timeoutInMilliSecond) {
+		RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(timeoutInMilliSecond)
+				.setConnectTimeout(timeoutInMilliSecond).setSocketTimeout(timeoutInMilliSecond).build();
+		return requestConfig;
+	}
+
+	public static String exceptionJson(String exceptionMsg) {
+		JSONObject jobj = new JSONObject();
+		jobj.put(EXCEPTION_NODE, exceptionMsg);
+		return jobj.toString();
+	}
+
+	public static String exceptionJson(String errorMsg, boolean conntectTimedOut) {
+		JSONObject jobj = new JSONObject();
+		jobj.put(EXCEPTION_NODE, errorMsg);
+		jobj.put(CONNECTTIMEDOUT_NODE, conntectTimedOut);
+		return jobj.toString();
+	}
+
+	private static List<NameValuePair> convertParams(Map<String, String> params) {
+		List<NameValuePair> nvPairList = Lists.newArrayList();
+		Iterator<String> its = params.keySet().iterator();
+		while (its.hasNext()) {
+			String key = its.next();
+			nvPairList.add(new BasicNameValuePair(key, params.get(key)));
+		}
+		return nvPairList;
+	}
+
+}

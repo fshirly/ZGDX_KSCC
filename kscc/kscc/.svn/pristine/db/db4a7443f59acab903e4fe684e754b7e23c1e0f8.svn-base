@@ -1,0 +1,87 @@
+package com.fable.kscc.bussiness.service.apiService;
+
+import com.fable.kscc.api.medTApi.MedTApi;
+import com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation;
+import com.fable.kscc.api.model.liveCodec.FbsLiveCodec;
+import com.fable.kscc.api.model.page.ResultKit;
+import com.fable.kscc.api.model.page.ServiceResponse;
+import com.fable.kscc.bussiness.mapper.hospitalInformation.HospitalInformationMapper;
+import com.fable.kscc.bussiness.mapper.livecodec.LiveCodecMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.rmi.MarshalledObject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * <p>
+ * Title :
+ * </p>
+ * <p>
+ * Description:
+ * </p>
+ * <p>
+ * Author :Hairui
+ * Date :2017/11/15
+ * Time :15:36
+ * </p>
+ * <p>
+ * Department :
+ * </p>
+ * <p> Copyright : 江苏飞博软件股份有限公司 </p>
+ */
+@Service
+public class ApiServiceImpl implements IApiService {
+
+    @Autowired
+    HospitalInformationMapper hospitalInformationMapper;
+    @Autowired
+    private MedTApi medApi;
+    @Autowired
+    private LiveCodecMapper liveCodecMapper;
+    @Override
+    public ServiceResponse getAllHospitalList() {
+        return ResultKit.serviceResponse(hospitalInformationMapper.getAllHospitalList());
+    }
+
+    @Override
+    public ServiceResponse getDisk(Map<String,String> param) {
+        //根据医院id查询相应的医院信息
+        List<FbsLiveCodec> codeList = liveCodecMapper.findAllLiveCodecForYw(param);
+        Map<String,String> map = new HashMap<>();
+        List<Map<String,Object>> arryList = new ArrayList<>();
+        for (FbsLiveCodec code : codeList){
+            map.put("ip",code.getIp());
+            map.put("port",code.getPort());
+            map.put("username",code.getUserName());
+            map.put("password",code.getPassword());
+            map.put("hospitalId",String.valueOf(code.getHospitalId()));
+            Map<String,Object> codeMap = null;
+            codeMap = medApi.getDisks(map);
+            arryList.add(codeMap);
+        }
+        return ResultKit.serviceResponse(arryList);
+    }
+
+    @Override
+    public ServiceResponse getDiskInfo(Map<String,String> param) {
+        //根据医院id查询相应的医院信息
+        List<FbsLiveCodec> codeList = liveCodecMapper.findAllLiveCodec(Integer.parseInt(param.get("hospitalId")));
+        Map<String,String> map = new HashMap<>();
+        List<Map<String,Object>> arryList = new ArrayList<>();
+        for (FbsLiveCodec code : codeList){
+            map.put("ip",code.getIp());
+            map.put("port",code.getPort());
+            map.put("username",code.getUserName());
+            map.put("password",code.getPassword());
+            map.put("hospitalId",String.valueOf(code.getHospitalId()));
+            Map<String,Object> codeMap = null;
+            codeMap = medApi.getDiskInfo(map);
+            arryList.add(codeMap);
+        }
+        return ResultKit.serviceResponse(arryList);
+    }
+}

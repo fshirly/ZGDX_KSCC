@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/kscc/kscc.iml" filepath="$PROJECT_DIR$/kscc/kscc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kscc/kscc-api/kscc-api.iml" filepath="$PROJECT_DIR$/kscc/kscc-api/kscc-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kscc/kscc-bussiness/kscc-bussiness.iml" filepath="$PROJECT_DIR$/kscc/kscc-bussiness/kscc-bussiness.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kscc/kscc-ui/kscc-ui.iml" filepath="$PROJECT_DIR$/kscc/kscc-ui/kscc-ui.iml" />
+    </modules>
+  </component>
+</project>

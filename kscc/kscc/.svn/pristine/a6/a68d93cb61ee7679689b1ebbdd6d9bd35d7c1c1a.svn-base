@@ -1,0 +1,252 @@
+define(["base","datatables.net","app/commonApp"],function(base,DataTable,common){
+    var grid = null;
+    function setTableHospital(){
+    	oldTreeLength=$("#treeLength").val();
+        grid = $("#tblHospital").DataTable({
+            "searching":false,
+            "lengthChange":false,
+            "autoWidth":false,
+            "serverSide":true,
+            "paging":true,
+            "ordering":false,
+            "language":{"url":$.base+"/js/lib/chinese.json"},
+            "ajax":{
+                "type":"post",
+                "url":$.base+"/hospital/findAllPageHospitalList",
+                "contentType":"application/json",
+                "data": function ( d ) {
+                    var params={
+                        "pageNo": d.start/d.length+1,
+                        "pageSize": d.length,
+                        "param": {
+                            /*"hospitalId":idcode,
+                            "hospitalOwnership" : $('#ownership').val(), //编码器归属
+                            "newvideoNum": $('#account').val(), //新视通账号
+                            "ip": $('#IPAddress').val()//IP地址*/
+                        }
+                    };
+                    return JSON.stringify(params);
+                }
+            },
+            "columns":[
+                {"title":"序号","sWidth":"5%"},
+                {"title":"医院名称", "data":"hospitalName","sWidth":"20%"},
+                {"title":"医院链接", "data":"hospitalUrl","sWidth":"20%"},
+                {"title":"医院简介", "data":"hospitalContent","sWidth":"20%"},
+                {"title":"操作", "data":"id","sWidth":"20%"}
+            ],
+            "columnDefs":[
+                {
+                    "render":function(data,type,row,meta){
+                        var html = "<div>"+(meta.row+1)+"</div>";
+                        return html;
+                    },
+                    "targets":0
+                },
+                {
+					   "render":function(data,type,row,meta){
+						   var html="";
+						   html="<span class='widthLength' title='"+row.hospitalName+"'>"+row.hospitalName+"</span>";
+						   return html;
+					   },
+					   "targets":1
+					},
+                {"render":function(data,type,row,meta){
+                    var html = "";
+                    html =  "<div class='clearfix'>" +
+                        "<div style='display:inline-block;'><button class='btn btn-link hospitalEdit' rowId='"+row.id+"' ><i class='iconfont' style='color:#0e51a2;font-weight:500;' title='编辑'>&#xe608;</i></button></div>"+
+                        "<div style='margin-left:3px;display:inline-block;'><button class='btn btn-link hospitalDelete' rowId='"+row.id+"' ><i class='iconfont' style='color:#0e51a2;font-weight:500;' title='删除'>&#xe685;</i></button></div>"+
+                        "</div>";
+                    return html;
+                },
+                    "targets":4
+                }
+            ],
+
+            "drawCallback":function(setting){
+
+                //新增
+                $(".hospitalAdd").off().on("click",function(){
+                    var hospitalId=$(this).attr("rowId");
+                    $(this).attr({"data-toggle":"modal","data-target":"#addModal"});
+                    //新增确定按钮
+                    $(".saveAddHospital").off().on("click",function(){
+                        var params={
+                            "hospitalName":$("#hospitalNameAdd").val(),
+                            "hospitalUrl":$("#hospitalUrlAdd").val(),
+                            "hospitalContent":$("#hospitalContentAdd").val()
+                        }
+                        var requestTip=base.requestTip({position:"center"});
+                        $.ajax({
+                            url:$.base+"/hospital/insertHospitalInfo",
+                            type:"post",
+                            contentType:"application/json",
+                            data:JSON.stringify(params),
+                            success:function(data){
+                                requestTip.success();
+                                $("#addModal").modal("hide");
+                                common.refreshGrid(grid);
+                                setHosZtree();//刷新左边医院列表
+                            },
+                            beforeSend:function(){
+                                requestTip.wait();
+                            },
+                            error:function(){
+                                requestTip.error();
+                            }
+                        });
+                    });
+                });
+
+                //编辑
+                $(".hospitalEdit").off().on("click",function(){
+                    var hospitalId=$(this).attr("rowId");
+
+                    $(this).attr({"data-toggle":"modal","data-target":"#editModal"});
+                    var params={
+                        "id":hospitalId
+                    }
+                    //获取原先的数据
+                    $.ajax({
+                        url:$.base+"/hospital/getLiveHospitalInfoById",
+                        type:"post",
+                        contentType:"application/json",
+                        data:JSON.stringify(params),
+                        success:function(data){
+                            $("#hospitalNameEdit").val(data.hospitalName);
+                            $("#hospitalUrlEdit").val(data.hospitalUrl);
+                            $("#hospitalContentEdit").val(data.hospitalContent);
+                        }
+                    });
+                    //编辑确定按钮
+                    $(".saveEdit").off().on("click",function(){
+                        var params={
+                            "id":hospitalId,
+                            "hospitalName":$("#hospitalNameEdit").val(),
+                            "hospitalUrl":$("#hospitalUrlEdit").val(),
+                            "hospitalContent":$("#hospitalContentEdit").val()
+                        }
+                        var requestTip=base.requestTip({position:"center"});
+                        $.ajax({
+                            url:$.base+"/hospital/updateLiveHospital",
+                            type:"post",
+                            contentType:"application/json",
+                            data:JSON.stringify(params),
+                            success:function(data){
+                                requestTip.success();
+                                $("#editModal").modal("hide");
+                                common.refreshGrid(grid);
+                            },
+                            beforeSend:function(){
+                                requestTip.wait();
+                            },
+                            error:function(){
+                                requestTip.error();
+                            }
+                        });
+                    });
+                });
+
+                //删除
+                $(".hospitalDelete").on("click",function(){
+                    var hospitalId=$(this).attr("rowId");
+                    base.confirm({
+                        label:"提示",
+                        text:"<div style='text-align:center;font-size:13px;'>确定删除?</div>",
+                        confirmCallback:function(){
+                            var requestTip=base.requestTip({position:"center"});
+                            $.ajax({
+                                url:$.base+"/hospital/toDelLiveHospitalById?id="+hospitalId,
+                                type:"POST",
+                                contentType:"application/json",
+                                success:function(data){
+                                    requestTip.success();
+                                    common.refreshGrid(grid);
+                                },
+                                beforeSend:function(){
+                                    requestTip.wait();
+                                },
+                                error:function(){
+                                    requestTip.error();
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+        });
+    };
+    //刷新左边医院列表
+    var setting = {
+	        view: {
+	            selectedMulti:true,
+	        },
+	        data: {
+	            simpleData: {
+	                enable: true,
+	                pIdKey: "pid"
+	            }
+	        },
+	        callback: {
+	            onClick: zTreeOnClick
+	        }
+	};
+    function setHosZtree(){
+    	
+        var data = {
+            userId:1
+        };
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify(data),
+            url:$.base+"/hospital/getUserInfoById",
+            contentType:"application/json",
+            success:function(data){
+                setZtree2(data);
+            },
+            error:function(data){}
+        });
+    }
+    
+    function setZtree2(zNodes){
+        require(["bootstrap","ztreeCore","ztreeExcheck","ztreeExedit"],function(){
+            $.fn.zTree.init($("#treeDemo2"), setting, zNodes);
+            treeObj = $.fn.zTree.getZTreeObj("treeDemo2");
+            treeObj.expandAll(true);
+        	var nodes = treeObj.getNodes();
+            var adminNodeId=nodes[nodes.length-1].id;
+            var adminNode = treeObj.getNodeByParam("id", (adminNodeId+1));
+            treeObj.selectNode(adminNode);
+            var adminUrl="/loginController/toHospitalAdmin?id="+(adminNodeId+1);
+            getJSP(adminUrl);
+            $(".modal-backdrop").hide();
+        });
+    }
+    
+    function  zTreeOnClick(event, treeId, treeNode){
+        var url=treeNode.address;
+        if(url){
+            getJSP(url);
+        };
+    }
+    
+    //加载页面
+    function getJSP(url){
+        $.ajax({
+            type:"GET",
+            url:$.base+url,
+            error:function(){
+                alert("加载错误！");
+            },
+            success:function(data){
+                $(".hospitalUser").html(data);
+            }
+        });
+    }
+    
+    return {
+        run:function(){
+            setTableHospital();
+        }
+    };
+})

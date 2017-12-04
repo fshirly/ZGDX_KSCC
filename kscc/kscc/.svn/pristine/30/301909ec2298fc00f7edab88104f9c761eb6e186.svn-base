@@ -1,0 +1,55 @@
+package com.fable.kscc.bussiness.service.broadcastMeeting;
+
+import com.fable.kscc.api.model.livebroadcast.FbsLiveBroadcast;
+import com.fable.kscc.api.model.page.PageRequest;
+import com.fable.kscc.api.model.page.PageResponse;
+import com.fable.kscc.bussiness.mapper.broadcastMeeting.BroadcastMeetMapper;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by wangyh on 2017/8/7 0007.
+ */
+@Service
+public class BroadcastMeetServiceImpl implements BroadcastMeetService{
+    @Autowired
+    private BroadcastMeetMapper broadcastMeetMapper;
+
+    @Override
+    public PageResponse<FbsLiveBroadcast> getBroadcastList(PageRequest<Map<String,Object>> pageRequest) {
+        Map<String,Object> map=pageRequest.getParam();
+        Page<FbsLiveBroadcast> result = PageHelper.startPage(pageRequest.getPageNo(), pageRequest.getPageSize());
+        List<FbsLiveBroadcast> list =  broadcastMeetMapper.getBroadcastMeetList(map);
+        return PageResponse.wrap(result);
+    }
+
+    @Override
+    public FbsLiveBroadcast getBroadcastDetails(Integer id) {
+        return null;
+    }
+
+    @Override
+    public Map<String,Object> editBroadcastMeet(FbsLiveBroadcast fbsLiveBroadcast) {
+        Map<String, Object> map = new HashMap<>();
+        Boolean status = broadcastMeetMapper.editBroadcastMeet(fbsLiveBroadcast) !=0;
+        map.put("success",status);
+        if(status){
+            map.put("message","修改成功");
+        }else {
+            map.put("message","修改失败");
+        }
+        return map;
+    }
+
+	@Override
+	public List<Map<String, Object>> getBroadcastForSchedule(Map<String, String> map) {
+		List<Map<String, Object>> list = broadcastMeetMapper.getBroadcastForSchedule(map);
+		return list;
+	}
+}

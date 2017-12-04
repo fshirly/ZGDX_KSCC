@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper  namespace="com.fable.kscc.bussiness.mapper.fbmenu.FbMenuMapper">
+    <resultMap type="com.fable.kscc.api.model.menu.FbsMenu" id="findAllByRoleMap">
+        <id column="ID" property="id" jdbcType="INTEGER"/>
+        <id column="NAME" property="name" jdbcType="VARCHAR"/>
+    </resultMap>
+    <!--根据kscc管理员查看菜单(权限)-->
+	<select id="findAllByRole" resultMap="findAllByRoleMap">
+         SELECT mr.MENU_ID ID,m.`NAME` NAME FROM fbs_menu m
+          LEFT JOIN fbs_menu_role mr ON m.ID = mr.MENU_ID
+          LEFT JOIN fbs_role r ON r.ID = mr.ROLE_ID
+        WHERE r.ROLE_CODE = 'role1'
+    </select>
+    <!--(一)初始化kscc管理员的菜单-->
+    <update id="InitializationMenuRole">
+        UPDATE fbs_menu_role SET ROLE_ID = 0 WHERE MENU_ID IN(17,18,19,20,21)
+    </update>
+    <!--(二)更改kscc管理员的菜单-->
+    <update id="updateMenuByRole" parameterType="java.util.Map">
+        UPDATE fbs_menu_role SET HOSTROLE =#{params.hostRole} WHERE
+        ROLE_ID =#{params.roleId}
+        AND USER_ID =#{params.userId}
+        AND MENU_ID =#{params.menuId}
+    </update>
+    <insert id="inserMenuRole"  parameterType="java.util.Map">
+        INSERT INTO fbs_menu_role(
+        MENU_ID,ROLE_ID,USER_ID
+        )VALUES (
+        #{params.menuId},
+        #{params.roleId},
+        #{params.userId}
+        )
+    </insert>
+    <select id="findMenuAllByRole" parameterType="java.util.Map" resultType="hashmap">
+        SELECT mr.MENU_ID id,m.NAME name,mr.HOSTROLE hostRole FROM fbs_menu m
+          LEFT JOIN fbs_menu_role mr ON m.ID = mr.MENU_ID
+          LEFT JOIN fbs_role r ON r.ID = mr.ROLE_ID
+        WHERE r.ROLE_CODE = 'role1'
+        AND mr.ROLE_ID =#{params.roleId}
+        AND mr.USER_ID =#{params.userId}
+    </select>
+</mapper>

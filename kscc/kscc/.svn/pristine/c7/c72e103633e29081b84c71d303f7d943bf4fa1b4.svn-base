@@ -1,0 +1,216 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+ request.setCharacterEncoding("UTF-8");
+%>
+        <div class="middleContent">
+        <%--<div class="searchBar">
+	       <div>
+	          <div>
+	              <input type="text" class="form-control" name="searchAccountManage" id="searchAccountManage" placeholder="请输入姓名关键字" style="width:250px;">
+	              <span class="iconfont fuzzySearchBtn">&#xe60a;</span>
+	          </div>
+		      <a class="highSearch">高级搜索</a>
+	       </div>
+	    </div>--%>
+		<ul id="myTab" class="nav nav-tabs">
+           <li class="active">
+              <a href="#wait" data-toggle="tab">系统管理员</a>
+           </li>
+           <li>
+              <a href="#yet" data-toggle="tab">医院用户</a>
+           </li>
+        </ul>
+        <div id="myTabContent" class="tab-content" style="margin-top:10px;">
+               <div class="tab-pane fade in active" id="wait">
+			    <div id="searchDiv" style="display:none;">
+                	<form class="form-inline" id="searchFormIdWait">
+			       		<div class="row">
+			       			<div class="form-group col-sm-4 col-md-4">
+				                <label class="text-right" for="loginID">登录ID：</label>
+				                <input id="loginID" name="loginID" class="form-control form-width" style="width:50%;"/>
+				            </div>
+				            <div class="form-group col-sm-4 col-md-4">
+				                <label class="text-right" for="adminName">姓名：</label>
+				                <input id="adminName" name="adminName" class="form-control form-width" style="width:50%;"/>
+				            </div>
+				            <div class="col-sm-4 col-md-4 accountManageBtn">
+				                <button id="searchBtn" type="button" class="btn btn-primary btn-search">搜索</button>
+				            	<button id="resetBtn" type="button"  class="btn btn-primary btn-warning" style="margin-left:20px;">重置</button>
+				            </div>
+				    	</div>
+				      </form>
+				    </div>
+				    <div class="clearfix mt-10">
+				       <button class="btn btn-primary administratorAdd">新增</button>
+				       <button class="btn btn-primary administratorDelete">删除</button>
+			        </div>
+				    <div id="tAdminList">
+				    	<table id="tblAdminList" class="table table-striped kscc-grid"></table>
+				    </div>
+               </div>
+               <div class="tab-pane fade" id="yet">
+                   <div class="col-xs-2 col-sm-2 col-md-2" style="overflow:auto;">
+                      <div class="zTreeDemoBackground">
+					      <ul id="treeDemo2" class="ztree"></ul>
+					  </div>
+                   </div>
+                   <div class="col-xs-10 col-sm-10 col-md-10">
+                      <div class="hospitalUser"></div>
+                   </div>
+               </div>
+           </div>
+       </div>
+<!--新增弹框-->
+<div class="modal fade addAdmi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">新增管理员</h4>
+         </div>
+         <div class="modal-body" id="addBody">
+            <form  class="form-inline">
+               <div class="form-group">
+                  <label class="text-right">登录ID:</label>
+                  <input id="loginIdAdd" name="loginIdAdd" class="form-control" type="text" value="" >
+               </div>
+               <div class="form-group mt-10"> 
+                  <label class="text-right">姓名:</label>
+                  <input id="userNameAdd" name="userNameAdd" class="form-control" type="text" value="" >
+               </div>
+               <div class="form-group mt-10">
+                  <label class="text-right">密码:</label>
+                  <input id="passwordAdd" name="passwordAdd" class="form-control"  type="password" value="" >
+               </div>
+               <div class="form-group mt-10">
+                  <label class="text-right">联系方式:</label>
+                  <input id="telephoneAdd" name="telephoneAdd" class="form-control" type="text" value="">
+               </div>
+               <div class="form-group mt-10">
+                  <label class="text-right">邮箱:</label>
+                  <input id ="mailAdd" name="mailAdd" class="form-control" type="text" value="">
+               </div>
+               <div class="form-group mt-10">
+                  <label class="text-right">部门:</label>
+                  <input id ="sector" name="sector" class="form-control" type="text" value="">
+               </div>
+               <div class="form-group mt-10">
+                  <label class="text-right">编解码器:</label>
+                  <input id ="newVideoNum" name="newVideoNum" class="form-control" type="text" value="">
+               </div>
+            </form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary saveAdd">确定</button>
+         </div>
+      </div><!-- /.modal-content -->
+   </div><!-- /.modal -->
+</div>
+
+<!--修改弹框-->
+<div class="modal fade editAdmi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">编辑管理员</h4>
+         </div>
+         <div class="modal-body" id="editBody">
+            <form  class="form-inline">
+               <div class="form-group">
+                  <label class="text-right">登录ID:</label>
+                  <input id="loginIdEdit" name="loginIdEdit" class="form-control" type="text" value="" >
+               </div>
+               <div class="form-group mt-10"> 
+                  <label class="text-right">姓名:</label>
+                  <input id="userNameEdit" name="userNameEdit" class="form-control" type="text" value="" >
+               </div>
+               <div class="form-group mt-10">
+                  <label class="text-right">原密码:</label>
+                  <input id="passwordEdit" name="passwordEdit" class="form-control"  type="password" value="" >
+               </div>
+               <%--<div class="form-group mt-10">--%>
+                  <%--<label class="text-right">新密码:</label>--%>
+                  <%--<input id="newPasswordEdit" name="newPasswordEdit" class="form-control"  type="password" value="" >--%>
+               <%--</div>--%>
+               <%--<div class="form-group mt-10">--%>
+                  <%--<label class="text-right">确认密码:</label>--%>
+                  <%--<input id="confirmPasswordEdit" name="confirmPasswordEdit" class="form-control"  type="password" value="" >--%>
+               <%--</div>--%>
+               <div class="form-group mt-10">
+                  <label class="text-right">联系方式:</label>
+                  <input id="telephoneEdit" name="telephoneEdit" class="form-control" type="text" value="">
+               </div>
+               <div class="form-group mt-10">
+                  <label class="text-right">邮箱:</label>
+                  <input id ="mailEdit" name="mailEdit" class="form-control" type="text" value="">
+               </div>
+            </form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary saveEdit">确定</button>
+         </div>
+      </div><!-- /.modal-content -->
+   </div><!-- /.modal -->
+</div>
+
+<!--重置密码弹框-->
+<div class="modal fade resetPassword" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">密码重置</h4>
+         </div>
+         <div class="modal-body" id="resetBody">
+            <form  class="form-inline">
+               <div class="form-group mt-10">
+                  <label class="text-right">原密码:</label>
+                  <input id="passwordOld" name="passwordOld" class="form-control"  type="password" value="" >
+               </div>
+               <div class="form-group mt-10">
+                  <label class="text-right">新密码:</label>
+                  <input id="passwordNew" name="passwordNew" class="form-control"  type="password" value="" >
+               </div>
+               <div class="form-group mt-10">
+                  <label class="text-right">确认新密码:</label>
+                  <input id="confirmPasswordNew" name="confirmPasswordNew" class="form-control" type="password" value="">
+               </div>
+            </form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary saveReset">确定</button>
+         </div>
+      </div><!-- /.modal-content -->
+   </div><!-- /.modal -->
+</div>
+<!--权限配置弹框-->
+<div class="modal fade permissionConfig"  id="config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> 
+    <div class="modal-dialog modal-md"> 
+        <div class="modal-content"> 
+            <div class="modal-header"> 
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> 
+                <h4 class="modal-title">权限配置</h4> 
+            </div> 
+            <div class="modal-body" id="configBody">
+               <div class="zTreeDemoBacAdmin">
+					<ul id="treeDemoAdmin" class="ztree"></ul>
+				</div>
+            </div> 
+            <div class="modal-footer"> 
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button> 
+                <button type="button" class="btn btn-primary saveZTree">确定</button> 
+            </div> 
+        </div><!-- /.modal-content --> 
+    </div><!-- /.modal --> 
+</div>
+
+<script>
+require(["app/accountManage/accountManageApp"],function(page){
+    page.run();
+})
+</script>

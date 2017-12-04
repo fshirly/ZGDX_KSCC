@@ -1,0 +1,26 @@
+.dtreecob {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #666;
+	white-space: nowrap;
+	display: none;
+	border: 1px solid #5CACEE;
+	position: absolute;
+	z-index: 9999;
+	background-color: white;
+	width: 200px;
+}
+
+.dBottom {
+	background-color: #F0F0F0;
+	margin-bottom: 0px;
+	text-align: right;
+	height: 23px;
+	line-height: 23px;
+}
+
+.dBottom a {
+	margin-right: 5px;
+	color: black;
+	text-decoration: none;
+}

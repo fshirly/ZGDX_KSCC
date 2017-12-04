@@ -1,0 +1,259 @@
+define(["base","datatables.net","commonUtil","app/commonApp"],function(base,DataTable,commonUtil,common){
+	    var grid = null;
+	    var picturePath;
+	    var pictureName;
+	    function getImgData(){
+	    	$.ajax({
+	            type:"post",
+	            async: false,
+	            url:$.base+"/liveBroadCastController/selectHomePage",
+	            success:function (data) {
+	            	   if(data.status==1){
+						   var res = data.data;
+						   if(res.length>0){
+							   $.each(res,function(index,item){
+								   $(".uploadDiv:eq("+index+")").find(".imgPreview img").attr({"src":$.base+"/loginController/showPic?name="+item.imageUrl,"flag":1});
+								   $(".uploadDiv:eq("+index+")").find("select[name='networkUrl']").prepend("<option id='"+item.liveId+"'>"+item.networkUrl+"</option>");
+							   });
+							   amplifyImage();
+						   }
+					   }
+	            }
+			});
+	    }
+	    
+		function getUserId(){
+			$.ajax({
+	            type:"post",
+	            async: false,
+	            url:$.base+"/liveBroadCastController/getUserId",
+	            success:function (data) {
+	            	$("input[name='createId']").val(data.id);
+	            }
+			});
+		};
+	
+	function imgView(imgInput,imgDiv){
+		$("#"+imgInput).change(function(){
+			var imgPreview=document.getElementById(imgInput);
+			PreviewImage(imgPreview, null,imgDiv);
+		});
+	}
+	
+	// function  getModel(){
+	// 	$("a[type='button']").on("click",function(){
+	// 		var _this = this;
+	// 		$(this).attr({"data-toggle":"modal","data-target":"#selectLiveModal"});
+	// 		var selectId=$(this).next();
+	// 		var selectTxt=$(this).next().next();
+	// 		//清空
+	// 		$("#tLiveSelect").html("");
+	// 		var tableContent = "";
+	// 		$("#selectLiveModal").on("shown.bs.modal",function(){
+	// 			tableContent = '<table id="tblLiveSelect_'+$(_this).attr("num")+'" class="table table-striped kscc-grid"></table>';
+	// 			$("#tLiveSelect").html(tableContent);
+	// 			setTable(selectId,selectTxt,$(_this).attr("num"));
+	// 		});
+	// 	});
+	// }
+	
+	 // function setTable(selectId,selectTxt,value){
+		//  grid = $("#tblLiveSelect_"+value+"").DataTable({
+		// 		"searching":false,
+		// 		"lengthChange":false,
+		// 		"autoWidth":false,
+		// 		"serverSide":true,
+		// 		"paging":true,
+		// 		"ordering":false,
+		// 		"language":{"url":$.base+"/js/lib/chinese.json"},
+		// 		"ajax":{
+		// 		"type":"post",
+	 //            "url":$.base+"/liveBroadCastController/getSelectBroadcast",
+		// 		"contentType":"application/json",
+		// 		"dataType":"json",
+		// 		"data": function ( d ) {
+		//                var params={
+		//             		   "pageNo": d.start/d.length+1,
+		//             		   "pageSize": d.length,
+		// 					   "param": {
+		// 						   "title" : $('#searchLive').val()
+		// 						}
+		//                };
+		//               return JSON.stringify(params);
+		//             }
+		// 		},
+		// 		"columns":[
+		// 		           {"title":"","sWidth":"15%"},
+		// 		           {"title":"直播名称", "data":"title","sWidth":"85%"}
+		// 		           ],
+	 //           "columnDefs":[
+		// 					{
+		// 					    "render":function(data,type,row,meta){
+		// 					    	var html = "<input type='radio' name='result' value='"+row.id+"' att='"+row.title+"'>";
+		// 						       $("input[name='result']").parent().addClass("text-center");
+		// 						    return html;
+		// 					    },
+		// 					    "targets":0
+		// 					 }
+		// 	              ],
+		// 		"drawCallback":function(setting){
+		// 			//选择
+		// 			$(".saveSelect").unbind().on("click",function(){
+		// 				var selectLiveId=$("input[name='result']:checked").val();
+		// 				var selectLiveName=$("input[name='result']:checked").attr("att");
+		// 				selectId.val(selectLiveId);
+		// 				selectTxt.text(selectLiveName);
+		// 				$("#selectLiveModal").modal('hide');
+		// 			})
+		// 		}
+		//    });
+	 // }
+	//设置下拉框 input框的宽度
+	function setFormWidth(){
+		$(".left-input-box input,.left-input-box select").width(function(){
+			var width = $(this).parent(".form-inline").width()-150;
+			return width;
+		});
+	}
+	 //设置直播选择
+	function setLiveChoose(){
+		$("select[name='networkUrl']").html("");
+		$.ajax({
+			type:"POST",
+			url:$.base+"/liveBroadCastController/getSelectBroadcast",
+			dataType:"json",
+			data:function ( d ) {
+				var params={
+					"param": {
+						"title" : $('#searchLive').val()
+					}
+				};
+				return JSON.stringify(params);
+			},
+			error:function(){
+				alert("出错了！");
+			},
+			success:function(data){
+				if(data.status==1){
+					var res = data.data;
+					if(res.length>0){
+						var options = "";
+						$.each(res,function(index,item){
+							options += "<option id='"+item.id+"'>"+item.title+"</option>";
+						});
+						$("select[name='networkUrl']").append(options);
+					}
+				}else{
+					base.requestTip({
+						position:"center"
+					}).success(data.tips);
+				}
+			}
+		})
+
+	}
+
+	 function setImgSubmit(){
+		 // setImageUpload("imgPreviewFirst","pictureInputFirst","pictureInputFirst");
+		 // setImageUpload("imgPreviewSecond","pictureInputSecond","pictureInputFirst");
+		 // setImageUpload("imgPreviewThree","pictureInputThree","pictureInputFirst");
+		 // setImageUpload("imgPreviewThird","pictureInputThird","pictureInputFirst");
+		 setUploadDiv("imgSubmitFirst");
+		 setUploadDiv("imgSubmitSecond");
+		 setUploadDiv("imgSubmitThree");
+		 setUploadDiv("imgSubmitThird");
+	 }
+	 
+	 function setUploadDiv(uploadBtn){
+		 $("#"+uploadBtn).off().on("click",function(){
+			 var params={
+			     "imageName":pictureName,
+			     "imageUrl":picturePath,
+			     "creatorId": $("input[name='createId']").val(),
+			     "networkUrl":$("select[name='networkUrl']").val(),
+			     "liveId":$("select[name='networkUrl'] option:selected").attr("id")
+			 }
+			 $.ajax({
+		            type:"post",
+		            url:$.base+"/liveBroadCastController/addHomePicture",
+		            contentType:"application/json",
+		            data:JSON.stringify(params),
+		            success:function (data) {
+		            	if(data.status==="1"){
+							setLiveChoose();//直播选择
+							base.requestTip({
+								position:"center"
+							}).success("首页图片设置成功！");
+						}
+		            }
+				});
+		 })
+	 }
+	 
+	 function setCancel(cancelBtn){
+		 $("#"+cancelBtn).off().on("click",function(){
+			 
+		 });
+	 }
+	 //上传图片
+	function fileInputClick(){
+		$("label.btnUpload").unbind().on("click",function(){
+			setImageUpload($(this).attr("box"),$(this).attr("for"));
+		})
+	}
+
+
+    /**上传图片**/
+    function setImageUpload(pictureView,id){
+        $("#"+id).unbind().on("change",function(){
+            base.form.fileUpload({
+                url: $.base + "/loginController/upload",
+                id: id,
+                success: function (data) {
+                	if(data.status==="1"){
+                        picturePath=data.data.fileUrl;
+                        pictureName=data.data.fileName;
+                        $("#"+pictureView).attr({"src":$.base+"/loginController/showPic?name="+item.imageUrl,"flag":1})
+                        base.requestTip({
+                            position:"center"
+                        }).success("附件上传成功！");
+						// $("#"+input).replaceWith('<input type="file" class="form-control form-width" name="file" id ="'+input+'" accept="image/jpg,image/png" />');
+					}
+                }
+            });
+        });
+    };
+	//放大图片
+	function amplifyImage(){
+		$(".imgPreview img").unbind().on("click",function(){
+			var url = $(this).attr("src");
+			var flag =  $(this).attr("flag");
+			if(flag!=0){
+				var url = $(this).attr("src");
+				$("#imgModal").find(".modal-dialog").css("margin-top",0);
+				$("#imgModal").find(".amplify-img").attr("src",url);
+				$("#imgModal").modal("show").on("shown.bs.modal",function(){
+					var top = [parseInt($(window).height())-parseInt($("#imgModal .modal-dialog").height())]/2;
+					if(top>100){
+						$(this).find(".modal-dialog").animate({
+							"marginTop": (top-60) + "px"
+						},200);
+					}
+
+				});
+			}
+		});
+	}
+	return {
+		run:function(){
+			setFormWidth();
+			getUserId();
+			// getModel();
+			setImgSubmit();
+			setCancel();//取消
+			setLiveChoose();//直播选择
+			fileInputClick();//上传图片
+			getImgData();
+		}
+	};
+});

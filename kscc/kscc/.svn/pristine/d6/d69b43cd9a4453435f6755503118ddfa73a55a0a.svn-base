@@ -1,0 +1,36 @@
+package com.fable.kscc.api.medTApi;
+
+import com.fable.kscc.api.cache.DataCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+
+/**
+ * @auther jiangmingjun
+ * @create 2017/10/24
+ * @description 单个鉴权线程类
+ */
+public class AuthenticThread implements Runnable {
+    public Map<String, String> login;
+    public MedTApi medTApi;
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticThread.class);
+
+    public AuthenticThread(Map<String, String> login, MedTApi medTApi) {
+        this.login = login;
+        this.medTApi = medTApi;
+    }
+
+    @Override
+    public void run() {
+        while ((boolean)DataCache.getInstance().getCache("flag")){
+            try {
+                logger.info(login.get("ip")+":"+login.get("port")+"========================");
+                Thread.sleep(50000);
+                medTApi.heartBeat(login);
+            } catch (InterruptedException e) {
+                logger.error("线程出错"+e);
+            }
+        }
+    }
+}

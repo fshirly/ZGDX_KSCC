@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fable.kscc.bussiness.mapper.LiveMessage.LiveMessageMapper">
+	<resultMap type="com.fable.kscc.api.model.message.FbsLiveMessage" id="BaseResultMap">
+		<id column="ID" property="id" jdbcType="INTEGER"/>
+		<id column="STATUS" property="status" jdbcType="INTEGER"/>
+		<id column="CONTENT" property="content" jdbcType="VARCHAR"/>
+		<id column="USER_ID" property="userId" jdbcType="INTEGER"/>
+		<id column="USER_NAME" property="userName" jdbcType="VARCHAR"/>
+		<id column="HOSPITAL_NAME" property="hospitalName" jdbcType="VARCHAR"/>
+		<id column="LIVE_ID" property="liveId" jdbcType="INTEGER"/>
+		<id column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP"/>
+		<id column="CREATOR_ID" property="creatorId" jdbcType="VARCHAR"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID id,
+		STATUS status,
+		CONTENT content,
+		USER_ID userId,
+		LIVE_ID liveId,
+		ADDRESSEE addressee,
+		MTYPE mtype,
+		CREATOR_ID creatorId,
+		CREATED_TIME createdTime,
+		UPDATE_ID updateId,
+		UPDATED_TIME updatedTime,
+		USER_NAME userName,
+		HOSPITAL_NAME hospitalName
+	</sql>
+
+	<!-- 根据状态和发言人模糊查询消息信息 -->
+	<select id="findMessageByStatus" resultType="com.fable.kscc.api.model.message.FbsLiveMessage" parameterType="java.util.Map">
+		SELECT
+		<include refid="Base_Column_List"/>
+		FROM (
+		SELECT l.*,h.HOSPITAL_NAME,u.USER_NAME FROM FBS_LIVE_MESSAGE l
+		LEFT JOIN FBS_USER u ON u.ID =l.USER_ID
+		LEFT JOIN fbs_hospital_information h ON u.HOSPITAL_ID = h.ID
+		) a
+		WHERE a.STATUS = ${map.status}
+		<if test="map.id !=null and map.id !=''">
+			AND a.LIVE_ID = ${map.id}
+		</if>
+		<if test="map.userId !=null and map.userId !=''">
+			AND a.USER_ID = ${map.userId}
+		</if>
+		<if test="map.mtype !=null and map.mtype !=''">
+			AND a.MTYPE = ${map.mtype}
+		</if>
+		<if test="map.strCreatId !=null and map.strCreatId !=''">
+			AND a.CREATOR_ID IN (${map.strCreatId})
+		</if>
+		order by a.ID desc
+	</select>
+
+	<!-- 批量已读 -->
+	<update id="updateLiveMessageStatus" parameterType="java.lang.Integer">
+		UPDATE FBS_LIVE_MESSAGE SET STATUS = 2 WHERE ID in
+		<foreach collection="array" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+	</update>
+
+	<!-- 批量删除 -->
+	<delete id="deleteLiveMessageStatus" parameterType="java.lang.Integer">
+		DELETE FROM FBS_LIVE_MESSAGE WHERE ID in
+		<foreach collection="array" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+
+	<!-- 根据id读取单条消息 -->
+	<select id="findMessageById" resultMap="BaseResultMap" parameterType="Integer">
+		SELECT
+			u.USER_NAME,
+			l.CREATED_TIME,
+			l.CONTENT,
+			h.HOSPITAL_NAME,
+			l.CREATOR_ID
+		FROM
+			FBS_LIVE_MESSAGE l
+		LEFT JOIN FBS_USER u ON l.USER_ID = u.ID
+		LEFT JOIN fbs_hospital_information h ON u.HOSPITAL_ID = h.ID
+		WHERE
+			l.ID = #{id}
+	</select>
+
+	<!-- 查询总条数 -->
+	<select id="queryListCount" parameterType="map" resultType="java.lang.Integer">
+		SELECT
+		count(1)
+		FROM
+		(SELECT l.CREATED_TIME,u.USER_NAME,l.CONTENT FROM FBS_LIVE_MESSAGE l
+		LEFT JOIN FBS_USER u ON u.ID =l.USER_ID
+		WHERE l.STATUS = ${map.status}
+		<if test="paramsMap.userName !=null and paramsMap.userName !=''">
+			AND u.USER_NAME LIKE '%${map.userName}%'
+		</if>
+		) b
+	</select>
+	<insert id="insertLiveMessage" parameterType="com.fable.kscc.api.model.message.FbsLiveMessage">
+		insert into FBS_LIVE_MESSAGE (ID,CREATED_TIME,STATUS,CONTENT,USER_ID,LIVE_ID,ADDRESSEE,MTYPE,CREATOR_ID)
+		values (
+		#{id},
+		#{createdTime},
+		#{status},
+		#{content},
+		#{userId},
+		#{liveId},
+		#{addressee},
+		#{mtype},
+		#{creatorId}
+		)
+	</insert>
+	<select id="queryExtendCount" parameterType="map" resultType="java.lang.Integer">
+		SELECT COUNT(1)
+		FROM
+		FBS_LIVE_MESSAGE
+		WHERE 1=1
+		<if test="liveId !=null and liveId !=''">
+		AND
+		LIVE_ID = #{liveId}
+		</if>
+		AND
+		USER_ID = #{userid}
+		AND
+		STATUS = #{status}
+		AND
+		MTYPE = 2
+	</select>
+</mapper>

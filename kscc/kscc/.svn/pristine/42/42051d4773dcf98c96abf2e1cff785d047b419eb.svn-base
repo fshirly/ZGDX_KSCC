@@ -1,0 +1,20 @@
+﻿@charset "utf-8";
+
+/*--- css reset ---*/
+div,a,img,ul,li,ol,dl,form,label,table,tbody,tr,td,input,h1,h2,h3,h4,h5,h6,p,b,textarea,span,dfn,body {margin:0; padding:0;}
+html,body,iframe {height:100%; width:100%; margin:0; padding:0;}  
+body,input,textarea {font-size:12px; font-family:aria,Tahoma,sans-serif; color:#333333;}
+table {border-collapse:collapse; border-spacing:0;}
+ul {list-style: none;}
+a {text-decoration:none; color:#175899; cursor:pointer;}
+a:hover {color:#0033ff;}
+a:focus,a:active {outline:none;}
+a,input {outline:none;blr:expression(this.onFocus=this.blur());}/*--- 清除a标签点击后的虚线边框 ---*/
+img {border:none; vertical-align:middle;}
+input,textarea {vertical-align:middle; resize:none;}
+h1,h2,h3 {font-size:12px; overflow:hidden;}
+input[type="button"],input[type="radio"],input[type="checkbox"]{cursor:pointer;}
+input[disabled="disabled"] {border:1px solid #cccccc; background:#e5e5e5;}
+.tips,dfn {color:red; font-style:normal;}
+.clearfix:after {content:"."; display:block; height:0; clear:both;}
+.clearfix {zoom: 1;}

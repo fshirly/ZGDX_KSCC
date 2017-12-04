@@ -1,0 +1,59 @@
+package com.fable.kscc.bussiness.service.enrollMedT;
+
+import com.fable.kscc.api.medTApi.MedTApi;
+import com.fable.kscc.api.utils.Constants;
+import com.fable.kscc.api.utils.HttpUtils;
+import com.fable.kscc.api.utils.XmlGenerator;
+import com.fable.kscc.bussiness.mapper.livecodec.LiveCodecMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/**
+ * Created by Wanghairui on 2017/10/11.
+ */
+@Service
+public class EnrollMedTTest {
+
+    @Autowired
+    private LiveCodecMapper mapper;
+
+    @Autowired
+    private MedTApi medTApi;
+
+        @PostConstruct
+    public void init(){
+
+        List<Map<String, String>> loginQueue = mapper.selectMedTProperties();
+        ExecutorService service=null;
+        if(loginQueue.size()!=0){
+            service = Executors.newFixedThreadPool(loginQueue.size());
+        }
+        for (final Map<String, String> login:loginQueue){
+//            if("192.168.40.157".equals(login.get("ip"))){
+                login.put("authenticationid", medTApi.getAuthenticationId(login));
+                XmlGenerator.generateRequestRoot(login);
+                medTApi.Login(login);
+                medTApi.SetSysTimeInfo(login);
+                service.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (true){
+                            try {
+                                Thread.sleep(50000);
+                                medTApi.heartBeat(login);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+//            }
+        }
+    }
+}

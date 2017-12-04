@@ -1,0 +1,226 @@
+define(["base","datatables.net","app/commonApp"],function(base,DataTable,common){
+	var grid = null;
+    function setTable1(){
+    	grid = $("#tblCodec").DataTable({
+			"searching":false,
+			"lengthChange":false,
+			"autoWidth":false,
+			"serverSide":true,
+			"paging":true,
+			"ordering":false,
+			"language":{"url":$.base+"/js/lib/chinese.json"},
+			"ajax":{ 
+			"type":"post",
+            "url":$.base+"/fabsLiveCode/findAllPageCodeList",
+			"contentType":"application/json",
+			"data": function ( d ) {
+	               var params={
+	            		   "pageNo": d.start/d.length+1,
+	            		   "pageSize": d.length,
+						   "param": {
+	            		   		"hospitalId":$("#idcodestr").val(),
+							   "codecOwnership" : $('#ownership').val(), //编码器归属
+							   "newvideoNum": $('#account').val(), //新视通账号
+							   "ip": $('#IPAddress').val()//IP地址
+							}
+	               };
+	              return JSON.stringify(params);
+	            }
+			},
+			"columns":[
+			           {"title":"序号","sWidth":"5%"},
+			           {"title":"编码器归属", "data":"codecOwnership","sWidth":"20%"},
+			           {"title":"新视通账号", "data":"newvideoNum","sWidth":"15%"},
+			           {"title":"IP地址", "data":"ip","sWidth":"15%"},
+			           {"title":"端口号", "data":"port","sWidth":"10%"},
+			           {"title":"用户名", "data":"userName","sWidth":"15%"},
+			           //{"title":"密码", "data":"password","sWidth":"10%"},
+			           {"title":"操作", "data":"id","sWidth":"20%"}
+			           ],
+           "columnDefs":[
+						{ 
+						    "render":function(data,type,row,meta){ 
+						       var html = "<div>"+(meta.row+1)+"</div>"; 
+						       return html; 
+						    }, 
+						    "targets":0 
+						 },
+						 {
+							   "render":function(data,type,row,meta){
+								   var html="";
+								   html="<span class='widthLength' title='"+row.codecOwnership+"'>"+row.codecOwnership+"</span>";
+								   return html;
+							   },
+							   "targets":1
+							},
+                         {
+							   "render":function(data,type,row,meta){
+		                           var html = "";
+		                           html =  "<div class='clearfix'>" +
+		                                   "<div style='display:inline-block;'><button class='btn btn-link codecEdit' rowId='"+row.id+"' ><i class='iconfont' style='color:#0e51a2;font-weight:500;' title='编辑'>&#xe608;</i></button></div>"+
+		                            	   "<div style='margin-left:3px;display:inline-block;'><button class='btn btn-link codecDelete' rowId='"+row.id+"' ><i class='iconfont' style='color:#0e51a2;font-weight:500;' title='删除'>&#xe685;</i></button></div>"+
+		                     	  "</div>";
+			            	  return html;
+			              },
+			               "targets":6
+			            }
+		              ],
+              
+			"drawCallback":function(setting){
+				
+				//编码器新增
+				$(".codecAdd").off().on("click",function(){
+					var codecId=$(this).attr("rowId");
+			        $(this).attr({"data-toggle":"modal","data-target":"#addModal"});
+			        //新增确定按钮
+			        $(".saveAdd").off().on("click",function(){
+			        	base.form.validate({ 
+			                 form:$("#codecFormAdd"), 
+			                 passCallback:function(){
+			                	 var params={
+			                                "hospitalId":$("#idcodestr").val(),
+									        "codecOwnership":$("#ownershipAdd").val(),
+											"newvideoNum":$("#accountAdd").val(),
+											"ip":$("#IPAddressAdd").val(),
+											"port":$("#portAdd").val(),
+				            				"username":$("#userNameAdd").val(),
+				            				"password":$("#userPasswordAdd").val(),
+				            				"code_password":"",
+									      }
+						        	var requestTip=base.requestTip({position:"center"});
+						        	$.ajax({
+							        	url:$.base+"/fabsLiveCode/addLiveCoder",
+							        	type:"post",
+			                            contentType:"application/json",
+							        	data:JSON.stringify(params),
+							        	success:function(data){
+							        		requestTip.success();
+							        		$("#addModal").modal("hide");
+							        		base.form.reset($("#codecFormAdd"));
+							        		common.refreshGrid(grid);
+							        	},
+							        	beforeSend:function(){
+							            	requestTip.wait();
+							            },
+						            	error:function(){
+						            		requestTip.error();
+							            }
+							        });
+			                 }
+			        	});
+			        });
+				});
+				
+				//编码器编辑
+				$(".codecEdit").on("click",function(){
+					var codecId=$(this).attr("rowId");
+			        $(this).attr({"data-toggle":"modal","data-target":"#editModal"});
+                    var params={
+                        "id":codecId
+                    }
+			        //获取原先的数据
+			        $.ajax({
+			        	url:$.base+"/fabsLiveCode/getLiveCodeInfoById",
+			        	type:"post",
+                        contentType:"application/json",
+                        data:JSON.stringify(params),
+			        	success:function(data){
+			        		$("#ownershipEdit").val(data.codecOwnership);
+							$("#accountEdit").val(data.newvideoNum);
+							$("#IPAddressEdit").val(data.ip);
+							$("#portEdit").val(data.port);
+							$("#userNameEdit").val(data.userName);
+							//$("#userPasswordEdit").val(data.password);
+			        	}
+			        });
+			        //编辑确定按钮
+			        $(".saveEdit").on("click",function(){
+			        	base.form.validate({ 
+			                 form:$("#codecFormEdit"), 
+			                 passCallback:function(){
+			                	 var params={
+						        			"id":codecId,
+									        "codecOwnership":$("#ownershipEdit").val(),
+											"newvideoNum":$("#accountEdit").val(),
+											"ip":$("#IPAddressEdit").val(),
+											"port":$("#portEdit").val(),
+				            				"username":$("#userNameEdit").val(),
+				            				"password":$("#userPasswordEdit").val()
+									      }
+						        	var requestTip=base.requestTip({position:"center"});
+						        	$.ajax({
+							        	url:$.base+"/fabsLiveCode/updateLiveCode",
+			                            type:"post",
+			                            contentType:"application/json",
+							        	data:JSON.stringify(params),
+							        	success:function(data){
+							        		requestTip.success();
+							        		$("#editModal").modal("hide");
+							        		base.form.reset($("#codecFormEdit"));
+							        		common.refreshGrid(grid);
+							        	},
+							        	beforeSend:function(){
+							            	requestTip.wait();
+							            },
+						            	error:function(){
+						            		requestTip.error();
+							            }
+							        });
+			                 }
+			        	});
+			        });
+				});
+				
+				//删除
+				$(".codecDelete").on("click",function(){
+					var codecId=$(this).attr("rowId");
+					base.confirm({
+					    	  label:"提示",
+					    	  text:"<div style='text-align:center;font-size:13px;'>确定删除?</div>",
+				              confirmCallback:function(){
+				            	  var requestTip=base.requestTip({position:"center"});
+				            	  $.ajax({
+							        	url:$.base+"/fabsLiveCode/toDelLiveCodeById?id="+codecId,
+							        	type:"POST",
+                                        contentType:"application/json",
+							        	success:function(data){
+							        		requestTip.success();
+							        		common.refreshGrid(grid);
+							        	},
+							        	beforeSend:function(){
+							            	requestTip.wait();
+							            },
+						            	error:function(){
+						            		requestTip.error();
+							            }
+							        });
+				              }
+					});
+				});
+			}
+		});
+    };
+    
+    function setPage(){
+    	//搜索
+        $("#searchBtn2").off().on("click",function(){
+            $("#tCodec").html("<table id='tblCodec' class='table table-striped' style='width:93%;'></table>");
+            setTable1();
+    		//common.refreshGrid(grid);
+    	});
+    	
+    	//重置
+    	$("#resetBtn2").off().on("click",function(){
+            $('#ownership').val("");
+            $('#account').val("");
+            $('#IPAddress').val("");
+    	});
+    }
+    
+	return {
+		run:function(){
+			setTable1();//管理员管理表格
+			setPage();
+		}
+	};
+});

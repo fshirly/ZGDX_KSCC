@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fable.kscc.bussiness.mapper.livebroadcast.LiveBroadCastMapper">
+	
+<!-- 	创建直播申请 -->
+	<insert id="createLiveApplications" useGeneratedKeys="true" keyProperty="id" parameterType="com.fable.kscc.api.model.livebroadcast.FbsLiveBroadcast">
+		INSERT INTO FBS_LIVE_BROADCAST(TITLE,START_TIME,END_TIME,LIVE_INTRODUCTION,USER_ID,PHONE,EMAIL,HOSPITAL_WEBSITE,APPROVAL_TIME,APPROVAL_STATUS,PLAY_STATUS,DEPARTMENT_ID,CONF_ID,ISGENERATED,MEETING_STATUS,CREATOR_ID,CREATED_TIME,UPDATE_ID,UPDATED_TIME,FILE_NAME,FILE_PATH,PICTURE_NAME,PICTURE_PATH,ISDEL) VALUES(#{title},#{startTime},#{endTime},#{liveIntroduction},#{userId},#{phone},
+		#{email},#{hospitalWebsite},#{approvalTime},#{approvalStatus},#{playStatus},#{departmentId},#{confId},#{isGenerated},
+		#{meetingStatus},#{creatorId},#{createdTime},#{updateId},#{updatedTime},#{file_name},#{filePath},#{pictureName},#{picturePath},#{isdel})
+		 
+	</insert>
+	<sql id="liveMap">
+		select
+		  FLB.ID id,
+		  TITLE title,
+		  START_TIME startTime,
+		  END_TIME endTime,
+		  LIVE_INTRODUCTION liveIntroduction,
+		  USER_ID userId,
+		  PHONE phone,
+		  EMAIL email,
+		  HOSPITAL_WEBSITE hospitalWebsite,
+		  APPROVAL_TIME approvalTime,
+		  APPROVAL_STATUS approvalStatus,
+		  PLAY_STATUS playStatus,
+		  DEPARTMENT_ID departmentId,
+		  CONF_ID confId,
+		  ISGENERATED isGenerated,
+		  MEETING_STATUS meettingStatus,
+		  FLB.CREATOR_ID creatorId,
+		  FLB.CREATED_TIME createdTime,
+		  FLB.UPDATE_ID updateId,
+		  FLB.UPDATED_TIME updateTime,
+		  FILE_NAME fileName,
+		  FILE_PATH filePath,
+		  ISDEL isdel,
+		  PICTURE_NAME pictureName,
+		  PICTURE_PATH picturePath
+	</sql>
+
+	<sql id="liveMapForDetail">
+		select
+		FLB.ID id,
+		TITLE title,
+		START_TIME startTime,
+		END_TIME endTime,
+		LIVE_INTRODUCTION liveIntroduction,
+		USER_ID userId,
+		PHONE phone,
+		EMAIL email,
+		HOSPITAL_WEBSITE hospitalWebsite,
+		APPROVAL_TIME approvalTime,
+		APPROVAL_STATUS approvalStatus,
+		PLAY_STATUS playStatus,
+		DEPARTMENT_ID departmentId,
+		CONF_ID confId,
+		ISGENERATED isGenerated,
+		MEETING_STATUS meettingStatus,
+		FLB.CREATOR_ID creatorId,
+		FLB.CREATED_TIME createdTime,
+		FLB.UPDATE_ID updateId,
+		FLB.UPDATED_TIME updateTime,
+		FILE_NAME fileName,
+		FILE_PATH filePath,
+		ISDEL isdel,
+		PICTURE_NAME pictureName,
+		PICTURE_PATH picturePath,
+		DEPARTMENT_NAME departmentName
+	</sql>
+
+
+	<!--申请的直播-->
+	<select id="getLiveBroadCast" parameterType="hashmap" resultType="com.fable.kscc.api.model.livebroadcast.FbsLiveBroadcast">
+		<include refid="liveMap" />
+		FROM FBS_LIVE_BROADCAST FLB
+		WHERE  1=1
+		<if test="userId != null and userId != ''">
+			and USER_ID=#{userId}
+		</if>
+		<if test="approvalStatus != null and approvalStatus != ''">
+			and APPROVAL_STATUS=#{approvalStatus}
+		</if>
+		<if test="playStatus != null and playStatus != ''">
+			AND PLAY_STATUS=#{playStatus}
+		</if>
+		<if test="liveId != null and liveId != ''">
+			AND ID=#{liveId}
+		</if>
+		<if test="isDel != null and isDel != ''">
+			AND ISDEL=#{isDel}
+		</if>
+	</select>
+
+	<!--受邀的直播，同意参与的直播，和不同意参与的直播,自己不邀请自己-->
+	<select id="inviteLive" parameterType="hashmap" resultType="com.fable.kscc.api.model.livebroadcast.FbsLiveBroadcast">
+		<include refid="liveMap"/>
+		from FBS_LIVE_BROADCAST FLB
+		JOIN FBS_LIVE_PARTICIPANT FLP
+		ON FLP.LIVE_ID=FLB.ID
+		where HOSPITAL_ID=(select HOSPITAL_ID FROM FBS_USER
+		WHERE FBS_USER.ID=#{userId}
+		)
+		<if test="participation != null and participation != ''">
+			and FLP.PARTICIPATION=#{participation}
+		</if>
+		<if test="playStatus != null and playStatus != ''">
+			AND PLAY_STATUS=#{playStatus}
+		</if>
+		<if  test="approvalStatus != null and approvalStatus != ''">
+			AND APPROVAL_STATUS=#{approvalStatus}
+		</if>
+		<if  test="isDel != null and isDel != ''">
+			AND ISDEL=#{isDel}
+		</if>
+		<if  test="doNotParticipant != null and doNotParticipant != ''">
+			AND FLP.PARTICIPATION<![CDATA[ <> ]]>#{doNotParticipant}
+		</if>
+		AND USER_ID<![CDATA[ <> ]]>#{userId}
+	</select>
+
+	<!--同意邀请还是拒绝邀请-->
+	<update id="updateLiveParticipant" parameterType="hashmap">
+		UPDATE FBS_LIVE_PARTICIPANT SET PARTICIPATION=#{participant}
+		WHERE HOSPITAL_ID=(select HOSPITAL_ID FROM FBS_USER WHERE FBS_USER.ID=#{userId})
+		AND LIVE_ID=#{liveId}
+	</update>
+	<!--批量更新mtId-->
+	<update id="updateParticipantMtsById" parameterType="hashmap">
+			UPDATE  FBS_LIVE_PARTICIPANT SET MT_ID =#{mtId},UPDATED_TIME=#{updateTime} where
+			ID=#{id}
+	</update>
+
+	<!--直播详情-->
+	<select id="queryParticipant" parameterType="hashmap" resultType="hashmap">
+		select FLP.ID id,FHI.HOSPITAL_NAME hospitalName,FHI.ID hospitalId,FLP.ROLE_ID roleId,FLC.IP ip,FLC.USERNAME username,FLC.PASSWORD password,FLC.PORT port,FLC.NEWVIDEO_NUM newvideoNum,
+		FLP.SERIALNUMBER serialNumber,FLP.ONLINE_STATUS onlineStatus,FLP.MT_ID mtId,FlP.ISHOST ishost,FU.ID loginId from
+		FBS_LIVE_PARTICIPANT FLP
+		LEFT JOIN FBS_HOSPITAL_INFORMATION FHI ON FLP.HOSPITAL_ID=FHI.ID
+		LEFT JOIN FBS_LIVE_CODEC FLC ON FLC.HOSPITAL_ID=FHI.ID
+		LEFT JOIN FBS_USER FU ON FU.HOSPITAL_ID=FHI.ID
+		LEFT JOIN FBS_LIVE_BROADCAST FLB ON FLB.ID=FLP.LIVE_ID
+		WHERE 1=1
+		 <if test="liveId != null and liveId != '' ">
+			AND LIVE_ID=#{liveId}
+		 </if>
+		<if test="confId != null and confId != '' ">
+			AND CONF_ID=#{confId}
+		</if>
+		<if test="mtId != null and mtId != '' ">
+			AND MT_ID = #{mtId}
+		</if>
+		 AND FLP.PARTICIPATION<![CDATA[ <> ]]>'2'
+		 ORDER BY FLP.SERIALNUMBER ASC
+	</select>
+	<select id="queryLiveById" parameterType="hashmap" resultType="hashmap">
+		<include refid="liveMapForDetail"/>
+		FROM  FBS_LIVE_BROADCAST FLB JOIN FBS_DEPARTMENT FD ON FLB.DEPARTMENT_ID=FD.ID
+		WHERE FLB.ID=#{liveId}
+	</select>
+
+	<!-- 正在直播中的参与方 -->
+	<select id="queryParticipantsInLive" parameterType="hashmap" resultType="hashmap">
+		select FLB.CONF_ID confId,FHI.HOSPITAL_NAME hospitalName,FLC.HOSPITAL_ID hospitalId,FLC.IP ip,FLC.USERNAME username,FLC.PASSWORD password,FLC.PORT port,FLC.NEWVIDEO_NUM newvideoNum,
+		FLP.MT_ID mtId from
+		FBS_LIVE_PARTICIPANT FLP
+		LEFT JOIN FBS_HOSPITAL_INFORMATION FHI ON FLP.HOSPITAL_ID=FHI.ID
+		LEFT JOIN FBS_LIVE_CODEC FLC ON FLC.HOSPITAL_ID=FHI.ID
+		LEFT JOIN FBS_USER FU ON FU.HOSPITAL_ID=FHI.ID
+		LEFT JOIN FBS_LIVE_BROADCAST FLB ON FLB.ID=FLP.LIVE_ID
+		WHERE 1=1
+		AND FLP.PARTICIPATION <![CDATA[ <> ]]> '2'
+		AND FLB.PLAY_STATUS = '1'
+		ORDER BY FLP.SERIALNUMBER ASC
+	</select>
+
+	<!--修改直播信息-->
+	<update id="modifyLive" parameterType="hashmap">
+		UPDATE FBS_LIVE_BROADCAST
+		<set>
+			TITLE=#{liveName},
+			DEPARTMENT_ID=#{department},
+			START_TIME=#{startTime},
+			END_TIME=#{endTime},
+			PHONE=#{phone},
+			EMAIL=#{email},
+			<if test="approvalStatus != null and approvalStatus != '' ">
+				APPROVAL_STATUS= #{approvalStatus},
+			</if>
+			HOSPITAL_WEBSITE=#{hospitalURL},
+			LIVE_INTRODUCTION=#{liveIntroduction},
+			UPDATE_ID=#{updateId},
+			UPDATED_TIME=#{updateTime},
+			<if test="fileName != null and fileName != '' ">
+				FILE_NAME=#{fileName},
+			</if>
+			<if test="filePath != null and filePath != '' ">
+				FILE_PATH=#{filePath},
+			</if>
+			<if test="pictureName != null and pictureName != '' ">
+				PICTURE_NAME=#{pictureName},
+			</if>
+			<if test="picturePath != null and picturePath != '' ">
+				PICTURE_PATH=#{picturePath}
+			</if>
+		</set>
+		WHERE ID=#{liveId}
+	</update>
+
+	<!--修改直播信息时，如果删除或者新增参与者-->
+	<delete id="deletePaticipant" parameterType="hashmap">
+		delete FROM FBS_LIVE_PARTICIPANT
+		WHERE LIVE_ID=#{liveId}
+	</delete>
+	<insert id="insertParticipant" useGeneratedKeys="true" keyProperty="id" parameterType="hashmap">
+		INSERT INTO FBS_LIVE_PARTICIPANT(HOSPITAL_ID,SERIALNUMBER,
+		LIVE_ID, PARTICIPATION, ONLINE_STATUS, NEWVIDEO_NUM,
+		UPDATED_TIME, ISHOST)
+		VALUES(#{hospitalId},#{serialNumber},#{liveId},'0','2',#{newvideoNum},sysdate(),#{isHost})
+	</insert>
+
+	<!--如果只修改主持人信息-->
+	<update id="clearHost" parameterType="hashmap">
+		UPDATE FBS_LIVE_PARTICIPANT SET SERIALNUMBER = NULL
+		WHERE LIVE_ID=#{liveId}
+	</update>
+	<update id="updateParticipant" parameterType="hashmap">
+		UPDATE FBS_LIVE_PARTICIPANT SET SERIALNUMBER=#{serialNumber},ISHOST=#{isHost}
+		WHERE LIVE_ID=#{liveId} AND HOSPITAL_ID=#{hospitalId}
+	</update>
+	<update id="startLive">
+		UPDATE FBS_LIVE_BROADCAST
+		SET PLAY_STATUS='1',
+		<if test="startTime != null and startTime != '' ">
+			START_TIME=#{startTime},
+		</if>
+		CONF_ID=#{confId}
+		WHERE ID=#{id}
+	</update>
+	<update id="cancelLive">
+		UPDATE FBS_LIVE_BROADCAST SET ISDEL='1',APPROVAL_STATUS = '3' WHERE ID=#{id}
+	</update>
+	<select id="queryFbsLiveBroadcast" parameterType="hashmap" resultType="com.fable.kscc.api.model.livebroadcast.FbsLiveBroadcast">
+		<include refid="liveMap"/>
+		from FBS_LIVE_BROADCAST FLB
+		where 1=1 
+		<if test="confId !=null and confId != ''">
+		and CONF_ID = #{confId}
+		</if>
+		<if test="title !=null and title != ''">
+			and TITLE = #{title}
+		</if>
+	</select>
+	<select id="queryParticpantsNameByConfId" parameterType="string" resultType="string">
+		SELECT FHI.HOSPITAL_NAME FROM FBS_LIVE_PARTICIPANT FLP LEFT JOIN FBS_LIVE_BROADCAST FLB ON FLP.LIVE_ID=FLB.ID
+		LEFT JOIN FBS_HOSPITAL_INFORMATION FHI ON FLP.HOSPITAL_ID=FHI.ID
+		WHERE FLB.CONF_ID=#{confId}
+	</select>
+		<sql id="forQueryLivingListByUserId">
+			SELECT FLB.ID id,TITLE title,START_TIME startTime,END_TIME endTime,FLB.CONF_ID confId,LIVE_INTRODUCTION liveIntroduction,PLAY_STATUS playStatus,FLB.PICTURE_PATH picturePath,
+			FLB.PICTURE_NAME pictureName
+			from FBS_LIVE_BROADCAST
+		</sql>
+	<select id="queryLivingListByUserId" parameterType="string" resultType="com.fable.kscc.api.model.livebroadcast.FbsLiveBroadcast">
+		<include refid="forQueryLivingListByUserId"/> FLB
+		WHERE PLAY_STATUS='1'
+		<if test="userId !=null and userId !=''">
+			AND USER_ID=#{userId}
+			UNION
+			<include refid="forQueryLivingListByUserId"/> FLB
+			JOIN FBS_LIVE_PARTICIPANT FLP
+			ON FLP.LIVE_ID=FLB.ID
+			where FLP.HOSPITAL_ID=(select HOSPITAL_ID FROM FBS_USER
+			WHERE FBS_USER.ID=#{userId}
+			) AND FLB.PLAY_STATUS='1'AND FLP.PARTICIPATION<![CDATA[ <> ]]>'2'
+		</if>
+		UNION
+		<include refid="forQueryLivingListByUserId"/> FLB
+		WHERE PLAY_STATUS='2' AND to_days(END_TIME)=to_days(now())
+		<if test="userId !=null and userId !=''">
+			AND USER_ID=#{userId}
+			UNION
+			<include refid="forQueryLivingListByUserId"/> FLB
+			JOIN FBS_LIVE_PARTICIPANT FLP
+			ON FLP.LIVE_ID=FLB.ID
+			where FLP.HOSPITAL_ID=(select HOSPITAL_ID FROM FBS_USER
+			WHERE FBS_USER.ID=#{userId}
+			) AND FLB.PLAY_STATUS='2'AND FLP.PARTICIPATION<![CDATA[ <> ]]>'2'
+			AND to_days(FLB.END_TIME)=to_days(now())
+		</if>
+	</select>
+
+	<select id="checkSql" parameterType="hashmap" resultType="com.fable.kscc.api.model.livebroadcast.FbsLiveBroadcast">
+		SELECT ID id,START_TIME startTime,END_TIME endTime,CONF_ID confId FROM FBS_LIVE_BROADCAST
+		WHERE 1=1
+		<if test="approvalStatus !=null and approvalStatus !=''">
+		   AND APPROVAL_STATUS=#{approvalStatus}
+		</if>
+		<if test="playStatus !=null and playStatus !=''">
+			AND PLAY_STATUS=#{playStatus}
+		</if>
+		 AND ISDEL='0'
+	</select>
+	<update id="endLive" parameterType="hashmap">
+		UPDATE FBS_LIVE_BROADCAST SET PLAY_STATUS='2',END_TIME=#{endTime}
+		WHERE 1=1
+		<if test="confId !=null and confId !=''">
+			AND CONF_ID=#{confId}
+		</if>
+		<if test="id !=null and id !=''">
+			AND ID=#{id}
+		</if>
+	</update>
+	
+<!-- 	搜索当前直播间的结束时间 -->
+	<select id="searchEndTime" resultType="java.lang.String" parameterType="java.lang.Integer">
+		SELECT END_TIME FROM FBS_LIVE_BROADCAST WHERE ID = #{liveId}
+	</select>
+<!-- 	更新当前直播间的结束时间(延时) -->
+	<update id="updateEndTime" parameterType="java.util.Map">
+		UPDATE FBS_LIVE_BROADCAST SET END_TIME = #{map.endTime} WHERE ID = #{map.liveId}
+	</update>
+
+
+	<select id="selectAllBroadcast" resultType="com.fable.kscc.api.model.livebroadcast.FbsLiveBroadcast">
+		SELECT ID,TITLE FROM FBS_LIVE_BROADCAST
+		WHERE ISDEL='0'
+		AND PLAY_STATUS = '0'
+		AND APPROVAL_STATUS='1'
+		AND ID NOT IN(SELECT LIVE_ID FROM FBS_LIVE_HOMEPAGE)
+	</select>
+
+	<insert id="insertIntoHomePage" useGeneratedKeys="true" keyProperty="id" parameterType="com.fable.kscc.api.model.liveHomePage.FbsLiveHomepage">
+		INSERT INTO FBS_LIVE_HOMEPAGE(IMAGE_NAME, IMAGE_URL,CREATOR_ID, CREATOR_TIME,NETWORK_URL, LIVE_ID)
+		VALUES (#{imageName},#{imageUrl},#{creatorId},sysDate(),#{networkUrl},#{liveId})
+	</insert>
+	<update id="modifyHomePage" parameterType="com.fable.kscc.api.model.liveHomePage.FbsLiveHomepage">
+		UPDATE FBS_LIVE_HOMEPAGE SET
+		IMAGE_NAME=#{imageName},
+		IMAGE_URL=#{imageUrl},
+		CREATOR_ID=#{creatorId},
+		UPDATE_TIME=sysDate(),
+		NETWORK_URL=#{networkUrl},
+		LIVE_ID=#{liveId}
+		WHERE ID=#{id}
+	</update>
+
+	<select id="queryMulti" resultType="hashmap">
+		<include refid="liveMap" />
+		FROM FBS_LIVE_BROADCAST FLB
+		WHERE  1=1
+		<if test="begin != null ">
+			AND START_TIME <![CDATA[ >= ]]> #{begin}
+		</if>
+		<if test="end != null ">
+			AND END_TIME <![CDATA[ <= ]]> #{end}
+		</if>
+	</select>
+
+	<resultMap type="com.fable.kscc.api.model.livebroadcast.FbsLiveBroadcast" id="infoMap">
+		<id column="ID" property="id" />
+		<result column="TITLE" property="title" />
+		<result column="START_TIME" property="startTime" />
+		<result column="END_TIME" property="endTime" />
+	</resultMap>
+	<select id="searchBroadcastInfoByLiveId" resultMap="infoMap" parameterType="java.util.Map">
+		SELECT ID,TITLE,START_TIME,END_TIME FROM fbs_live_broadcast WHERE ID = #{map.id}
+	</select>
+
+	<select id="selectHomePage" resultType="com.fable.kscc.api.model.liveHomePage.FbsLiveHomepage">
+		  SELECT FLH.ID id,LIVE_ID LIVEID,TITLE TITLE,IMAGE_NAME IMAGENAME,IMAGE_URL IMAGEURL,
+			 NETWORK_URL NETWORKURL FROM FBS_LIVE_HOMEPAGE FLH
+			LEFT JOIN FBS_LIVE_BROADCAST  FLB ON FLH.LIVE_ID=FLB.ID
+		   ORDER BY FLH.ID ASC
+	</select>
+	<select id="countHomePictureByLiveId" resultType="int">
+		SELECT COUNT(1) FROM fbs_live_homepage WHERE LIVE_ID=#{liveId}
+	</select>
+	<delete id="deleteHomePictureByLiveId">
+		DELETE FROM fbs_live_homepage WHERE LIVE_ID=#{liveId}
+	</delete>
+
+	<select id="getParticipantsRoleByLiveId" resultType="hashmap">
+		SELECT FU.ID id,FLP.ISHOST ishost FROM FBS_LIVE_BROADCAST FLB LEFT JOIN FBS_LIVE_PARTICIPANT FLP ON FLP.LIVE_ID=FLB.ID
+		LEFT JOIN FBS_HOSPITAL_INFORMATION FHI ON FLP.HOSPITAL_ID=FHI.ID
+		LEFT JOIN FBS_USER FU ON FU.HOSPITAL_ID= FHI.ID
+		WHERE FLB.CONF_ID=#{confId}
+	</select>
+
+	<select id="getHospitalNameByConfIdAndMtid" resultType="string" parameterType="hashmap">
+		  SELECT FHI.HOSPITAL_NAME FROM FBS_LIVE_PARTICIPANT FLP
+		  LEFT JOIN FBS_HOSPITAL_INFORMATION FHI
+		  ON FLP.HOSPITAL_ID=FHI.ID
+		  WHERE FLP.MT_ID=#{mtId} AND FLP.LIVE_ID=(
+		  SELECT ID FROM FBS_LIVE_BROADCAST WHERE CONF_ID=#{confId}
+		  )
+	</select>
+	
+	<select id="getMtIdByUserId" resultType="string">
+		SELECT FLP.MT_ID  FROM FBS_LIVE_PARTICIPANT FLP
+		LEFT JOIN FBS_LIVE_BROADCAST FLB ON FLB.ID=FLP.LIVE_ID
+		LEFT JOIN FBS_HOSPITAL_INFORMATION FHI ON FLP.HOSPITAL_ID=FHI.ID
+		LEFT JOIN FBS_USER FU ON FU.HOSPITAL_ID=FHI.ID
+		WHERE FU.ID=#{userId} AND FLB.CONF_ID=#{confId}
+	</select>
+	<select id="getLiveOfEndButNotGenerate" resultType="hashmap">
+	   SELECT CAST(flp.ID AS CHAR) id,CAST(flc.ID AS CHAR) codecId,flc.IP ip,flc.PORT port,
+       flc.FTP_PORT ftpPort,flc.USERNAME username,
+       flc.PASSWORD password,flc.CODEC_OWNERSHIP codecOwner,
+       CAST(fhi.ID AS CHAR) hospitalId,fhi.HOSPITAL_NAME hospitalName,
+       flb.CONF_ID confId,
+       date_format(flb.START_TIME, '%Y-%m-%d %H:%i:%S') startTime,
+       date_format(flb.END_TIME, '%Y-%m-%d %H:%i:%S') endTime,
+       flb.TITLE title
+       FROM fbs_live_codec flc JOIN
+       fbs_hospital_information fhi ON flc.HOSPITAL_ID=fhi.ID
+       JOIN fbs_live_participant flp ON flp.HOSPITAL_ID=flc.HOSPITAL_ID
+       JOIN fbs_live_broadcast flb ON flp.LIVE_ID=flb.ID
+       WHERE  flp.ISGENERATED is NULL AND flb.PLAY_STATUS='2'
+	</select>
+	<update id="modifyParticipantGenerate" parameterType="hashmap">
+		UPDATE fbs_live_participant SET ISGENERATED=#{isGenerate}
+		WHERE ID=#{id}
+	</update>
+
+	<!-- 更新操作（画面合成、画面选看、选定发言人） -->
+	<update id="modifyBroadcastOPStatus" parameterType="hashmap">
+		UPDATE fbs_live_broadcast SET OP_STATUS=#{OPStatus}
+		WHERE CONF_ID=#{confId}
+	</update>
+
+	<!-- 查看操作（画面合成、画面选看、选定发言人） -->
+	<select id="queryBroadcastOPStatus" parameterType="hashmap" resultType="java.lang.String">
+		SELECT OP_STATUS FROM fbs_live_broadcast WHERE CONF_ID=#{confId}
+	</select>
+</mapper>

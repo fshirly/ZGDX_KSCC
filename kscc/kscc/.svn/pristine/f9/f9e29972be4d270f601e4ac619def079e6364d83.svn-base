@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fable.kscc.bussiness.mapper.livecodec.LiveCodecMapper">
+<!-- 根据id查看编解码器(手术室) -->
+	<resultMap type="com.fable.kscc.api.model.liveCodec.FbsLiveCodec" id="liveCodecInfo">
+		<id column="ID" property="id" jdbcType="INTEGER"/>
+		<id column="CODEC_OWNERSHIP" property="codecOwnership" jdbcType="VARCHAR"/>
+		<id column="NEWVIDEO_NUM" property="newvideoNum" jdbcType="VARCHAR"/>
+		<id column="IP" property="ip" jdbcType="VARCHAR"/>
+		<id column="MAC" property="mac" jdbcType="VARCHAR"/>
+		<id column="HOSPITAL_ID" property="hospitalId" jdbcType="INTEGER"/>
+		<id column="CREATOR_ID" property="creatorId" jdbcType="VARCHAR"/>
+		<id column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP"/>
+		<id column="UPDATE_ID" property="updateId" jdbcType="VARCHAR"/>
+		<id column="UPDATED_TIME" property="updatedTime" jdbcType="TIMESTAMP"/>
+		<id column="USERNAME" property="userName" jdbcType="VARCHAR"/>
+		<id column="PASSWORD" property="password" jdbcType="VARCHAR"/>
+		<id column="PORT" property="port" jdbcType="VARCHAR"/>
+		<id column="LOCATION" property="location" jdbcType="VARCHAR"/>
+	</resultMap>
+	<select id="findAllLiveCodec" resultMap="liveCodecInfo" parameterType="java.lang.Integer">
+		SELECT ID,CODEC_OWNERSHIP,NEWVIDEO_NUM,IP,MAC,HOSPITAL_ID,CREATOR_ID,CREATED_TIME,UPDATE_ID,UPDATED_TIME FROM FBS_LIVE_CODEC WHERE HOSPITAL_ID = #{id}
+	</select>
+	<select id="findAllLiveCodecForYw" resultMap="liveCodecInfo" parameterType="hashmap">
+		SELECT ID,CODEC_OWNERSHIP,NEWVIDEO_NUM,IP,MAC,HOSPITAL_ID,USERNAME,PASSWORD,PORT,LOCATION FROM FBS_LIVE_CODEC
+		WHERE 1=1
+		<if test="id !=null and id != ''">
+			AND  HOSPITAL_ID = #{hospitalId}
+		</if>
+	</select>
+	
+<!-- 	根据参与方医院id查询新世通账号 -->
+	<select id="findNewVideoNum" resultType="java.lang.String" parameterType="java.lang.Integer">
+		SELECT NEWVIDEO_NUM FROM FBS_LIVE_CODEC WHERE HOSPITAL_ID = #{id}
+	</select>
+
+	<!--根据新世通账号查询医院id-->
+	<select id="findIdByNewVideoNum" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT HOSPITAL_ID FROM fbs_live_codec WHERE NEWVIDEO_NUM in (#{newVideoNum})
+	</select>
+
+	<select id="findAllPageLiveCodeList" resultType="com.fable.kscc.api.model.liveCodec.FbsLiveCodec" parameterType="com.fable.kscc.api.model.liveCodec.FbsLiveCodec">
+		SELECT flc.ID id,CODEC_OWNERSHIP codecOwnership,NEWVIDEO_NUM newvideoNum,IP ip,MAC mac,PORT port,USERNAME userName,PASSWORD password FROM fbs_live_codec flc
+		LEFT JOIN fbs_hospital_information fbi ON flc.HOSPITAL_ID = fbi.ID
+		<!--LEFT JOIN fbs_user fu fbi.ID = fu.HOSPITAL_ID
+		LEFT JOIN fbs_user_role fur ON fu.ID=fur.USER_ID
+		LEFT JOIN fbs_role fr ON fur.ROLE_ID=fr.ID-->
+		WHERE 1=1
+		<if test="codecOwnership !=null and codecOwnership != ''">
+			AND CODEC_OWNERSHIP LIKE '%${codecOwnership}%'
+		</if>
+		<if test="newvideoNum !=null and newvideoNum != ''">
+			AND NEWVIDEO_NUM LIKE  '%${newvideoNum}%'
+		</if>
+		<if test="ip !=null and ip != ''">
+			AND IP LIKE  '%${ip}%'
+		</if>
+		<if test="hospitalId !=null and hospitalId != ''">
+			AND HOSPITAL_ID = #{hospitalId}
+		</if>
+	</select>
+	<insert id="insertLiveCode" useGeneratedKeys="true" keyProperty="id" parameterType="com.fable.kscc.api.model.liveCodec.FbsLiveCodec">
+		INSERT INTO FBS_LIVE_CODEC (
+			CODEC_OWNERSHIP
+			,NEWVIDEO_NUM
+			,IP
+			,MAC
+			,HOSPITAL_ID
+		    ,PORT
+			,USERNAME
+			,PASSWORD
+			,FTP_PORT
+		) VALUES (
+			#{codecOwnership,jdbcType=VARCHAR}
+			,#{newvideoNum,jdbcType=VARCHAR}
+			,#{ip,jdbcType=VARCHAR}
+			,#{mac,jdbcType=VARCHAR}
+			,#{hospitalId}
+			,#{port}
+			,#{userName}
+			,#{password}
+			,#{ftpPort}
+		)
+	</insert>
+	<delete id="deleteLiveCode" parameterType="int">
+		DELETE FROM FBS_LIVE_CODEC WHERE ID in
+		<foreach collection="array" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+	<select id="queryLiveCode" parameterType="com.fable.kscc.api.model.liveCodec.FbsLiveCodec" resultType="com.fable.kscc.api.model.liveCodec.FbsLiveCodec">
+		select
+		ID id,CODEC_OWNERSHIP codecOwnership,NEWVIDEO_NUM newvideoNum,IP ip,MAC mac,HOSPITAL_ID hospitalId,
+		CREATOR_ID creatorId,CREATED_TIME createdTime,UPDATE_ID updateId,UPDATED_TIME updatedTime,PORT port,USERNAME username,PASSWORD password,FTP_PORT ftpPort
+		from FBS_LIVE_CODEC
+		where 1=1
+		<if test="id !=null and id !=''">
+			and ID = #{id}
+		</if>
+	</select>
+	<update id="updateLiveCode" parameterType="java.util.Map">
+		update FBS_LIVE_CODEC
+		SET
+		CODEC_OWNERSHIP = #{params.codecOwnership},
+		NEWVIDEO_NUM = #{params.newvideoNum},
+		IP =#{params.ip},
+		MAC =#{params.mac},
+		PORT =#{params.port},
+		USERNAME =#{params.username},
+		PASSWORD =#{params.password},
+		FTP_PORT =#{params.ftpPort}
+		WHERE  ID = #{params.id}
+	</update>
+
+	<select id="selectMedTProperties" resultType="hashmap">
+		SELECT CAST(FLC.ID AS CHAR) id,IP ip,PORT port,USERNAME username,PASSWORD password,HOSPITAL_ID hospitalId,HOSPITAL_NAME hospitalName FROM FBS_LIVE_CODEC FLC
+		LEFT JOIN FBS_HOSPITAL_INFORMATION FHI ON FLC.HOSPITAL_ID=FHI.ID
+		WHERE IP IS NOT NULL AND PORT IS NOT NULL AND USERNAME IS NOT NULL AND PASSWORD IS NOT NULL
+	</select>
+	<delete id="deleteCodeByHospitalId">
+		DELETE  FROM fbs_live_codec WHERE 1=1
+		AND HOSPITAL_ID = #{hospitalId}
+	</delete>
+
+	<select id="getCodecByHospitalId" resultType="hashmap">
+		SELECT cast(ID as CHAR ) id,IP ip,PORT port FROM fbs_live_codec WHERE HOSPITAL_ID=#{hospitalId}
+	</select>
+</mapper>

@@ -1,0 +1,19 @@
+package com.fable.kscc.bussiness.service.uploadfile;
+
+import java.util.Map;
+
+import com.fable.kscc.api.model.page.PageRequest;
+import com.fable.kscc.api.model.page.PageResponse;
+import com.fable.kscc.api.model.upload.FbsLiveFile;
+
+public interface UploadFileService {
+	void uploadFile()throws Exception;
+	
+	void deleteFile(String bucket,String key,String id)throws Exception;
+	
+	void renameFile(String bucket,String key,String name,String id)throws Exception;
+	
+	PageResponse<FbsLiveFile> getLiveFileList(PageRequest<Map<String,Object>> pageRequest);
+	
+	String getCloudUsage();
+}

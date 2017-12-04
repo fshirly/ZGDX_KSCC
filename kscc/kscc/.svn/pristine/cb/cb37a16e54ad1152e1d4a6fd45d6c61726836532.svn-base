@@ -1,0 +1,590 @@
+define(["base","datatables.net","app/commonApp"],function(base,DataTable,common){
+    var grid = null;
+    /* 获取当前日期及时间 */
+    function getNowFormatDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = date.getFullYear()+seperator1+month+seperator1+strDate
+            + " " + date.getHours() + seperator2 + date.getMinutes()
+            + seperator2 + date.getSeconds();
+        return currentdate;
+    }
+    
+	function getUserId(){
+        $.ajax({
+            type:"post",
+            async: false,
+            url:$.base+"/liveBroadCastController/getUserId",
+            success:function (data) {
+            	var roleName=data.roleName;
+            	if(roleName!="kscc管理员"){
+            		$("#myTab li:first").remove();
+            		$("#myTabContent #wait").remove();
+            		$('#myTab li:eq(0) a').tab('show');
+            		getZtreeNodes();
+            	}
+	         }
+        });
+    };
+
+    function setTableAdminList(){
+        var name=arguments[0];
+        var loginName=arguments[1];
+        grid = $("#tblAdminList").DataTable({
+            "searching":false,
+            "lengthChange":false,
+            "autoWidth":false,
+            "serverSide":true,
+            "paging":true,
+            "stateSave":true,
+            "ordering":false,
+            "bRetrieve": true,
+            "language":{"url":$.base+"/js/lib/chinese.json"},
+            "ajax":{
+                "type":"post",
+                "url":$.base+"/fbsUser/findAllPageUserList",
+                "contentType":"application/json",
+                "data": function ( d ) {
+                    var params={
+                        "pageNo": d.start/d.length+1,
+                        "pageSize": d.length,
+                        "param": {
+                            "loginName" : loginName, //登录ID参数
+                            "userName": name, //姓名参数
+                        }
+                    };
+                    return JSON.stringify(params);
+                }
+            },
+            "columns":[
+                {"title":"<input type='checkbox' name='allResultAdmin'>","sWidth":"5%"},
+                {"title":"登录ID", "data":"loginName","sWidth":"10%"},
+                {"title":"姓名", "data":"userName","sWidth":"10%"},
+                {"title":"联系电话", "data":"mobilePhone","sWidth":"15%"},
+                {"title":"邮箱", "data":"email","sWidth":"15%"},
+                {"title":"所属部门", "data":"sector","sWidth":"10%"},
+                {"title":"编解码器", "data":"newVideoNum","sWidth":"15%"},
+                {"title":"操作", "data":"id","sWidth":"20%"}
+            ],
+            "columnDefs":[
+                {
+                    "render":function(data,type,row,meta){
+                        var html = "<input type='checkbox' name='resultAdmin' value='"+row.id+"'>";
+                        $("input[name='result']").parent().addClass("text-center");
+                        return html;
+                    },
+                    "targets":0
+                },
+                {
+					   "render":function(data,type,row,meta){
+						   var html="";
+						   html="<span class='widthLength' title='"+row.sector+"'>"+row.sector+"</span>";
+						   return html;
+					   },
+					   "targets":5
+				},
+				{
+					   "render":function(data,type,row,meta){
+						   var html="";
+						   html="<span class='widthLength' title='"+row.newVideoNum+"'>"+row.newVideoNum+"</span>";
+						   return html;
+					   },
+					   "targets":6
+				},
+                {"render":function(data,type,row,meta){
+                	var loginName=row.loginName;
+                	var deleStr=""; var html = "";
+                	if(loginName=="admin"){
+                		deleStr="<div style='margin-left:3px;display:inline-block;'><button class='btn btn-link accountDelete' rowId='"+row.id+"' disabled><i class='iconfont' style='color:#0e51a2;font-weight:500;' title='不可删除'>&#xe685;</i></button></div>";
+                	}else{
+                		deleStr="<div style='margin-left:3px;display:inline-block;'><button class='btn btn-link accountDelete' rowId='"+row.id+"' ><i class='iconfont' style='color:#0e51a2;font-weight:500;' title='删除'>&#xe685;</i></button></div>";
+                	}
+                    html =  "<div class='clearfix'>" +
+                        "<div style='display:inline-block;'><button class='btn btn-link accountEdit' rowId='"+row.id+"' att='"+row.loginName+"'><i class='iconfont' style='color:#0e51a2;font-weight:500;' title='编辑'>&#xe608;</i></button></div>"+deleStr+
+                        "<div style='margin-left:3px;display:inline-block;'><button class='btn btn-link passwordReset' rowId='"+row.id+"' ><i class='iconfont' style='color:#0e51a2;font-weight:500;' title='密码重置'>&#xe667;</i></button></div>"+
+                        //"<div style='margin-left:3px;display:inline-block;'><button class='btn btn-link authorityAssignment' rowId='"+row.id+"' ><i class='iconfont' style='color:#0e51a2;font-weight:500;' title='权限分配'>&#xe649;</i></button></div>"+
+                        "</div>";
+                    return html;
+                },
+                    "targets":7
+                }
+            ],
+
+            "drawCallback":function(setting){
+                //管理员新增
+                $(".administratorAdd").off().on("click",function(){
+                    $(this).attr({"data-toggle":"modal","data-target":".addAdmi"});
+                    $("#loginIdAdd").val("");
+                    $("#userNameAdminAdd").val("");
+                    $("#passwordAdd").val("");
+                    $("#telephoneAdminAdd").val("");
+                    $("#mailAdd").val("");
+                    //确认添加
+                    $(".saveAdd").off().on("click",function(){
+                    	var password=$("#passwordAdminAdd").val();
+                    	var confirmPassword=$("#confirmPasswordAdminAdd").val();
+                    	if(password!==confirmPassword){
+                    		base.requestTip({position:"center"}).error("密码不一致！");
+                    		return
+                    	}
+                    	base.form.validate({ 
+                            form:$("#addAdminForm"), 
+                            passCallback:function(){
+                            	var params={
+                                        "loginName":$("#loginIdAdd").val(),
+                                        "username":$("#userNameAdminAdd").val(),
+                                        "password":$("#passwordAdminAdd").val(),
+                                        "telePhone":$("#telephoneAdminAdd").val(),
+                                        "email":$("#mailAdd").val(),
+                                        "createdTime":getNowFormatDate(),
+                                        "upDatedTime":getNowFormatDate(),
+                                        "sector":$("#sector").val(),
+                                        "newVideoNum":$("#newVideoNum").val(),
+                                        "creatorId":$("#createIdEdit").val()
+                                    }
+                                    var requestTip=base.requestTip({position:"center"});
+                                    $.ajax({
+                                        url:$.base+"/fbsUser/addUser",
+                                        type:"post",
+                                        contentType:"application/json",
+                                        dateType:"json",
+                                        data:JSON.stringify(params),
+                                        success:function(data){
+                                        	if(data==true){
+                                        		$(".addAdmi").modal("hide");
+                                                requestTip.success();
+                                                base.form.reset($("#addAdminForm"));//清空新增模态框
+                                                common.refreshGrid(grid);
+                                        	}else{
+                                        		requestTip.error("管理员的登录ID重复！");
+                                        	}
+
+                                        },
+                                        beforeSend:function(){
+                                            requestTip.wait();
+                                        },
+                                        error:function(){
+                                            requestTip.error();
+                                        }
+                                    });
+                            }
+                    	});
+                    });
+                });
+
+                //关闭模态框
+    			$('.addAdmi').on('hidden.bs.modal', function () {
+    				base.form.reset($("#addAdminForm"));
+    			});
+                
+                //全选
+                $("input[name='allResultAdmin']").on("click",function(){
+                    if($(this).is(':checked')){
+                        $("input[name='resultAdmin']").prop("checked",true);
+                    }else{
+                        $("input[name='resultAdmin']").prop("checked",false);
+                    }
+                });
+
+                //批量删除
+                $(".administratorDelete").unbind("click").on("click",function(){
+                    var adminIds = [];
+                    $("input[name='resultAdmin']:checked").each(function(i,o){
+                        adminIds.push($(o).val());
+                    });
+                    if(adminIds.length==0){
+                        base.confirm({
+                            label:"提示",
+                            text:"<div style='text-align:center;font-size:13px;'>请选择需要删除项!</div>"
+                        });
+                    }
+                    else if(adminIds.length>0){
+                        base.confirm({
+                            label:"提示",
+                            text:"<div style='text-align:center;font-size:13px;'>确定要删除此记录吗？</div>",
+                            confirmCallback:function(){
+                            	var requestTip=base.requestTip({position:"center"});
+                                $.ajax({
+                                    url:$.base+"/fbsUser/toDelFbUserById?id="+adminIds,
+                                    type:"POST",
+                                    contentType:"application/json",
+                                    data:JSON.stringify(adminIds),
+                                    success:function(data){
+                                        requestTip.success();
+                                        common.refreshGrid(grid);
+                                    },
+                                    beforeSend:function(){
+                                        requestTip.wait();
+                                    },
+                                    error:function(){
+                                        requestTip.error();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+
+                //管理员编辑
+                $(".accountEdit").off().on("click",function(){
+                    var adminId=$(this).attr("rowId");
+                    var loginName=$(this).attr("att");
+                    $(this).attr({"data-toggle":"modal","data-target":".editAdmi"});
+                    if(loginName=="admin"){
+                    	$("#loginIdEdit").attr("readonly","readonly");
+                    	$("#loginIdEdit").css({"cursor":"not-allowed","background-color":"#eee"});
+                    }else{
+                    	$("#loginIdEdit").removeAttr("readonly");
+                    	$("#loginIdEdit").css({"cursor":"inherit","background-color":"#fff"});
+                    }
+                    //获取原先的数据
+                    $.ajax({
+                        url:$.base+"/fbsUser/getUserDetails?id="+adminId,
+                        type:"POST",
+                        dataType: "json",
+                        contentType:"application/json",
+                        success:function(data){
+                            $("#loginIdEdit").val(data.loginName);
+                            $("#userNameEdit").val(data.userName);
+                           // $("#passwordEdit").val(data.password);
+                            $("#telephoneEdit").val(data.mobilePhone);
+                            $("#mailEdit").val(data.email);
+                            $("#sectorEdit").val(data.sector);
+                            $("#newVideoNumEdit").val(data.newVideoNum);
+                        }
+                    });
+                    //编辑确定按钮
+                    $(".saveEdit").off().on("click",function(){
+                    	var password=$("#newPasswordAdminEdit").val();
+                    	var confirmPassword=$("#confirmPasswordAdminEdit").val();
+                    	if(password!==confirmPassword){
+                    		base.requestTip({position:"center"}).error("密码不一致！");
+                    		return
+                    	}
+                    	base.form.validate({ 
+                            form:$("#editAdminForm"), 
+                            passCallback:function(){
+                            	var params={
+                                        "loginName":$("#loginIdEdit").val(),
+                                        "username":$("#userNameEdit").val(),
+                                        "password":$("#passwordEdit").val(),
+                                        "newPassword":$("#newPasswordAdminEdit").val(),
+                                        "mobilePhone":$("#telephoneEdit").val(),
+                                        "email":$("#mailEdit").val(),
+                                        "sector":$("#sectorEdit").val(),
+                                        "newVideoNum":$("#newVideoNumEdit").val(),
+                                        "createdTime":getNowFormatDate(),
+                                        "upDatedTime":getNowFormatDate(),
+                                        "id":adminId
+                                    }
+                                    var requestTip=base.requestTip({position:"center"});
+                                    $.ajax({
+                                        url:$.base+"/fbsUser/updateFbUser",
+                                        type:"POST",
+                                        contentType:"application/json",
+                                        dateType:"json",
+                                        data:JSON.stringify(params),
+                                        success:function(data){
+                                            if(data){
+                                                $(".editAdmi").modal("hide");
+                                                requestTip.success();
+                                                base.form.reset($("#editAdminForm"));//清空模态框数据
+                                                common.refreshGrid(grid);
+                                            }else{
+                                                requestTip.error("原密码填写错误！")
+                                            }
+                                        },
+                                        error:function(){
+                                            requestTip.error();
+                                        }
+                                    });
+                            }
+                    	});
+                    });
+                });
+                
+                //关闭模态框
+    			$('.editAdmi').on('hidden.bs.modal', function () {
+    				base.form.reset($("#editAdminForm"));
+    			});
+
+                //系统管理员单项删除
+                $(".accountDelete").on("click",function(){
+                    var adminId=$(this).attr("rowId");
+                    base.confirm({
+                        label:"提示",
+                        text:"<div style='text-align:center;font-size:13px;'>确定要删除此记录吗？</div>",
+                        confirmCallback:function(){
+                        	var requestTip=base.requestTip({position:"center"});
+                            $.ajax({
+                                url:$.base+"/fbsUser/toDelFbUserById?id="+adminId,
+                                type:"POST",
+                                contentType:"application/json",
+                                success:function(data){
+                                    requestTip.success();
+                                    common.refreshGrid(grid);
+                                },
+                                beforeSend:function(){
+                                    requestTip.wait();
+                                },
+                                error:function(){
+                                    requestTip.error();
+                                }
+                            });
+                        }
+                    });
+                });
+
+                //密码重置
+                $(".passwordReset").unbind("click").on("click",function(){
+                    var adminId=$(this).attr("rowId");
+                    var requestTip=base.requestTip({position:"center"});
+                    base.confirm({ 
+				    	  label:"提示",
+				    	  text:"<div style='text-align:center;font-size:13px;'>确定重置密码?</div>",
+			              confirmCallback:function(){
+				    	        var params ={
+				    	            "id":adminId,
+                                    "newPassword":123456,//重置的密码值123456
+                                }
+			            	    var requestTip=base.requestTip({position:"center"});
+			            	    $.ajax({
+		                            url:$.base+"/fbsUser/reSetPassword",
+                                    type:"POST",
+                                    contentType:"application/json",
+                                    dateType:"json",
+                                    data:JSON.stringify(params),
+		                            success:function(data){
+		                                common.refreshGrid(grid);
+		                                requestTip.success();
+		                            },
+		                            beforeSend:function(){
+		                                requestTip.wait();
+		                            },
+		                            error:function(){
+		                                requestTip.error();
+		                            }
+		                        });
+			              }
+                    });
+                });
+                
+                //权限配置
+                $(".authorityAssignment").off().on("click",function(){
+                    $(".permissionConfig").modal('show');
+                    var roleId=$(this).attr("rowId");
+                    //获得菜单配置数据
+                    var ztreeData=[{id:1,pid:0,name:"直播申请"},
+                                   {id:2,pid:0,name:"直播信息"},
+                                   {id:3,pid:0,name:"直播审批"},
+                                   {id:4,pid:0,name:"直播管理"},
+                                   {id:5,pid:0,name:"录像管理"}];
+                    var setting = {
+                            view: {
+                                selectedMulti:true,
+                            },
+                            check: {
+                                enable: true,
+                                chkStyle: "checkbox",
+                                chkboxType: { "Y": "ps", "N": "ps" }
+                            },
+                            async:{
+                            	enable:false
+                            },
+                            data: {
+                                simpleData: {
+                                    enable: true,
+                                    pIdKey: "pid"
+                                }
+                            }
+                        };
+                        require(["bootstrap","ztreeCore","ztreeExcheck","ztreeExedit"],function(){
+                            $.fn.zTree.init($("#treeDemoAdmin"), setting, ztreeData);
+                            checkZtree(roleId);
+                        });
+                });
+                
+                function checkZtree(roleId){
+					$.ajax({ 
+      		               type: "GET", 
+      		               async:false,
+      		               url:  $.base + "/FbsMenuController/findAllByRole?id="+roleId, 
+      		               dataType: "json",
+      		               success: function(data){ 
+          		            	//选择回选
+          		            	 var checkedNodes=[];
+                                 $.each(data,function(index,value){
+                                	 checkedNodes.push(value.id);
+                                 });
+      		         			 var treeObj = $.fn.zTree.getZTreeObj("treeDemoAdmin");
+      		         			 var allNodes = treeObj.transformToArray(treeObj.getNodes());
+      		         			 for(var i=0; i<allNodes.length; i++){
+      		         				if($.inArray(allNodes[i].id, checkedNodes)>-1){
+      		         					treeObj.checkNode(allNodes[i],true,false);
+      		         				}else{
+      		         					treeObj.checkNode(allNodes[i],false,false);
+      		         				}
+      		         			}
+      		         			 saveTree(roleId);
+      		               }       
+      		            });
+				}
+                
+                function saveTree(roleId){
+                    $(".saveZTree").off().on("click",function(){
+                        var treeObj = $.fn.zTree.getZTreeObj("treeDemoAdmin");
+                        var nodes = treeObj.getCheckedNodes(true);
+                        var v=[];
+                        for(var i=0;i<nodes.length;i++){
+                            v.push(nodes[i].id);
+                        }
+                        var requestTip=base.requestTip({position:"center"});
+                        $.ajax({
+                            url:$.base+"/FbsMenuController/updateMenuByRole",
+                            type:"POST",
+                            contentType:"application/json",
+                            data:v.join(","), 
+                            success:function(data){
+                                $(".permissionConfig").modal("hide");
+                                requestTip.success();
+                                common.refreshGrid(grid);
+                            },
+                            beforeSend:function(){
+                                requestTip.wait();
+                            },
+                            error:function(){
+                                $(".resetPassword").modal("hide");
+                                requestTip.error();
+                            }
+                        });
+                    });
+                };
+            }
+        });
+    };
+
+    function getZtreeNodes(){
+        var data = {
+            userId:1
+        };
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify(data),
+            url:$.base+"/hospital/getUserInfoById",
+            contentType:"application/json",
+            success:function(data){
+                setZtree2(data);
+                $("#treeLength").val(data.length);
+            },
+            error:function(data){}
+        });
+    }
+
+    var setting = {
+        view: {
+            selectedMulti:true,
+        },
+        data: {
+            simpleData: {
+                enable: true,
+                pIdKey: "pid"
+            }
+        },
+        callback: {
+            onClick: zTreeOnClick
+        }
+    };
+    function setZtree2(zNodes){
+        require(["bootstrap","ztreeCore","ztreeExcheck","ztreeExedit"],function(){
+            $.fn.zTree.init($("#treeDemo2"), setting, zNodes);
+            tree = $.fn.zTree.getZTreeObj("treeDemo2");
+            tree.expandAll(true);
+            var treeObj = $.fn.zTree.getZTreeObj("treeDemo2");
+            //返回一个根节点
+            var node = treeObj.getNodesByFilter(function (node) { return node.level == 0 }, true);
+            getJSP(node.address);
+        });
+    }
+
+    function  zTreeOnClick(event, treeId, treeNode){
+        var url=treeNode.address;
+        if(url){
+        	if(url=="/loginController/toHospitalList"){
+        		getZtreeNodes();
+        	}
+            getJSP(url);
+        };
+    }
+
+    //加载页面
+    function getJSP(url){
+        $.ajax({
+            type:"GET",
+            url:$.base+url,
+            error:function(){
+                alert("加载错误！");
+            },
+            success:function(data){
+                $(".hospitalUser").html(data);
+            }
+        });
+    }
+
+    function setPage(){
+        //高级搜索下拉收起
+        $(".highSearch").unbind().click(function(){
+            $("#searchDiv").slideToggle("slow");
+        });
+
+        //普通搜索
+        $(".fuzzySearchBtn").unbind().on("click",function(){
+            var name=$("#searchAccountManage").val();
+            setTableAdminList(name);
+        });
+        //高级搜索
+        $("#searchBtn").on("click",function(){
+            var name=$("#adminName").val();
+            var loginID=$("#loginID").val();
+            setTableAdminList(name,loginID);
+        });
+        //重置
+        $("#resetBtn").on("click",function(){
+            $("#loginID").val("");
+            $("#adminName").val("");
+        });
+    }
+    
+    function setTabChange() {
+    	$('#myTab a:first').tab('show');//初始化显示哪个tab
+    	setTableAdminList();
+        $('#myTab a').click(function (e) {
+            e.preventDefault();//阻止a链接的跳转行为
+            $(this).tab('show');//显示当前选中的链接及关联的content
+            if ($(this).html() == "系统管理员") {
+            	common.refreshGrid(grid);
+            }
+            else if ($(this).html() == "医院用户") {
+            	getZtreeNodes();
+            }
+        });
+    }
+
+    return {
+        run:function(){
+        	getUserId();
+            //setTableAdminList();//管理员管理表格
+            //getZtreeNodes();
+            setPage();
+            setTabChange();
+        }
+    };
+});

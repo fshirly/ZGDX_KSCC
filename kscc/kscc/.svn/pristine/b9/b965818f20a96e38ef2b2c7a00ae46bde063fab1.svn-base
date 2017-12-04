@@ -1,0 +1,130 @@
+package com.fable.kscc.api.utils;
+
+
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.mysql.fabric.xmlrpc.base.Params;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fable.kscc.api.config.init.SysConfig;
+import org.springframework.http.HttpEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
+/**
+ * @author duyang 2017-08-05
+ * 科达视讯平台登陆工具类
+ */
+public class KeDaLoginUtil {
+
+	private final static Logger LOGGER = LoggerFactory.getLogger(KeDaLoginUtil.class);
+	
+	private static final String  url;
+	private static final String  username;
+	private static final String  password;
+	private static final String  key;
+	private static final String  value;
+	
+	static {
+//		url = SysConfig.getValueByKey("keda.host");
+//		username = SysConfig.getValueByKey("keda.username");
+//		password = SysConfig.getValueByKey("keda.password");
+//		key = SysConfig.getValueByKey("keda.oauth.key");
+//		value = SysConfig.getValueByKey("keda.oauth.value");
+		url = "http://58.211.191.7:90/";
+		username = "lixiang";
+		password = "888888";
+		key = "kdvpb";
+		value = "admin888";
+//		keda.host=http://58.211.191.7:90/
+//		keda.username=lixiang
+//		keda.password=888888
+//		keda.oauth.key=kdvpb
+//		keda.oauth.value=admin888
+
+	}
+
+	/**
+	 * 获取科达登陆信息
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String,Object> getLoginInfo() {
+		Map<String,Object> res = new HashMap<String,Object>();
+		boolean success = false;
+		try {
+			String token = getKeDaToken();
+			System.out.println(token);
+			String ip = url+Constants.KEDA_INTERFACE_ADDRESS.LOGIN;
+			String param = "account_token="+token+"&username="+username+"&password="+password;
+			res = RestHepler.sendHttpRequest(ip, Map.class, param, new Object());
+			if(res != null && Constants.KEDA_INTERFACE_MSG.SUCCESS.equals(res.get("success").toString())) {
+				success = true;
+			}
+			LOGGER.info("科达登陆信息调用成功，msg={}", res);
+		} catch (Exception e) {
+			LOGGER.error("The request failed，msg={}", e);
+			e.printStackTrace();
+		}
+		res.put("success", success);
+		return res;
+	}
+
+	/**
+	 * 获取科达token
+	 */
+	@SuppressWarnings("unchecked")
+	public static String getKeDaToken() {
+		Map<String,Object> resMap = new HashMap<String,Object>();
+		String res = "";
+		try {
+			String param = "oauth_consumer_key="+key+"&oauth_consumer_secret="+value;
+			String ip = url+Constants.KEDA_INTERFACE_ADDRESS.TOKEN;
+			resMap = RestHepler.sendHttpRequest(ip, Map.class, param, new Object());
+			if(resMap != null && Constants.KEDA_INTERFACE_MSG.SUCCESS.equals(resMap.get("success").toString())) {
+				res = (String) resMap.get("account_token");
+				LOGGER.info("科达登陆信息调用成功，msg={}", res);
+			} else {
+				LOGGER.info("科达登陆信息调用失败!");
+			}
+		} catch (Exception e) {
+			LOGGER.error("The request failed，msg={}", e);
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+	public static Map<String,Object> createMeetting() {
+		Map<String,Object> res = new HashMap<String,Object>();
+		boolean success = false;
+		try {
+			String account_token = "ca0e8925606b28de21c8fbe58efcaee5";
+			String ip = url+Constants.KEDA_INTERFACE_CREATE_MEETTING.url;
+			String str="{\"satellite\":null,\"chairman\":null,\"dual_mode\":1,\"cascade_upload\":0,\"cascade_return\":0,\"slience\":0,\"multicast\":null,\"video_quality\":0,\"invite_members\":[{\"name\":\"\",\"account\":\"111\",\"account_type\":5}],\"password\":\"\",\"poll\":null,\"call_times\":20,\"name\":\"test_conf_0001\",\"max_join_mt\":100,\"vmp\":null,\"public_conf\":1,\"mute\":0,\"conf_type\":0,\"speaker\":null,\"audio_formats\":[9],\"preoccpuy_resouce\":0,\"mix\":null,\"encrypted_key\":\"\",\"record\":null,\"video_formats\":[{\"frame\":60,\"bitrate\":8192,\"resolution\":13,\"format\":4}],\"duration\":120,\"voice_activity_detection\":0,\"safe_conf\":0,\"cascade_mode\":0,\"bitrate\":8192,\"cascade_return_para\":0,\"call_interval\":5,\"auto_end\":0,\"closed_conf\":0,\"encrypted_type\":0,\"dual_formats\":[],\"vips\":[]}";
+			String realParams = "account_token="+account_token+"&params="+str;
+			String asf = "account_token=2046b3b54f5a877715cfcd71d6157a37&params=%7B%22satellite%22%3Anull%2C%22chairman%22%3Anull%2C%22dual_mode%22%3A1%2C%22cascade_upload%22%3A0%2C%22cascade_return%22%3A0%2C%22slience%22%3A0%2C%22multicast%22%3Anull%2C%22video_quality%22%3A0%2C%22invite_members%22%3A%5B%7B%22name%22%3A%22%22%2C%22account%22%3A%22111%22%2C%22account_type%22%3A5%7D%5D%2C%22password%22%3A%22%22%2C%22poll%22%3Anull%2C%22call_times%22%3A20%2C%22name%22%3A%22test_conf_0001%22%2C%22max_join_mt%22%3A100%2C%22vmp%22%3Anull%2C%22public_conf%22%3A1%2C%22mute%22%3A0%2C%22conf_type%22%3A0%2C%22speaker%22%3Anull%2C%22audio_formats%22%3A%5B9%5D%2C%22preoccpuy_resouce%22%3A0%2C%22mix%22%3Anull%2C%22encrypted_key%22%3A%22%22%2C%22record%22%3Anull%2C%22video_formats%22%3A%5B%7B%22frame%22%3A60%2C%22bitrate%22%3A8192%2C%22resolution%22%3A13%2C%22format%22%3A4%7D%5D%2C%22duration%22%3A120%2C%22voice_activity_detection%22%3A0%2C%22safe_conf%22%3A0%2C%22cascade_mode%22%3A0%2C%22bitrate%22%3A8192%2C%22cascade_return_para%22%3A0%2C%22call_interval%22%3A5%2C%22auto_end%22%3A0%2C%22closed_conf%22%3A0%2C%22encrypted_type%22%3A0%2C%22dual_formats%22%3A%5B%5D%2C%22vips%22%3A%5B%5D%7D";
+
+			String str1 = RestHepler.sendHttpRequest(ip, String.class, asf, new Object());
+			System.out.println(str1);
+//			if(res != null && Constants.KEDA_INTERFACE_MSG.SUCCESS.equals(res.get("success").toString())) {
+//				success = true;
+//			}
+			LOGGER.info("科达登陆信息调用成功，msg={}", res);
+		} catch (Exception e) {
+			LOGGER.error("The request failed，msg={}", e);
+			e.printStackTrace();
+		}
+		res.put("success", success);
+		return res;
+	}
+
+	public static void main(String[] args) {
+		System.out.println(getLoginInfo());
+	}
+}

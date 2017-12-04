@@ -1,0 +1,68 @@
+package com.fable.kscc.bussiness.mapper.liveparticipant;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation;
+import com.fable.kscc.api.model.participant.FbsLiveParticipant;
+
+public interface LiveParticiPantMapper {
+	/**
+	 * 直播查看所属参与方列表
+	 * @param id
+	 * @return
+	 */
+	List<FbsLiveParticipant> queryFbsLiveParti(Integer id);
+	
+	/**
+	 * 直播所属医院查询
+	 * @param id
+	 * @return
+	 */
+	FbsHospitalInformation getHospitalInformationList(Integer id);
+
+	/**
+	 * 设为参与方
+	 * @param fbsLiveParticipant
+	 * @return
+	 */
+	int setParticipant(FbsLiveParticipant fbsLiveParticipant);
+	/**
+	 * 查询是否是主持人/根据直播id和医院id查询所有参与方信息
+	 * @param map
+	 * @return
+	 */
+	FbsLiveParticipant queryParcitipantHost(Map<String,Object> map);
+
+	/**
+	 * 删除参与方
+	 * @param param
+	 * @return
+	 */
+	int deleteParticipant(Map<String,Object> param);
+
+	/**
+	 * 更新参与方是否在线状态
+	 * @param param
+	 * @return
+	 */
+	int updateParticipantOnline(Map<String,Object> param);
+	/**
+	 * 更新参与者的主持人序列号
+	 * @param param
+	 * @return
+	 */
+	int updateParticipantSerisNum(Map<String,Object> param);
+
+	/**
+	 * 邀请参与方(筛选传来的医院参与方)
+	 * @param map
+	 * @return
+	 */
+	List<FbsLiveParticipant> invitationHospitalParticipant(@Param("map") Map<String,Object> map);
+
+	void clearHostByHaiRui(@Param("liveId") int liveId);
+
+}

@@ -1,0 +1,166 @@
+package com.fable.kscc.bussiness.controller.fbsUser;
+
+import com.fable.kscc.api.model.page.PageRequest;
+import com.fable.kscc.api.model.page.PageResponse;
+import com.fable.kscc.api.model.page.ServiceResponse;
+import com.fable.kscc.api.model.user.FbsUser;
+import com.fable.kscc.api.utils.StringUtil;
+import com.fable.kscc.bussiness.service.fbsUser.FbsUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@RequestMapping("/fbsUser")
+@Controller
+public class FbsUserController {
+
+	@Autowired
+	private FbsUserService fbsUserService;
+
+	/**
+	 * 查询全部用户分页列表
+	 *
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/findAllPageUserList")
+	@ResponseBody
+	public PageResponse<FbsUser> findAllPageUserList(@RequestBody PageRequest<FbsUser> request)  {
+		return fbsUserService.findAllPageUserList(request);
+	}
+
+	/**
+	 * 新增用户数据
+	 *
+	 * @param params
+	 * @return insertFlag
+	 * @throws Exception
+	 */
+	@RequestMapping("/addUser")
+	@ResponseBody
+	public boolean addUser(@RequestBody Map<String,Object> params) {
+		boolean insertFlag = fbsUserService.insertUser(params);
+		return insertFlag;
+	}
+
+	@RequestMapping("/addHospitorUser")
+	@ResponseBody
+	public boolean addHospitorUser(@RequestBody Map<String,Object> params) {
+		boolean insertFlag = fbsUserService.insertHospitorUser(params);
+		return insertFlag;
+	}
+
+	/**
+	 * 修改数据处理
+	 *
+	 * @param params
+	 * @return boolean
+	 * @throws Exception
+	 */
+	@RequestMapping("/updateFbUser")
+	@ResponseBody
+	public boolean updateFbUser(@RequestBody Map<String,Object> params){
+		int updateFlag = fbsUserService.updateUser(params);
+		return updateFlag > 0;
+	}
+
+	@RequestMapping("/updateHospitalUser")
+	@ResponseBody
+	public boolean updateHospitalUser(@RequestBody Map<String,Object> params){
+		int updateFlag = fbsUserService.updateHospitalUser(params);
+		return updateFlag > 0;
+	}
+
+	/**
+	 * 删除数据处理
+	 *
+	 * @param id
+	 * @return boolean
+	 * @throws Exception
+	 */
+	@RequestMapping("/toDelFbUserById")
+	@ResponseBody
+	public boolean toDelFbUserById(String id) throws Exception {
+		return fbsUserService.deleteUser(id) != 0;
+	}
+
+	/**
+	 * 针对前端form表单逗号的处理
+	 *
+	 * @param value
+	 * @return
+	 */
+	private String changeValue(String value) {
+		String str = "";
+		if (StringUtil.isNotEmpty(value)) {
+			if (value.contains(",")) {
+				str = value.substring(1);
+			} else if (!value.contains(",")){
+				str = value;
+			}
+		}
+		return str;
+	}
+
+	/**
+	 * 查询当前用户详情
+	 * @param id
+	 * @return KsUser
+	 */
+	@RequestMapping("/getUserDetails")
+	@ResponseBody
+	public FbsUser getUserDetails(String id){
+		Map<String,Object> params = new HashMap<>();
+		params.put("id",id);
+		return fbsUserService.userByLoginName(params);
+	}
+
+	/**
+	 * 密码重置
+	 * @param params
+	 * @return boolean
+	 */
+	@RequestMapping("/updatePassword")
+	@ResponseBody
+	public boolean updatePassword(@RequestBody Map<String,Object> params){
+		return fbsUserService.updatePass(params) != 0;
+	}
+
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/findAllPageHospitalUserList")
+	@ResponseBody
+	public PageResponse<FbsUser> findAllPageHospitalUserList(@RequestBody PageRequest<FbsUser> request)  {
+		return fbsUserService.findAllPageHopitalUserList(request);
+	}
+
+	/**
+	 * 获取当前管理员用户基本信息
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/getHostUserDetails")
+	@ResponseBody
+	public FbsUser getHostUserDetails(HttpServletRequest request){
+		String userId = request.getParameter("userId");
+		/*HttpSession session = request.getSession();
+		FbsUser ksUser = (FbsUser) session.getAttribute("ksUser");
+		int userid = ksUser.getId();*/
+		Map<String,Object> params = new HashMap<>();
+		params.put("id",userId);
+		return fbsUserService.userByLoginName(params);
+	}
+
+	@RequestMapping("/getUserInfoById")
+	@ResponseBody
+	public FbsUser getUserInfoById(@RequestBody Map<String,Object> params){
+		FbsUser user = new FbsUser();
+		user.setId(Integer.parseInt(params.get("id").toString()));
+		return fbsUserService.getUser(user);
+	}
+
+}

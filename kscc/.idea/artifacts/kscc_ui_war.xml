@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="kscc-ui:war">
+    <output-path>$PROJECT_DIR$/kscc/kscc-ui/target</output-path>
+    <root id="archive" name="kscc-ui-0.0.1-SNAPSHOT.war">
+      <element id="artifact" artifact-name="kscc-ui:war exploded" />
+    </root>
+  </artifact>
+</component>

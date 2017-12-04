@@ -1,0 +1,151 @@
+package com.fable.kscc.api.model.liveCodec;
+
+import java.util.Date;
+
+public class FbsLiveCodec {
+  private Integer id;
+  private String codecOwnership;
+  private String newvideoNum;
+  private String ip;
+  private String mac;
+  private Integer hospitalId;
+  private String creatorId;
+  private Date createdTime;
+  private String updateId;
+  private Date updatedTime;
+  //端口号，用户名，密码
+  private String port;
+  private String userName;
+  private String password;
+  private String ftpPort;
+  private String location;
+  private String status = "ok";
+
+  public String getFtpPort() {
+    return ftpPort;
+  }
+
+  public void setFtpPort(String ftpPort) {
+    this.ftpPort = ftpPort;
+  }
+
+  public String getPort() {
+    return port;
+  }
+
+  public void setPort(String port) {
+    this.port = port;
+  }
+
+  public String getUserName() {
+    return userName;
+  }
+
+  public void setUserName(String userName) {
+    this.userName = userName;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
+  public String getCodecOwnership() {
+    return codecOwnership;
+  }
+
+  public void setCodecOwnership(String codecOwnership) {
+    this.codecOwnership = codecOwnership;
+  }
+
+  public String getNewvideoNum() {
+    return newvideoNum;
+  }
+
+  public void setNewvideoNum(String newvideoNum) {
+    this.newvideoNum = newvideoNum;
+  }
+
+  public String getIp() {
+    return ip;
+  }
+
+  public void setIp(String ip) {
+    this.ip = ip;
+  }
+
+  public String getMac() {
+    return mac;
+  }
+
+  public void setMac(String mac) {
+    this.mac = mac;
+  }
+
+  public Integer getHospitalId() {
+    return hospitalId;
+  }
+
+  public void setHospitalId(Integer hospitalId) {
+    this.hospitalId = hospitalId;
+  }
+
+  public String getCreatorId() {
+    return creatorId;
+  }
+
+  public void setCreatorId(String creatorId) {
+    this.creatorId = creatorId;
+  }
+
+  public Date getCreatedTime() {
+    return createdTime;
+  }
+
+  public void setCreatedTime(Date createdTime) {
+    this.createdTime = createdTime;
+  }
+
+  public String getUpdateId() {
+    return updateId;
+  }
+
+  public void setUpdateId(String updateId) {
+    this.updateId = updateId;
+  }
+
+  public Date getUpdatedTime() {
+    return updatedTime;
+  }
+
+  public void setUpdatedTime(Date updatedTime) {
+    this.updatedTime = updatedTime;
+  }
+
+  public String getLocation() {
+    return location;
+  }
+
+  public void setLocation(String location) {
+    this.location = location;
+  }
+
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+}

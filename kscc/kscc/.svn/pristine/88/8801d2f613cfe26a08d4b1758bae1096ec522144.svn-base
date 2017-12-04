@@ -1,0 +1,45 @@
+package com.fable.kscc.bussiness.service.liveparticipant;
+
+import java.util.List;
+import java.util.Map;
+
+import com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation;
+import com.fable.kscc.api.model.participant.FbsLiveParticipant;
+
+public interface LiveParticiPantService {
+	List<FbsLiveParticipant> queryFbsLiveParti(Integer id);
+	FbsHospitalInformation getHospitalInformationList(Integer id);
+	
+	
+	/**
+	 * 查询(过滤前端参与方)
+	 * @param keyword
+	 * @param participant
+	 * @return
+	 */
+	List<String> findParticiPant(String keyword , String participant);
+	/**
+	 * 查询参与者是否主持人角色
+	 * @param map
+	 * @return
+	 */
+	FbsLiveParticipant queryParticipantHost(Map<String,Object> map);
+	/**
+	 * 更新参与者用户是否在线状态
+	 */
+	boolean updateParticiPantOnline(Map<String,Object> map);
+
+	/**
+	 * 邀请参与方(筛选传来的参与方)
+	 * @param map
+	 * @return
+	 */
+	List<FbsLiveParticipant> invitationHospitalParticipant(Map<String,Object> map);
+
+	/**
+	 * 添加参与方
+	 * @param map
+	 * @return
+	 */
+	int setParticipant(Map<String,Object> map);
+}

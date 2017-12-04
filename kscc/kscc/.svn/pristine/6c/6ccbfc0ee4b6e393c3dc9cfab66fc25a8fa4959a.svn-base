@@ -1,0 +1,76 @@
+package com.fable.kscc.api.skyCloud;
+
+/**
+ * <p>
+ * Title :
+ * </p>
+ * <p>
+ * Description:
+ * </p>
+ * <p>
+ * Author :HaiRui
+ * Date :2017/10/19
+ * Time :15:20
+ * </p>
+ * <p>
+ * Department :
+ * </p>
+ * <p> Copyright : 江苏飞博软件股份有限公司 </p>
+ */
+public class DownFTPParam {
+    private String host;
+    private int port=21;
+    private String username;
+    private String password;
+    private String pathSrc;
+    private String pathDst;
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPathSrc() {
+        return pathSrc;
+    }
+
+    public void setPathSrc(String pathSrc) {
+        this.pathSrc = pathSrc;
+    }
+
+    public String getPathDst() {
+        return pathDst;
+    }
+
+    public void setPathDst(String pathDst) {
+        this.pathDst = pathDst;
+    }
+
+}

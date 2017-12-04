@@ -1,0 +1,12 @@
+define(["base"],function(base){
+	//加载资源日历    
+	function setResourceCal(){
+		
+	};
+
+	return {
+		run:function(){
+			setResourceCal();//加载资源日历
+		}
+	};
+});

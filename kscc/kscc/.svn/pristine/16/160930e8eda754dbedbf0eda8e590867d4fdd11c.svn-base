@@ -1,0 +1,30 @@
+package com.fable.kscc.bussiness.mapper.fbmenu;
+
+import com.fable.kscc.api.model.menu.FbsMenu;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+@Repository
+public interface FbMenuMapper {
+
+	/**
+	 * 根据kscc管理员查看菜单(权限)
+	 * @return
+	 */
+	List<FbsMenu> findAllByRole();
+
+	/**
+	 * 初始化kscc管理员的菜单
+	 * @return
+	 */
+	int InitializationMenuRole();
+
+	/**
+	 * 更改kscc管理员的菜单
+	 * @return
+	 */
+	int updateMenuByRole(int[] num);
+
+}

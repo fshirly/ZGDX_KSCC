@@ -1,0 +1,195 @@
+package com.fable.kscc.api.medTApi;
+
+import com.fable.kscc.api.utils.Constants;
+import com.fable.kscc.api.utils.HttpUtils;
+import com.fable.kscc.api.utils.XmlGenerator;
+import net.sf.json.JSONObject;
+import net.sf.json.xml.XMLSerializer;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Wanghairui on 2017/10/10.
+ */
+@Component
+public class MedTApi {
+
+    public static Logger logger = LoggerFactory.getLogger(MedTApi.class);
+
+    public static void main(String[] args) {
+        Map<String, String> login = new HashMap<>();
+        login.put("ip", "202.127.28.81");
+        login.put("port", "50080");
+        login.put("username", "admin");
+        login.put("password", "admin123");
+        login.put("hospitalId", "1");
+        MedTApi api = new MedTApi();
+        String authenticationId=api.getAuthenticationId(login);
+        System.out.println("鉴权：：："+authenticationId);
+        login.put("authenticationid", authenticationId);
+        XmlGenerator.generateRequestRoot(login);
+        api.Login(login);
+//      api.SetSysTimeInfo(login);
+//      api.Mp4BackupStart(login);
+         api.Mp4FileQuery(login);
+//        api.Mp4BackUpProgress(login);
+    }
+    public String getAuthenticationId(Map<String,String> param){
+        String response=HttpUtils.httpPostByNullXml(getSocketAddress(param)+Constants.MedT100.authentication);
+        try {
+            Document doc = DocumentHelper.parseText(response);
+            return doc.getRootElement().elementText("Authenticationid");
+        } catch (DocumentException e) {
+            logger.error(param.get("hospitalName")+"的编解码器鉴权发生错误",e);
+        }
+        return null;
+    }
+    public void Login(Map<String,String> param){
+
+        String params = XmlGenerator.generateLoginParam(enhanceKey(param));
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param) + Constants.MedT100.login, params);
+        try {
+            Document doc = DocumentHelper.parseText(xmlResponse);
+            String response=doc.getRootElement().elementText("statusstring");
+
+            String statusString = doc.getRootElement().elementText("substatusstring");
+            if (!"success".equals(response)) {
+                logger.info(param.get("hospitalName")+"的编解码器登陆失败："+statusString);
+            }
+        } catch (DocumentException e) {
+            logger.error(param.get("hospitalName")+"的编解码器登陆发生错误",e);
+        }
+    }
+
+    public  void heartBeat(Map<String,String> param){
+
+        String params = XmlGenerator.generateKeepHeartBeatParam(enhanceKey(param));
+
+        String response = HttpUtils.httpPostByXml(getSocketAddress(param)+Constants.MedT100.heartBeat, params);
+
+        try {
+            Document doc = DocumentHelper.parseText(response);
+            String stateResp = doc.getRootElement().getName();
+            if (!"StateResp".equals(stateResp)) {
+                logger.error(param.get("hospitalId")+"的编解码器心跳");
+            }
+        } catch (DocumentException e) {
+            logger.error(param.get("hospitalId")+"的编解码器心跳发生错误",e);
+        }
+
+
+    }
+
+    public String Mp4BackUpProgress(Map<String,String> param){
+
+        String params =XmlGenerator.generateHaveNotParam(enhanceKey(param));
+
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param)+Constants.MedT100.mp4BackupProgress,params);
+        System.out.println(xmlResponse);
+        try {
+            Document document = DocumentHelper.parseText(xmlResponse);
+            Element root = document.getRootElement();
+            String state = root.elementText("State");
+            if ("1".equals(state)) {//文件正在备份
+                Element chn3Status = root.element("ChnStatList").element("ChnStat").element("Status");
+                //<!--xs:integer 备份通道状态 0:空闲 1:运行 2:失败 3:完成-->
+                return  chn3Status.getText();
+            }
+            return "no backup business";
+        } catch (DocumentException e) {
+            logger.error(param.get("hospitalId")+"的编解码器查看备份进度错误",e);
+        }
+        return null;
+    }
+    public String viewSelfThroughSelf(Map<String,String> param){
+        String params = XmlGenerator.generateSetVmtParam(enhanceKey(param));
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param) + Constants.MedT100.viewSelf, params);
+        try {
+            Document doc = DocumentHelper.parseText(xmlResponse);
+
+            String response=doc.getRootElement().elementText("statusstring");
+
+            String statusString = doc.getRootElement().elementText("substatusstring");
+
+            if (!"success".equals(response)) {
+                logger.info(param.get("hospitalName")+"的编解码器设置DVI（4选2-1）输出到DVI2："+statusString);
+                return "fail";
+            }
+            return "success";
+        } catch (DocumentException e) {
+            logger.error(param.get("hospitalName")+"的编解码器登陆发生错误",e);
+        }
+        return "fail";
+    }
+    public List<String> Mp4FileQuery(Map<String,String> param){
+        String params = XmlGenerator.generateMp4FileQueryParam(enhanceKey(param));
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param) + Constants.MedT100.mp4FileQuery, params);
+        System.out.println(xmlResponse);
+        List<String> paths=new ArrayList<>();
+        try {
+            Document document = DocumentHelper.parseText(xmlResponse);
+            List<Element> elements = document.getRootElement().element("MP4List").elements();
+            for(Element element:elements){
+                paths.add(element.elementText("TitlePath"));
+            }
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+        return paths;
+    }
+    public void SetSysTimeInfo(Map<String,String> param){
+        String params = XmlGenerator.generateSetSysTimeInfoParam(enhanceKey(param));
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param) + Constants.MedT100.setSysTimeInfo, params);
+        try {
+            Document doc = DocumentHelper.parseText(xmlResponse);
+            String response=doc.getRootElement().elementText("statusstring");
+
+            String statusString = doc.getRootElement().elementText("substatusstring");
+            if (!"success".equals(response)) {
+                logger.info(param.get("hospitalName")+"的编解码器时间同步："+statusString);
+            }
+        } catch (DocumentException e) {
+            logger.error(param.get("hospitalName")+"的编解码器时间同步",e);
+        }
+    }
+    public void Mp4BackupStart(Map<String,String> param){
+        String params = XmlGenerator.generateMp4BackupStartParam(enhanceKey(param));
+        String xmlResponse = HttpUtils.httpPostByXml(getSocketAddress(param)+Constants.MedT100.mp4BackupStart,params);
+        System.out.println(xmlResponse);
+        try {
+            Document doc = DocumentHelper.parseText(xmlResponse);
+            String response=doc.getRootElement().elementText("statusstring");
+
+            String statusString = doc.getRootElement().elementText("substatusstring");
+            if (!"success".equals(response)) {
+                logger.info(param.get("hospitalName")+"的编解码器开始备份MP4文件："+statusString);
+            }
+        } catch (DocumentException e) {
+            logger.error(param.get("hospitalName")+"的编解码器开始备份MP4文件",e);
+        }
+    }
+    public  JSONObject xmlToJson(String xml){
+        //api.xmlToJson(xmlResponse).get("Authenticationid").toString()
+        XMLSerializer xmlSerializer=new XMLSerializer();
+        return  (JSONObject)xmlSerializer.read(xml);
+    }
+
+    private static String enhanceKey(Map<String,String> param){
+        return param.get("hospitalId") + param.get("ip");
+    }
+
+    private String getSocketAddress(Map<String,String> param){
+        return String.format("http://%s:%s/", param.get("ip"), param.get("port"));
+    }
+
+}

@@ -1,0 +1,484 @@
+package com.fable.kscc.bussiness.service.liveControllerService;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.fable.kscc.api.model.participant.FbsLiveParticipant;
+import com.fable.kscc.bussiness.mapper.livecodec.LiveCodecMapper;
+import net.sf.ezmorph.bean.MorphDynaBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.fable.kscc.api.kedaApi.KedaApi;
+import com.fable.kscc.api.model.livebroadcast.FbsLiveBroadcast;
+import com.fable.kscc.api.model.operationLog.FbsLiveOperationLog;
+import com.fable.kscc.api.model.page.ResultKit;
+import com.fable.kscc.api.model.page.ServiceResponse;
+import com.fable.kscc.bussiness.mapper.hospitalInformation.HospitalInformationMapper;
+import com.fable.kscc.bussiness.mapper.livebroadcast.LiveBroadCastMapper;
+import com.fable.kscc.bussiness.mapper.liveoperationlog.LiveOperationLogMapper;
+import com.fable.kscc.bussiness.mapper.liveparticipant.LiveParticiPantMapper;
+
+import net.sf.json.JSONObject;
+
+
+/**
+ * Created by Wanghairui on 2017/8/14.
+ */
+@Service
+public class LiveControllerServiceImpl implements IliveController {
+
+    @Autowired
+    private LiveBroadCastMapper broadCastMapper;
+
+    @Autowired
+    private LiveParticiPantMapper liveParticiPantMapper;
+
+    @Autowired
+    private LiveOperationLogMapper liveOperationLogMapper;
+
+    @Autowired
+    private HospitalInformationMapper hospitalInformationMapper;
+
+    @Autowired
+    private LiveCodecMapper liveCodecMapper;
+
+    @Autowired
+    private KedaApi kedaApi;
+
+    @Override
+    public ServiceResponse getLiveList(Map<String,Object> param) {
+        List<FbsLiveBroadcast>  fbsLiveBroadcasts =broadCastMapper.queryLivingListByUserId(param);
+        for(final FbsLiveBroadcast broadcast:fbsLiveBroadcasts){
+            List<Map<String,Object>> participant=
+                    broadCastMapper.
+                            queryParticipant(new HashMap<String, Object>(){{put("liveId",broadcast.getId());}});
+            broadcast.setParticipantNames(participant);
+        }
+        return ResultKit.serviceResponse(fbsLiveBroadcasts);
+    }
+
+    @Override
+    public ServiceResponse getParticipant(Map<String, Object> param) {
+        return null;
+    }
+
+    @Override
+    public ServiceResponse choosePicture(Map<String, Object> param) {
+        Map<String,Object> response=kedaApi.choosePicture(param);
+        if(Integer.parseInt(response.get("success").toString())==1){
+            return ResultKit.success();
+        }
+        return ResultKit.fail("画面选看失败");
+    }
+
+    @Override
+    public ServiceResponse switchHost(final Map<String, Object> param) {
+    	//会场纪录增加更换主持人信息
+    	Date currentTime = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String dateString = formatter.format(currentTime);
+		
+    	Map<String,Object> map = new HashMap<String,Object>();
+    	JSONObject jasonObject = JSONObject.fromObject(param.get("params").toString());
+    	final Map mapStr = (Map)jasonObject;
+    	map.put("mtId", mapStr.get("mt_id").toString());
+    	map.put("confId", param.get("confId").toString());
+    	map.put("mtIdOld", param.get("mtIdOld").toString());
+    	//map.put("old", param.get("old").toString());
+    	final int liveId = broadCastMapper.queryFbsLiveBroadcast(map).getId();
+    	map.put("liveId", liveId);
+    	//更新相应的serialnumber的值
+    	liveParticiPantMapper.updateParticipantSerisNum(new HashMap<String, Object>(){{put("serialnumber",1);
+    	put("mtId",mapStr.get("mt_id").toString());put("liveId",liveId);}});
+    	if(!mapStr.get("mt_id").toString().equals(param.get("mtIdOld").toString())){
+    		liveParticiPantMapper.updateParticipantSerisNum(new HashMap<String, Object>(){{put("serialnumber",0);
+        	put("mtId",param.get("mtIdOld").toString());put("liveId",liveId);}});
+    	}
+    	final String hospitalNameNow = param.get("hospitalNameNow").toString();
+    	final String hospitalNameEx = param.get("hospitalNameEx").toString();
+    	
+    	FbsLiveOperationLog logBean = new FbsLiveOperationLog();
+    	logBean.setLiveId(liveId);
+    	logBean.setOperationTime(dateString);
+    	logBean.setOperationContent("更换主持人，由"+hospitalNameEx+"更换为"+hospitalNameNow);
+    	liveOperationLogMapper.insertLiveOperationLog(logBean);
+    	
+    	 Map<String,Object> response=kedaApi.switchHost(param);
+         if(Integer.parseInt(response.get("success").toString())==1){
+             return ResultKit.success();
+         }
+         return ResultKit.fail("切换主持人失败");
+    }
+
+    @Override
+    public ServiceResponse applySpeak(Map<String, Object> param) {
+        return null;
+    }
+
+    @Override
+    public ServiceResponse chooseSpeaker(Map<String, Object> param) {
+//          confId:'135654'
+//        params:{
+//            "mt_id": "1"
+//        }
+        Map<String,Object> response=kedaApi.chooseSpeaker(param);
+        if(Integer.parseInt(response.get("success").toString())==1){
+            return ResultKit.success();
+        }
+        return ResultKit.fail("选择发言时失败");
+    }
+
+    /**
+     * 延长直播时间
+     */
+    @Override
+    public ServiceResponse extendTime(Map<String, Object> param) {
+    	Map<String,Object> params = new HashMap<>();
+    	params.put("delay_time", param.get("delay_time"));
+    	param.put("params", params);
+    	Map<String,Object> response=kedaApi.extendTime(param);
+        if(Integer.parseInt(response.get("success").toString())==1){
+            return ResultKit.success();
+        }
+        return ResultKit.fail("延长失败");
+    }
+
+    @Override
+    public ServiceResponse videoRecord(Map<String, Object> param) {
+        return null;
+    }
+
+    //邀请参与方
+    @Override
+    public ServiceResponse inviteParticipant(Map<String, Object> param) {
+//        {
+//            "mts": [
+//            {
+//                "account": "2322231",
+//                    "account_type": 5,
+//                    "bitrate": 2048,
+//                    "protocol": 0,
+//                    "forced_call": 0
+//            },
+//            {
+//                "account": "2322232",
+//                    "account_type": 5,
+//                    "bitrate": 2048,
+//                    "protocol": 0,
+//                    "forced_call": 0
+//            }
+//  ]
+//        }
+        Map<String,Object> response=kedaApi.inviteParticipant(param);
+        if(Integer.parseInt(response.get("success").toString())==1){
+            Map<String,Object> params = (Map<String, Object>) param.get("params");
+            List<Map<String,Object>>  mts = (List<Map<String,Object>>) params.get("mts");
+            for (Map<String,Object> result:mts) {
+                int id = Integer.parseInt(param.get("hospitalId").toString());
+                FbsLiveParticipant fbsLiveParticipant = new FbsLiveParticipant();
+                fbsLiveParticipant.setHospitalId(id);//设置参与方医院id
+                String hospitalNewVideoNum = liveCodecMapper.findNewVideoNum(id);//根据参与方医院id设置新世通账号
+                fbsLiveParticipant.setNewvideoNum(hospitalNewVideoNum);
+                fbsLiveParticipant.setLiveId(Integer.parseInt(String.valueOf(param.get("liveId"))));//设置直播间id
+                fbsLiveParticipant.setCreatorId(String.valueOf(param.get("userId")));//设置创建者(获取的登陆者id)
+                fbsLiveParticipant.setParticipation("0");
+                fbsLiveParticipant.setMtId(result.get("mt_id").toString());//设置终端号
+                Date date = new Date();
+                fbsLiveParticipant.setCreatedTime(date);
+                liveParticiPantMapper.setParticipant(fbsLiveParticipant);
+            }
+            return ResultKit.success();
+        }
+        return ResultKit.fail("邀请参与方失败");
+    }
+
+    /**
+     * 删除参与方
+     */
+    @Override
+    @Transactional(propagation=Propagation.REQUIRED)
+    public ServiceResponse deleteParticipant(Map<String, Object> param) {
+    	//会场纪录增加删除参与方医院
+    	Date currentTime = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String dateString = formatter.format(currentTime);
+    	Map<String,Object> map = new HashMap<String,Object>();
+    	String hospitalName = param.get("hospitalName").toString();
+    	map.put("confId", param.get("confId").toString());
+    	int liveId = broadCastMapper.queryFbsLiveBroadcast(map).getId();
+    	FbsLiveOperationLog logBean = new FbsLiveOperationLog();
+    	logBean.setLiveId(liveId);
+    	logBean.setOperationTime(dateString);
+    	logBean.setOperationContent("删除参与方医院"+hospitalName+"完毕");
+    	liveOperationLogMapper.insertLiveOperationLog(logBean);
+    	 Map<String,Object> response=kedaApi.deleteParticipant(param);
+
+        // 再次获取参与方列表（测试）
+        Map<String,Object> responseForMts=kedaApi.getMTS(param.get("confId").toString());
+
+        if(Integer.parseInt(response.get("success").toString())==1){
+        	 liveParticiPantMapper.deleteParticipant(param);
+             return ResultKit.success();
+         }
+         return ResultKit.fail("参与方删除失败");
+    }
+
+    @Override
+    public ServiceResponse pictureSynthesis(Map<String, Object> param) {
+        //confId:"4656"
+//        {
+//            "mode": 1,
+//                "layout": 2,
+//                "mt_id": "1",
+//                "show_alias": 1,
+//                "members": [
+//            {
+//                "chn_idx": 0,
+//                    "member_type": 1,
+//                    "mt_id": "1"
+//            }
+//  ]
+//        }
+        Map<String,Object> response=kedaApi.pictureSynthesis(param);
+        if(Integer.parseInt(response.get("success").toString())==1){
+            return ResultKit.success();
+        }
+        return ResultKit.fail("画面和成失败");
+    }
+
+    @Override
+    public ServiceResponse pictureSynthesiss(final Map<String, Object> param) {
+        Map<String,Object> response=kedaApi.pictureSynthesiss(param);
+        if(Integer.parseInt(response.get("success").toString())==1){
+            return ResultKit.success();
+        }
+        return ResultKit.serviceResponse(response);
+    }
+
+    @Override
+    public ServiceResponse silence(Map<String, Object> param) {
+    	
+    	Date currentTime = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String dateString = formatter.format(currentTime);
+    	Map<String,Object> map = new HashMap<String,Object>();
+    	map.put("mtId", param.get("mtId").toString());
+    	map.put("confId", param.get("confId").toString());
+    	int liveId = broadCastMapper.queryFbsLiveBroadcast(map).getId();
+    	map.put("liveId", liveId);
+    	int hospitalId = liveParticiPantMapper.queryParcitipantHost(map).getHospitalId();
+    	String hospitalName = hospitalInformationMapper.findAllById(hospitalId);
+    	FbsLiveOperationLog logBean = new FbsLiveOperationLog();
+    	logBean.setLiveId(liveId);
+    	logBean.setOperationTime(dateString);
+    	logBean.setOperationContent("参与方医院"+hospitalName+"已被静音");
+    	liveOperationLogMapper.insertLiveOperationLog(logBean);
+    	
+    	  Map<String,Object> response=kedaApi.silence(param);
+          if(Integer.parseInt(response.get("success").toString())==1){
+              return ResultKit.success();
+          }
+          return ResultKit.fail("静音失败");
+    }
+
+    /**
+     * 哑音
+     */
+    @Override
+    public ServiceResponse mute(Map<String, Object> param) {
+    	//哑音状态，1-哑音，0-停止哑音
+    	//会场纪录增加哑言操作记录
+    	Date currentTime = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String dateString = formatter.format(currentTime);
+    	Map<String,Object> map = new HashMap<String,Object>();
+    	map.put("mtId", param.get("mtId").toString());
+    	map.put("confId", param.get("confId").toString());
+    	int liveId = broadCastMapper.queryFbsLiveBroadcast(map).getId();
+    	map.put("liveId", liveId);
+    	int hospitalId = liveParticiPantMapper.queryParcitipantHost(map).getHospitalId();
+    	String hospitalName = hospitalInformationMapper.findAllById(hospitalId);
+    	FbsLiveOperationLog logBean = new FbsLiveOperationLog();
+    	logBean.setLiveId(liveId);
+    	logBean.setOperationTime(dateString);
+    	logBean.setOperationContent("参与方医院"+hospitalName+"已被哑言");
+    	liveOperationLogMapper.insertLiveOperationLog(logBean);
+    	
+    	Map<String,Object> response=kedaApi.mute(param);
+        if(Integer.parseInt(response.get("success").toString())==1){
+            return ResultKit.success();
+        }
+        return ResultKit.fail("哑音失败");
+    }
+
+    @Override
+    public ServiceResponse allSilence(Map<String, Object> param) {
+        Map<String,Object> response=kedaApi.allSilence(param);
+        if(Integer.parseInt(response.get("success").toString())==1){
+            return ResultKit.success();
+        }
+        return ResultKit.fail("全场静音失败");
+    }
+
+    @Override
+    public ServiceResponse allMute(Map<String, Object> param) {
+        //        {
+//            "value": 1
+//        }
+        Map<String,Object> response=kedaApi.allMute(param);
+        if(Integer.parseInt(response.get("success").toString())==1){
+            return ResultKit.success();
+        }
+        return ResultKit.fail("全场哑音失败");
+    }
+
+    @Override
+    public ServiceResponse endLive(Map<String, Object> param) {
+    	 String confId = (String) param.get("confId");
+    	 Map<String,Object> response=kedaApi.endConf(confId);
+         if(Integer.parseInt(response.get("success").toString())==1){
+             Map<String, Object> params = new HashMap<>();
+             params.put("confId", confId);
+             broadCastMapper.endLive(param);
+             return ResultKit.success();
+         }
+         return ResultKit.fail("结束直播失败");
+    }
+
+    /**
+     * 查看会场记录
+     */
+    @Override
+    public List<FbsLiveOperationLog> meetingRecord(Map<String, Object> param) {
+        return liveOperationLogMapper.meetingRecord(param);
+    }
+    
+    /**
+     * 批量呼叫参与方
+     */
+    @Override
+    @Transactional(propagation=Propagation.REQUIRED)
+	public ServiceResponse callParticipant(Map<String, Object> param) {
+    	//会场纪录增加呼叫参与方信息
+    	Date currentTime = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String dateString = formatter.format(currentTime);
+    	Map<String,Object> map = new HashMap<String,Object>();
+    	String hospitalName = param.get("hospitalName").toString();
+    	map.put("confId", param.get("confId").toString());
+    	int liveId = broadCastMapper.queryFbsLiveBroadcast(map).getId();
+    	FbsLiveOperationLog logBean = new FbsLiveOperationLog();
+    	logBean.setLiveId(liveId);
+    	logBean.setOperationTime(dateString);
+    	logBean.setOperationContent("呼叫参与方医院"+hospitalName+"完毕");
+    	liveOperationLogMapper.insertLiveOperationLog(logBean);
+    	
+		Map<String,Object> response=kedaApi.callParticipant(param);
+        if(Integer.parseInt(response.get("success").toString())==1){
+       	//liveParticiPantMapper.deleteParticipant(param);
+            return ResultKit.success();
+        }
+        return ResultKit.fail("参与方呼叫失败");
+	}
+
+	@Override
+	public ServiceResponse getLiveBroadCastList() {
+		Map<String,Object> params = new HashMap<>();
+		Map<String,Object> param = new HashMap<>();
+		params.put("start", 0);
+		params.put("count", 0);
+		param.put("params", params);
+        List<Map<String, Object>> list = new ArrayList<>();
+        String confId;
+        String name;
+        String startTime;
+        String endTime;
+        List<String> participants;
+        Map<String,Object> response=kedaApi.getLiveBroadList(param);
+	        if(Integer.parseInt(response.get("success").toString())==1){
+	            List<MorphDynaBean> confenrences=(List<MorphDynaBean>)response.get("confs");
+	            for(MorphDynaBean bean:confenrences){
+                    Map<String, Object> meettingMap = new HashMap<>();
+                    confId=bean.get("conf_id").toString();
+                    name = bean.get("name").toString();
+                    startTime=bean.get("start_time").toString().replace("T"," ");
+                    endTime=bean.get("end_time").toString().replace("T"," ");
+                    startTime = startTime.substring(0, startTime.indexOf("+"));
+                    endTime = endTime.substring(0, endTime.indexOf("+"));
+                    participants = broadCastMapper.queryParticpantsNameByConfId(confId);
+                    meettingMap.put("startTime", startTime);
+                    meettingMap.put("endTime", endTime);
+                    meettingMap.put("confId", confId);
+                    meettingMap.put("name", name);
+                    meettingMap.put("participantNames",participants);
+                    list.add(meettingMap);
+                }
+                Map<String, Object> numMap = new HashMap<>();
+                numMap.put("confNum", confenrences.size());
+                list.add(numMap);
+                return ResultKit.serviceResponse(list);
+	        }
+	        return ResultKit.fail("获取视频会议列表失败");
+	}
+
+    @Override
+    public ServiceResponse endConf() {
+        Map<String,Object> params = new HashMap<>();
+        Map<String,Object> param = new HashMap<>();
+        params.put("start", 0);
+        params.put("count", 0);
+        param.put("params", params);
+        List<Map<String, Object>> list = new ArrayList<>();
+        String confId;
+        Map<String, Object> endResponse;
+        Map<String, Object> sqlParam = new HashMap<>();
+        Map<String,Object> response=kedaApi.getLiveBroadList(param);
+        if(Integer.parseInt(response.get("success").toString())==1){
+            List<MorphDynaBean> confenrences=(List<MorphDynaBean>)response.get("confs");
+            for(MorphDynaBean bean:confenrences){
+                confId=bean.get("conf_id").toString();
+                endResponse=kedaApi.endConf(confId);
+                sqlParam.put("confId", confId);
+                broadCastMapper.endLive(sqlParam);
+                list.add(endResponse);
+            }
+            return ResultKit.serviceResponse(list);
+        }
+        return ResultKit.fail("删除会议失败");
+    }
+
+    @Override
+    public ServiceResponse sendScreenWord(Map<String, Object> param) {
+        Map<String,Object> response=kedaApi.sendShortMessage(param);
+        if("1".equals(response.get("success").toString())){
+            return ResultKit.success();
+        }
+        return ResultKit.fail(response.get("fail").toString());
+    }
+
+    @Override
+    public ServiceResponse cancelPictureSynthesiss(Map<String, Object> param) {
+        Map<String,Object> response  = kedaApi.cancelPictureSynthesiss(param.get("confId").toString());
+        if("1".equals(response.get("success"))){
+            return ResultKit.success();
+        }
+        return ResultKit.fail("停止平台画面和成失败");
+    }
+
+    @Override
+    public ServiceResponse cancelChoosePicture(Map<String, Object> param) {
+        Map<String,Object> response  = kedaApi.cancelChoosePicture(param);
+        if("1".equals(response.get("success"))){
+            return ResultKit.success();
+        }
+        return ResultKit.fail("取消画面选看失败");
+    }
+
+}

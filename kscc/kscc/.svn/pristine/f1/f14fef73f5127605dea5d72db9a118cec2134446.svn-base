@@ -1,0 +1,130 @@
+package com.fable.kscc.bussiness.service.medToServer;
+
+import com.fable.kscc.api.medTApi.MedTApi;
+import com.fable.kscc.api.skyCloud.DownFTPParam;
+import com.fable.kscc.api.skyCloud.FtpUtil;
+import com.fable.kscc.api.utils.Constants;
+import com.fable.kscc.bussiness.mapper.livebroadcast.LiveBroadCastMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/**
+ * <p>
+ * Title :
+ * </p>
+ * <p>
+ * Description:
+ * </p>
+ * <p>
+ * Author :Administrator
+ * Date :2017/10/19
+ * Time :18:46
+ * </p>
+ * <p>
+ * Department :
+ * </p>
+ * <p> Copyright : 江苏飞博软件股份有限公司 </p>
+ */
+@Service
+public class MedFileToServer {
+
+    @Autowired
+    private MedTApi medTApi;
+
+    @Autowired
+    private LiveBroadCastMapper mapper;
+
+    private ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+
+    //@PostConstruct
+    public void init(){
+        singleThreadExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                for(;;){
+                    try {
+                        Thread.sleep(60000);
+                        List<Map<String,String>> list = mapper.getLiveOfEndButNotGenerate();
+                        for(Map<String,String> param:list){
+                            DownFtpFile(param);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    private boolean DownFtpFile(Map<String,String> param){
+        //跟新落地状态为进行中
+        param.put("isGenerate", "3");
+        mapper.modifyBroadcastGenerate(param);
+       String response= medTApi.Mp4BackupStart(param);
+       if("success".equals(response)){
+           fileProgressThread(param);
+           if("success".equals(param.get("isFileFinish"))){
+               String folder=medTApi.Mp4FileQuery(param);
+               DownFTPParam downFTPParam = new DownFTPParam();
+               downFTPParam.setPathSrc(folder);
+               downFTPParam.setHost(param.get("host"));
+               downFTPParam.setUsername(param.get("username"));
+               downFTPParam.setPassword(param.get("password"));
+               String url = System.getProperty("user.dir");
+               String  pathDst= url.substring(0, url.lastIndexOf(File.separator)) + File.separator + "record" + File.separator + param.get("confId");
+               downFTPParam.setPathDst(pathDst);
+               if(folder!=null){
+                  if(FtpUtil.FileDownload(downFTPParam)){
+                      //跟新落地状态为已经落地
+                      param.put("isGenerate", "1");
+                      mapper.modifyBroadcastGenerate(param);
+                      return true;
+                   }
+               }
+           }
+       }
+        param.put("isGenerate", "2");
+        mapper.modifyBroadcastGenerate(param);
+        //跟新落地状态为未落地
+       return false;
+    }
+
+    private void fileProgressThread(final Map<String,String> param){
+        Executors.newSingleThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                boolean flag = true;
+                while (flag){
+                     String response= medTApi.Mp4BackUpProgress(param);
+                    if(Constants.MedT100File.totalProgressFree.equals(response)){
+                        //没有文件在备份
+                        flag = false;
+                        param.put("isFileFinish", "errorRequest");
+                    }
+                    else if(Constants.MedT100File.channelProgressRun.equals(response)){
+                        //备份正在进行中
+                        flag = true;
+                    }
+                    else if (Constants.MedT100File.channelProgressFail.equals(response)){
+                        //备份失败
+                        flag=false;
+                        param.put("isFileFinish", "failure");
+                    }
+                    else{
+                        //备份成功
+                        flag=false;
+                        param.put("isFileFinish", "success");
+                    }
+                }
+            }
+        });
+    }
+
+}

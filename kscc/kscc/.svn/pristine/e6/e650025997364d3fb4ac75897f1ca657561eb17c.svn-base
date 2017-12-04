@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fable.kscc.bussiness.mapper.livebroadapprove.LiveBroadApproveMapper">
+	<resultMap type="com.fable.kscc.api.model.livebroadcast.FbsLiveBroadcast" id="BaseResultLiveMapper">
+		<id column="ID" property="id" jdbcType="INTEGER"/>
+		<id column="TITLE" property="title" jdbcType="VARCHAR"/>
+		<id column="START_TIME" property="startTime" jdbcType="TIMESTAMP"/>
+		<id column="END_TIME" property="endTime" jdbcType="TIMESTAMP"/>
+		<id column="LIVE_INTRODUCTION" property="liveIntroduction" jdbcType="VARCHAR"/>
+		<id column="USER_ID" property="userId" jdbcType="INTEGER"/>
+		<id column="PHONE" property="phone" jdbcType="VARCHAR"/>
+		<id column="EMAIL" property="email" jdbcType="VARCHAR"/>
+		<id column="HOSPITAL_WEBSITE" property="hospitalWebsite" jdbcType="VARCHAR"/>
+		<id column="APPROVAL_TIME" property="approvalTime" jdbcType="TIMESTAMP"/>
+		<id column="APPROVAL_STATUS" property="approvalStatus" jdbcType="VARCHAR"/>
+		<id column="PLAY_STATUS" property="playStatus" jdbcType="VARCHAR"/>
+		<id column="DEPARTMENT_ID" property="departmentId" jdbcType="INTEGER"/>
+		<id column="CONF_ID" property="confId" jdbcType="INTEGER"/>
+		<id column="ISGENERATED" property="isGenerated" jdbcType="VARCHAR"/>
+		<id column="MEETING_STATUS" property="meetingStatus" jdbcType="VARCHAR"/>
+		<id column="CREATOR_ID" property="creatorId" jdbcType="INTEGER"/>
+		<id column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP"/>
+		<id column="UPDATE_ID" property="updateId" jdbcType="INTEGER"/>
+		<id column="UPDATED_TIME" property="updatedTime" jdbcType="TIMESTAMP"/>
+		<id column="FILE_NAME" property="file_name" jdbcType="VARCHAR"/>
+		<id column="FILE_PATH" property="filePath" jdbcType="VARCHAR"/>
+		<id column="PICTURE_NAME" property="pictureName" jdbcType="VARCHAR"/>
+		<id column="PICTURE_PATH" property="picturePath" jdbcType="VARCHAR"/>
+		<id column="NAME" property="name" jdbcType="VARCHAR"/>
+		<id column="ISDEL" property="isdel" jdbcType="VARCHAR"/>
+		<id column="DEPARTMENT_NAME" property="departmentName" jdbcType="VARCHAR"/>
+		<id column="LINKMAN" property="linkMan" jdbcType="VARCHAR"/>
+	</resultMap>
+	<sql id="Base_Column_List" >
+        ID,TITLE,START_TIME,END_TIME,LIVE_INTRODUCTION,USER_ID,PHONE,EMAIL,DEPARTMENT_NAME
+        ,HOSPITAL_WEBSITE,APPROVAL_TIME,APPROVAL_STATUS,PLAY_STATUS,DEPARTMENT_ID,CONF_ID
+        ,ISGENERATED,MEETING_STATUS,CREATOR_ID,CREATED_TIME,UPDATE_ID,UPDATED_TIME,FILE_NAME,FILE_PATH,PICTURE_NAME,PICTURE_PATH,NAME,ISDEL,LINKMAN
+    </sql>
+    <select id="queryFbsLiveBroadList" resultMap="BaseResultLiveMapper" parameterType="hashmap">
+    	select
+		ID,TITLE,START_TIME,END_TIME,LIVE_INTRODUCTION,USER_ID,PHONE,EMAIL,DEPARTMENT_NAME
+		,HOSPITAL_WEBSITE,APPROVAL_TIME,
+		if(ISDEL='1','3',APPROVAL_STATUS) APPROVAL_STATUS
+		,PLAY_STATUS,DEPARTMENT_ID,CONF_ID
+		,ISGENERATED,MEETING_STATUS,CREATOR_ID,CREATED_TIME,UPDATE_ID,UPDATED_TIME,FILE_NAME,FILE_PATH,PICTURE_NAME,PICTURE_PATH,NAME,ISDEL
+    	FROM (
+		SELECT a.*,department.DEPARTMENT_NAME DEPARTMENT_NAME,c.HOSPITAL_NAME NAME from
+		FBS_LIVE_BROADCAST a
+		INNER JOIN FBS_USER b ON a.USER_ID = b.ID
+		INNER JOIN fbs_department department ON department.ID = a.DEPARTMENT_ID
+		INNER JOIN FBS_HOSPITAL_INFORMATION c ON b.HOSPITAL_ID=c.ID
+		 UNION
+		SELECT a.*,department.DEPARTMENT_NAME DEPARTMENT_NAME,b.USER_NAME NAME from
+		FBS_LIVE_BROADCAST a
+		INNER JOIN FBS_USER b ON a.USER_ID = b.ID
+		INNER JOIN FBS_USER_ROLE c ON b.ID=c.USER_ID
+		INNER JOIN fbs_department department ON department.ID = a.DEPARTMENT_ID
+		INNER JOIN FBS_ROLE d ON d.ID = c.ROLE_ID WHERE d.ID=1
+		) e 
+    	where 1=1
+    	<if test="userId != null and userId != ''">
+    	and USER_ID =#{userId}
+ 		</if>
+ 		<if test="name != null and name != ''">
+    	and NAME =#{name}
+ 		</if>
+ 		<if test="title != null and title != '' ">
+			and TITLE like '%${title}%' 
+		</if>
+		<if test="startTime != null and startTime != '' ">
+			and START_TIME >= #{startTime}
+		</if>
+		<if test="endTime != null and endTime != '' ">
+			and START_TIME <![CDATA[<=]]>#{endTime}
+		</if>
+		<if test="approvalStatus != null and approvalStatus != '' ">
+			and APPROVAL_STATUS =#{approvalStatus}
+		</if>
+		<if test="timeBeginLive != null and timeBeginLive != '' ">
+			and CREATED_TIME >= #{timeBeginLive}
+		</if>
+		<if test="timeEndLive != null and timeEndLive != '' ">
+			and CREATED_TIME <![CDATA[<=]]> #{timeEndLive}
+		</if>
+		ORDER BY CREATED_TIME DESC,START_TIME DESC
+    </select>
+    <select id="queryFbLiveBroadListCount" parameterType="hashmap" resultType="java.lang.Integer">
+    	select count(*) from FBS_LIVE_BROADCAST
+    	where 1=1
+    	<if test="userId != null and userId != ''">
+    	and USER_ID =#{userId}
+ 		</if>
+ 		<if test="title != null and title != '' ">
+			and TITLE like '%${title}%' 
+		</if>
+		<if test="startTime != null and startTime != '' ">
+			and START_TIME >= #{startTime}
+		</if>
+		<if test="endTime != null and endTime != '' ">
+			and START_TIME <![CDATA[<=]]>#{endTime}
+		</if>
+		<if test="approvalStatus != null and approvalStatus != '' ">
+			and APPROVAL_STATUS =#{approvalStatus}
+		</if>
+		<if test="timeBeginLive != null and timeBeginLive != '' ">
+			and CREATED_TIME >= #{timeBeginLive}
+		</if>
+		<if test="timeEndLive != null and timeEndLive != '' ">
+			and CREATED_TIME <![CDATA[<=]]> #{timeEndLive}
+		</if> 
+    </select>
+	<select id="queryFbsLiveBroadById" parameterType="java.lang.Integer" resultMap="BaseResultLiveMapper">
+		select
+		<include refid="Base_Column_List" />
+		FROM (
+		SELECT a.*,department.DEPARTMENT_NAME DEPARTMENT_NAME,c.HOSPITAL_NAME NAME from
+		FBS_LIVE_BROADCAST a
+		INNER JOIN FBS_USER b ON a.USER_ID = b.ID
+		INNER JOIN FBS_HOSPITAL_INFORMATION c ON b.HOSPITAL_ID=c.ID
+		INNER JOIN fbs_department department ON department.ID = a.DEPARTMENT_ID
+		 UNION
+		SELECT a.*,department.DEPARTMENT_NAME DEPARTMENT_NAME,d.ROLE_NAME NAME from
+		FBS_LIVE_BROADCAST a
+		INNER JOIN FBS_USER b ON a.USER_ID = b.ID
+		INNER JOIN FBS_USER_ROLE c ON b.ID=c.USER_ID
+		INNER JOIN fbs_department department ON department.ID = a.DEPARTMENT_ID
+		INNER JOIN FBS_ROLE d ON d.ID = c.ROLE_ID WHERE d.ID=1
+		) e 
+    	where 1=1
+		and ID =#{id,jdbcType=INTEGER}
+	</select>   
+	<delete id="deleteFbsLiveBroadById" parameterType="java.lang.Integer">
+		delete from FBS_LIVE_BROADCAST
+		where 1=1
+		and ID =#{id,jdbcType=INTEGER}
+	</delete>
+	<update id="updateFbsLiveBroadById" parameterType="com.fable.kscc.api.model.livebroadcast.FbsLiveBroadcast">
+		update FBS_LIVE_BROADCAST 
+		<set>
+			<if test="userId !=null and userId != ''" >
+		 	USER_ID = #{userId,jdbcType=INTEGER},
+			</if>
+			<if test="createdTime !=null and createdTime != ''" >
+			CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="startTime !=null and startTime != ''" >
+		 	START_TIME = #{startTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="approvalTime !=null and approvalTime != ''" >
+			APPROVAL_TIME = #{approvalTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="title !=null and title != ''" >
+		 	TITLE = #{title,jdbcType=VARCHAR},
+			</if>
+			<if test="approvalStatus !=null and approvalStatus != ''">
+			APPROVAL_STATUS = #{approvalStatus,jdbcType=VARCHAR}
+			</if>
+		</set>
+		where ID = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateLiveApproveStatus" parameterType="java.lang.Integer">
+		update FBS_LIVE_BROADCAST
+		set APPROVAL_STATUS = 0
+		where ID = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

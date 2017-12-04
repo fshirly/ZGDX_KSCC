@@ -1,0 +1,32 @@
+package com.fable.kscc.bussiness.service.uploadfile.jobmanage;
+
+import java.util.Date;
+
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fable.kscc.api.utils.ApplicationContextBeanUtil;
+import com.fable.kscc.bussiness.service.uploadfile.UploadFileService; 
+
+public class UploadFileJob implements Job {
+
+	private static UploadFileService uploadFileService;
+	private final Logger LOG = LoggerFactory.getLogger(UploadFileJob.class);
+
+	static {
+		uploadFileService = (UploadFileService) ApplicationContextBeanUtil.getBean("uploadFileServiceImpl");
+	}
+
+	@Override
+	public void execute(JobExecutionContext arg0) throws JobExecutionException {
+		LOG.info("MP4上传 == " + new Date());
+		try {
+			uploadFileService.uploadFile(); 
+		} catch (Exception e) {
+			LOG.error("MP4上传错误", e);
+		} 
+	}
+}

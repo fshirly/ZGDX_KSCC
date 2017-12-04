@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fable.kscc.bussiness.mapper.liveparticipant.LiveParticiPantMapper">
+	<resultMap type="com.fable.kscc.api.model.participant.FbsLiveParticipant" id="BaseParticiMapper">
+		<id column="ID" property="id" jdbcType="INTEGER"/>
+		<id column="HOSPITAL_ID" property="hospitalId" jdbcType="INTEGER"/>
+		<id column="ROLE_ID" property="roleId" jdbcType="VARCHAR"/>
+		<id column="SERIALNUMBER" property="serialnumber" jdbcType="INTEGER"/>
+		<id column="LIVE_ID" property="liveId" jdbcType="INTEGER"/>
+		<id column="PARTICIPATION" property="participation" jdbcType="VARCHAR"/>
+		<id column="ONLINE_STATUS" property="onlineStatus" jdbcType="VARCHAR"/>
+		<id column="NEWVIDEO_NUM" property="newvideoNum" jdbcType="VARCHAR"/>
+		<id column="VIDEO_STATUS" property="videoStatus" jdbcType="VARCHAR"/>
+		<id column="MT_ID" property="mtId" jdbcType="VARCHAR"/>
+		<id column="CREATOR_ID" property="creatorId" jdbcType="VARCHAR"/>
+		<id column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP"/>
+		<id column="UPDATE_ID" property="updateId" jdbcType="INTEGER"/>
+		<id column="UPDATED_TIME" property="updatedTime" jdbcType="TIMESTAMP"/>
+		<id column="ISHOST" property="ishost" jdbcType="VARCHAR"/>
+	</resultMap>
+	<sql id="Base_Column_List" >
+        ID,HOSPITAL_ID,ROLE_ID,SERIALNUMBER,LIVE_ID,PARTICIPATION,ONLINE_STATUS,NEWVIDEO_NUM,VIDEO_STATUS,MT_ID,
+        CREATOR_ID,CREATED_TIME,UPDATE_ID,UPDATED_TIME,ISHOST
+    </sql>
+	<select id="queryFbsLiveParti" parameterType="java.lang.Integer" resultMap="BaseParticiMapper">
+		select 
+		<include refid="Base_Column_List"/>
+		from FBS_LIVE_PARTICIPANT
+		where 1=1 
+			and LIVE_ID = #{id}
+	</select>
+	<select id="FbsHospitalInformation" parameterType="java.lang.Integer" resultType="com.fable.kscc.api.model.hospitalInformation.FbsHospitalInformation">
+		select * from FBS_HOSPITAL_INFORMATION
+		where 1=1
+		<if test="id !=null and id != ''">
+			and ID = #{id,jdbcType=INTEGER}
+		</if>
+	</select>
+	
+<!-- 	设为参与方 -->
+	<insert id="setParticipant" parameterType="com.fable.kscc.api.model.participant.FbsLiveParticipant">
+				INSERT INTO FBS_LIVE_PARTICIPANT (ID,HOSPITAL_ID, SERIALNUMBER, LIVE_ID, PARTICIPATION, ONLINE_STATUS, NEWVIDEO_NUM, VIDEO_STATUS, MT_ID,CREATOR_ID, ISHOST,CREATED_TIME) VALUES (
+			#{id},#{hospitalId},#{serialnumber},#{liveId},#{participation},#{onlineStatus},#{newvideoNum},#{videoStatus},#{mtId},#{creatorId},#{ishost},#{createdTime})
+	</insert>
+	
+<!-- 	删除参与方 -->	
+	<delete id="deleteParticipant" parameterType="hashmap">
+		DELETE FROM FBS_LIVE_PARTICIPANT WHERE ID = #{id}
+	</delete>
+	
+	<select id="queryParcitipantHost" parameterType="hashmap" resultMap="BaseParticiMapper">
+		select 
+		<include refid="Base_Column_List"/>
+		from FBS_LIVE_PARTICIPANT
+		where 1=1 
+		<if test="liveId !=null and liveId != ''">
+		and LIVE_ID = #{liveId,jdbcType=INTEGER}
+		</if>
+		<if test="hospitalId !=null and hospitalId != ''">
+		and HOSPITAL_ID = #{hospitalId,jdbcType=INTEGER}
+		</if>
+		<if test="mtId !=null and mtId != ''">
+		and MT_ID = #{mtId,jdbcType=VARCHAR}
+		</if>
+	</select>
+	<update id="updateParticipantOnline" parameterType="hashmap">
+		UPDATE FBS_LIVE_PARTICIPANT SET ONLINE_STATUS = #{onlineStatus}
+		WHERE LIVE_ID=#{liveId}
+	</update>
+	<update id="updateParticipantSerisNum" parameterType="hashmap">
+		UPDATE FBS_LIVE_PARTICIPANT SET ISHOST = #{serialnumber}
+		WHERE MT_ID=#{mtId} and LIVE_ID=#{liveId}
+	</update>
+
+	<!--邀请参与方(筛选传来的参与方)-->
+	<resultMap type="com.fable.kscc.api.model.participant.FbsLiveParticipant" id="hospitalParticipant">
+		<id column="ID" property="hospitalId" jdbcType="INTEGER"/>
+		<id column="HOSPITAL_NAME" property="hospitalName" jdbcType="VARCHAR"/>
+		<id column="NEWVIDEO_NUM" property="newvideoNum" jdbcType="VARCHAR"/>
+	</resultMap>
+	<select id="invitationHospitalParticipant" resultMap="hospitalParticipant" parameterType="java.util.Map">
+		SELECT
+		hospital.ID ID,
+		hospital.HOSPITAL_NAME HOSPITAL_NAME,
+		codec.NEWVIDEO_NUM NEWVIDEO_NUM
+		FROM
+		fbs_hospital_information hospital
+		LEFT JOIN fbs_live_codec codec ON codec.HOSPITAL_ID = hospital.ID
+		WHERE
+		codec.NEWVIDEO_NUM NOT IN (#{map.newVideoNum})
+	</select>
+
+	<update id="clearHostByHaiRui">
+		UPDATE FBS_LIVE_PARTICIPANT SET ISHOST='2'
+		WHERE LIVE_ID=#{liveId}
+	</update>
+</mapper>

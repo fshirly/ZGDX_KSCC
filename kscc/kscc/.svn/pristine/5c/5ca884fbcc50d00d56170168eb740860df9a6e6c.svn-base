@@ -1,0 +1,40 @@
+package com.fable.kscc.api.utils;
+
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
+
+import java.io.File;
+import java.io.FileOutputStream;
+
+/**
+ * Created by Wanghairui on 2017/10/10.
+ */
+public class XmlGenerator {
+    public static void main(String[] args) throws Exception {
+        String str=generateLoginParam("123", "456", "789");
+        System.out.println(str);
+    }
+
+    public static String generateLoginParam(String username, String password, String authenticationid) {
+
+        Document doc = DocumentHelper.createDocument();
+        Element contentroot = doc.addElement("contentroot");
+        //增加子元素
+        Element authenticationinfoNode = contentroot.addElement("authenticationinfo");
+        authenticationinfoNode.addAttribute("type", "7.0");
+
+        Element usernameNode = authenticationinfoNode.addElement("username");
+        Element passwordNode = authenticationinfoNode.addElement("password");
+        Element authenticationidNode = authenticationinfoNode.addElement("authenticationid");
+        usernameNode.setText(username);
+        passwordNode.setText(password);
+        authenticationidNode.setText(authenticationid);
+        Element loginReq = contentroot.addElement("LoginReq");
+        loginReq.setText("");
+
+        return contentroot.asXML();
+    }
+}

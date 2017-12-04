@@ -1,0 +1,476 @@
+define(["BaseApp","base","datatables.net","laydate"],function(baseApp,base,DataTable){
+    var loginUserId='';
+    var grid1 = null;
+    var grid2 = null;
+	
+	//获取底部菜单
+	function getUserId(){
+		$.ajax({
+            type:"post",
+            async: false,
+            url:$.base+"/liveBroadCastController/getUserId",
+            success:function (data) {
+                	loginUserId=data.id;
+				}
+		  });
+	  };
+    //未读信息
+	  var grid1Option = {
+				"searching":false,
+				"lengthChange":false,
+				"autoWidth":false,
+				"serverSide":true,
+				"paging":true,
+				"ordering":false,
+				"bRetrieve": true,
+				"language":{"url":$.base+"/js/lib/chinese.json"},
+				"ajax":{ 
+					"type":"post",
+					"url":$.base+"/messageContorller/findMessageByStatus",
+					"contentType":"application/json",
+					"data": function ( d ) { 
+	                      var params={
+	                   		   "pageNo": d.start/d.length+1,
+	                   		   "pageSize": d.length,
+	                           "param":{
+	                              "userName": $("#searchConferenceMessage").val(),//发信人 content
+								  "id":"",
+	                              "status":1,
+								  "mtype":"2", //其他类型消息
+	                              "userId":loginUserId
+								}
+	                      };
+	                      // $.extend(d,params);
+	                     return JSON.stringify(params);
+	                   }
+					},
+				"columns":[
+				           {"title":"<input type='checkbox' name='allResultUnread'>","sWidth":"5%"},
+				           {"title":"时间", "data":"universalTime","sWidth":"20%"},
+				           {"title":"发信人", "data":"hospitalName","sWidth":"20%"},
+				           {"title":"消息内容", "data":"content","sWidth":"30%"},
+				           {"title":"操作", "data":"0","sWidth":"25%"}
+				           ],
+	           "columnDefs":[
+							{ 
+							    "render":function(data,type,row,meta){ 
+							       var html = "<input type='checkbox' name='resultUnread' value='"+row.id+"'>"; 
+							       $("input[name='resultUnread']").parent().addClass("text-center"); 
+							       return html; 
+							    }, 
+							    "targets":0 
+							 },
+						   {
+							   "render":function(data,type,row,meta){
+								   var html="";
+								   html="<span style='display:inline-block;text-align:center;width:200px; white-space:nowrap; text-overflow:ellipsis; -o-text-overflow:ellipsis; overflow:hidden;' title='"+row.content+"'>"+row.content+"</span>";
+								   return html;
+							   },
+							   "targets":3
+						   },
+			               {"render":function(data,type,row,meta){
+	                              var html = "";
+	                              html =  "<div class='clearfix'>" +
+	                            	  "<div style='display:inline-block;'><button class='btn btn-link unreadView' rowId='"+row.id+"' ><i class='iconfont' title='查看' style='color:#0e51a2;font-weight:500;'>&#xe609;</i></button></div>"+
+	                            	  "<div style='margin-left:3px;display:inline-block;'><button class='btn btn-link unreadDelete' rowId='"+row.id+"'><i class='iconfont' title='删除' style='color:#0e51a2;font-weight:500;'>&#xe685;</i></button></div>"+
+	                        	  "</div>";
+				            	  return html;
+				              },
+				               "targets":4
+				            }
+			              ],
+	              
+				"drawCallback":function(setting){
+					//未读信息查看
+					$(".unreadView").on("click",function(){
+						var unreadMessageId=$(this).attr("rowId");
+				        $(this).attr({"data-toggle":"modal","data-target":"#messageModal"});
+				        var requestTip=base.requestTip({position:"center"});
+				        $.ajax({
+				            type: "POST",
+				            async: false,
+				            url:$.base + "/messageContorller/findMessageById?liveId="+unreadMessageId,
+				            contentType:"application/json",
+				            success: function(data){
+                                if(data.hospitalName==null){
+                                    $("#addresserView").text("系统管理员");
+                                }else {
+                                    $("#addresserView").text(data.hospitalName);
+                                }
+				            	$("#timeView").text(data.universalTime);
+				            	$("#contentView").text(data.content);
+				            	
+				            	$("#messageModal .close,#messageModal .messageClose").on("click",function(){
+			            			$("#unReadInfo").html("<table id='unReadInfoTable' class='table table-striped' style='width:100%;'></table>");
+				                    setTableWait();
+				                    $("#readInfo").html("<table id='readInfoTable' class='table table-striped' style='width:100%;'></table>");
+				                    setTableYet();
+				            	});
+				            },
+			            	error:function(){
+			            		requestTip.error();
+				            }
+					     });
+					});
+				    
+					 //全选
+				     $("input[name='allResultUnread']").on("click",function(){
+						  if($(this).is(':checked')){
+							  $("input[name='resultUnread']").prop("checked",true);
+					      }else{
+					    	  $("input[name='resultUnread']").prop("checked",false);
+					      }
+					  });
+					
+				      //批量删除
+					  $(".batchDelete").unbind("click").on("click",function(){
+						 var messageIds = [];
+						 $("input[name='resultUnread']:checked").each(function(i,o){
+							 messageIds.push($(o).val());
+						 });
+						 if(messageIds.length==0){
+							 base.confirm({ 
+						    	  label:"提示",
+						    	  text:"<div style='text-align:center;font-size:13px;'>请选择需要删除项!</div>",
+					              confirmCallback:function(){}
+			   				});
+						  }
+						  else if(messageIds.length>0){
+							  base.confirm({ 
+						    	  label:"提示",
+						    	  text:"<div style='text-align:center;font-size:13px;'>确定要删除此记录吗？</div>",
+					              confirmCallback:function(){
+					            	  var requestTip=base.requestTip({position:"center"});
+					            	  $.ajax({
+								        	url:$.base+"/messageContorller/deleteLiveMessageStatus?id="+messageIds,
+								        	type:"POST",
+								        	contentType:"application/json",
+								        	data:JSON.stringify(messageIds),
+								        	success:function(data){
+							                    $("#unReadInfo").html("<table id='unReadInfoTable' class='table table-striped kscc-grid'></table>");
+							                    setTableWait();
+							                    requestTip.success();
+								        	},
+							            	error:function(){
+							            		requestTip.error();
+								            }
+								        });
+					              }
+							  });
+							  
+						 } 
+					  });
+				     
+					  //批量已读
+					  $(".batchRead").unbind("click").on("click",function(){
+						 var readIds = [];
+						 $("input[name='resultUnread']:checked").each(function(i,o){
+							 readIds.push($(o).val());
+						 });
+						 if(readIds.length==0){
+							 base.confirm({ 
+						    	  label:"提示",
+						    	  text:"<div style='text-align:center;font-size:13px;'>请选择已读消息项!</div>",
+					              confirmCallback:function(){}
+			   				});
+						  }
+						  else if(readIds.length>0){
+							  base.confirm({ 
+						    	  label:"提示",
+						    	  text:"<div style='text-align:center;font-size:13px;'>确定要批量已读所选消息吗？</div>",
+					              confirmCallback:function(){
+					            	  var requestTip=base.requestTip({position:"center"});
+					            	  $.ajax({
+								        	url:$.base+"/messageContorller/updateLiveMessageStatus?id="+readIds,
+								        	type:"POST",
+								        	contentType:"application/json",
+								        	data:JSON.stringify(readIds),
+								        	success:function(data){
+							                    $("#unReadInfo").html("<table id='unReadInfoTable' class='table table-striped kscc-grid'></table>");
+							                    setTableWait();
+							                    $("#readInfo").html("<table id='readInfoTable' class='table table-striped kscc-grid'></table>");
+							                    setTableYet();
+							                    requestTip.success();
+								        	},
+							            	error:function(){
+							            		requestTip.error();
+								            }
+								        });
+					              }
+							  });
+						   } 
+					});
+					
+					//未读消息删除
+					$(".unreadDelete").on("click",function(){
+						var deleteUnreadId=$(this).attr("rowId");
+						 base.confirm({ 
+					    	  label:"提示",
+					    	  text:"<div style='text-align:center;font-size:13px;'>确定删除此未读消息？</div>",
+				              confirmCallback:function(){
+				            	  var requestTip=base.requestTip({position:"center"});
+				            	  $.ajax({
+							        	url:$.base+"/messageContorller/deleteLiveMessageStatus?id="+deleteUnreadId,
+							        	type:"POST",
+							        	contentType:"application/json",
+							        	success:function(data){
+							        		$("#unReadInfo").html("<table id='unReadInfoTable' class='table table-striped kscc-grid'></table>");
+						                    setTableWait();
+						                    requestTip.success();
+							        	},
+						            	error:function(){
+						            		requestTip.error();
+							            }
+							        });
+				              }
+						 });
+					});
+				} 
+			};
+	var grid2Option = {
+			"searching":false,
+			"lengthChange":false,
+			"autoWidth":false,
+			"serverSide":true,
+			"paging":true,
+			"ordering":false,
+			"bRetrieve": true,
+			"language":{"url":$.base+"/js/lib/chinese.json"},
+			"ajax":{ 
+				"type":"post",
+                "url":$.base+"/messageContorller/findMessageByStatus",
+				"contentType":"application/json",
+				"data": function ( d ) { 
+                      var params={
+                   		   "pageNo": d.start/d.length+1,
+                   		   "pageSize": d.length,
+						   "param": {
+                      	  "userName": $("#searchConferenceMessage").val(),//发信人
+                          "id":"",
+                           "status":2,
+						   "mtype":"2", //其他类型消息
+                           "userId":loginUserId
+							}
+                      };
+                     return JSON.stringify(params);
+                   }
+				},
+			"columns":[
+			           {"title":"<input type='checkbox' name='allResultRead'>","sWidth":"5%"},
+			           {"title":"时间", "data":"universalTime","sWidth":"20%"},
+			           {"title":"发信人", "data":"hospitalName","sWidth":"20%"},
+			           {"title":"消息内容", "data":"content","sWidth":"30%"},
+			           {"title":"操作", "data":"0","sWidth":"25%"}
+			           ],
+           "columnDefs":[
+						{ 
+						    "render":function(data,type,row,meta){ 
+						       var html = "<input type='checkbox' name='resultRead' value='"+row.id+"' myTemplate='"+row.myTemplate+"'>"; 
+						       $("input[name='resultRead']").parent().addClass("text-center"); 
+						       return html; 
+						    }, 
+						    "targets":0 
+						 },
+			            {
+						   "render":function(data,type,row,meta){
+							   var html="";
+							   html="<span style='display:inline-block;text-align:center;width:200px; white-space:nowrap; text-overflow:ellipsis; -o-text-overflow:ellipsis; overflow:hidden;' title='"+row.content+"'>"+row.content+"</span>";
+							   return html;	
+						   },
+						   "targets":3
+					    },
+		                {"render":function(data,type,row,meta){
+                              var html = "";
+                              html =  "<div class='clearfix'>" +
+                            	  "<div style='display:inline-block;'><button class='btn btn-border readView' rowId='"+row.id+"'><i class='iconfont' title='查看' style='color:#0e51a2;font-weight:500;'>&#xe609;</i></button></div>"+
+                            	  "<div style='margin-left:3px;display:inline-block;'><button class='btn btn-border readDelete' rowId='"+row.id+"'><i class='iconfont' title='删除' style='color:#0e51a2;font-weight:500;'>&#xe685;</i></button></div>"+
+                        	  "</div>";
+			            	  return html;
+			              },
+			               "targets":4
+			            }
+		              ],
+              
+			"drawCallback":function(setting){
+				//已读消息查看
+				$(".readView").on("click",function(){
+					var readMessageId=$(this).attr("rowId");
+			        $(this).attr({"data-toggle":"modal","data-target":"#messageModal"});
+			        var requestTip=base.requestTip({position:"center"});
+			        $.ajax({
+			            type: "POST",
+			            async: false,
+			            url:$.base + "/messageContorller/findMessageById?liveId="+readMessageId,
+			            contentType:"application/json",
+			            success: function(data){
+			            	if(data.hospitalName==null){
+                                $("#addresserView").text("系统管理员");
+							}else {
+			            		$("#addresserView").text(data.hospitalName);
+                            }
+			            	$("#timeView").text(data.universalTime);
+			            	$("#contentView").text(data.content);
+			            },
+		            	error:function(){
+		            		requestTip.error();
+			            }
+				     });
+				});
+			    
+				//全选
+			     $("input[name='allResultRead']").on("click",function(){
+					  if($(this).is(':checked')){
+						  $("input[name='resultRead']").prop("checked",true);
+				      }else{
+				    	  $("input[name='resultRead']").prop("checked",false);
+				      }
+				  });
+				
+			      //批量删除
+				  $(".batchDeleteRead").unbind("click").on("click",function(){
+					 var messageReadIds = [];
+					 $("input[name='resultRead']:checked").each(function(i,o){
+						 messageReadIds.push($(o).val());
+					 });
+					 if(messageReadIds.length==0){
+						 base.confirm({ 
+					    	  label:"提示",
+					    	  text:"<div style='text-align:center;font-size:13px;'>请选择需要删除项!</div>",
+				              confirmCallback:function(){}
+		   				});
+					  }
+					  else if(messageReadIds.length>0){
+						  base.confirm({ 
+					    	  label:"提示",
+					    	  text:"<div style='text-align:center;font-size:13px;'>确定要删除所选信息吗？</div>",
+				              confirmCallback:function(){
+				            	  var requestTip=base.requestTip({position:"center"});
+				            	  $.ajax({
+							        	url:$.base+"/messageContorller/deleteLiveMessageStatus?id="+messageReadIds,
+							        	type:"POST",
+							        	contentType:"application/json",
+							        	data:JSON.stringify(messageReadIds),
+							        	success:function(data){
+							        		$("#readInfo").html("<table id='readInfoTable' class='table table-striped kscc-grid'></table>");
+							                setTableYet();
+							                requestTip.success();
+							        	},
+						            	error:function(){
+						            		requestTip.error();
+							            }
+							        });
+				            	  }
+						  });
+					   } 
+				  });
+				
+				//已读消息删除
+				$(".readDelete").on("click",function(){
+					var deleteReadId=$(this).attr("rowId");
+					base.confirm({ 
+				    	  label:"提示",
+				    	  text:"<div style='text-align:center;font-size:13px;'>确定要删除所选信息吗？</div>",
+			              confirmCallback:function(){
+			            	  var requestTip=base.requestTip({position:"center"});
+				              $.ajax({
+						        	url:$.base+"/messageContorller/deleteLiveMessageStatus?id="+deleteReadId,
+						        	type:"POST",
+						        	contentType:"application/json",
+						        	success:function(data){
+						        		$("#readInfo").html("<table id='readInfoTable' class='table table-striped kscc-grid'></table>");
+									    setTableYet();
+									    requestTip.success();
+						        	},
+					            	error:function(){
+					            		requestTip.error();
+						            }
+						        });
+			            	  }
+					});
+				});
+			}
+		};
+	function setTableWait(){
+	   grid1 =  $("#unReadInfoTable").DataTable(grid1Option);
+    };
+    
+	//已读信息
+	function setTableYet(){
+	   grid2 = $("#readInfoTable").DataTable(grid2Option);
+    };
+    //查看
+    function viewMessageDetail(messageId,status){
+    	var requestTip=base.requestTip({position:"center"});
+        $.ajax({
+            type: "POST",
+            async: false,
+            url:$.base + "/messageContorller/findMessageById?liveId="+messageId,
+            contentType:"application/json",
+            success: function(data){
+            	$("#addresserView").text(data.hospitalName);
+            	$("#timeView").text(data.universalTime);
+            	$("#contentView").text(data.content);
+            	$("#messageModal .close,#messageModal .messageClose").on("click",function(){
+            		if(status==1){
+            			$("#unReadInfo").html("<table id='unReadInfoTable' class='table table-striped kscc-grid'></table>");
+	                    setTableWait();
+	                    $("#readInfo").html("<table id='readInfoTable' class='table table-striped kscc-grid'></table>");
+	                    setTableYet();
+            		}
+            	})
+            },
+        	error:function(){
+        		requestTip.error();
+            }
+	        });
+	    }
+	    
+		 function setPage(){
+		  	//搜索
+			 $(".fuzzySearchBtn").on("click",function(){
+				 if($("#myTab li:first").hasClass("active")){
+                  
+                     grid1.ajax.reload();
+				}
+				else if($("#myTab li:last").hasClass("active")){
+					
+					 grid2.ajax.reload();
+				}
+			 });
+        };
+        
+        function  setTabChange(){
+    		$('#myTab a:first').tab('show');//初始化显示哪个tab  
+    		$("#unReadInfo").html("<table id='unReadInfoTable' class='table table-striped kscc-grid'></table>");
+    		setTableWait(); 
+    	    $('#myTab a').click(function (e) {
+    	    	$("#searchConferenceMessage").val("");
+    	       e.preventDefault();//阻止a链接的跳转行为  
+    	       $(this).tab('show');//显示当前选中的链接及关联的content 
+    	       if($(this).html()=="未读消息"){
+    	    	   if(!grid2){
+    	    		   setTableWait(); 
+     	    	  }else{
+     	    		 grid1.ajax.reload();
+     	    	  }
+                  
+    	       }
+    	       else if($(this).html()=="已读消息"){
+    	    	  if(!grid2){
+    	    		  setTableYet();
+    	    	  }else{
+    	    		  grid2.ajax.reload();
+    	    	  }
+    	    	  
+    	       }
+    	    });
+    	}
+        
+		return {
+			run:function(){
+				getUserId();//获得底部菜单
+				setPage();
+				setTabChange();
+			}
+		};
+});

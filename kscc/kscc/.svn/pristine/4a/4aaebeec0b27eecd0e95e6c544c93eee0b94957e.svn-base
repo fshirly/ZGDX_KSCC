@@ -1,0 +1,30 @@
+package com.fable.kscc.bussiness.service.enrollMedT;
+
+import com.fable.kscc.bussiness.mapper.livebroadcast.LiveBroadCastMapper;
+import com.fable.kscc.bussiness.mapper.livecodec.LiveCodecMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @auther jiangmingjun
+ * @create 2017/10/25
+ * @description 系统重启之后重新开启鉴权线程
+ */
+@Service
+public class MEDTInit {
+
+    @Autowired
+    private LiveCodecMapper liveCodecMapper;
+
+    @PostConstruct
+    public void init() {
+        List<Map<String,String>> loginQueue = liveCodecMapper.selectMedTProperties();
+        EnrollMedT.threadStart(loginQueue.size(),loginQueue);
+    }
+}

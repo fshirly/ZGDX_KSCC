@@ -1,0 +1,25 @@
+package com.fable.kscc.api.skyCloud;
+
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.services.s3.AmazonS3Client;
+
+public class Common
+{
+    public static AmazonS3Client getClient()
+    {
+        AmazonS3Client client = new AmazonS3Client(new AWSCredentials()
+        {
+            public String getAWSAccessKeyId()
+            {
+                return ConfFactory.getOwnerName();
+            }
+            
+            public String getAWSSecretKey()
+            {
+                return ConfFactory.getSecret();
+            }
+        });
+        client.setEndpoint(ConfFactory.getOosDomain());
+        return client;
+    }
+}

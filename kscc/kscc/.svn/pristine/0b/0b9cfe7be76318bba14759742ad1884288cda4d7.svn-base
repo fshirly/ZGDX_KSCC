@@ -1,0 +1,32 @@
+package com.fable.kscc.bussiness.service.liveoperationlog;
+
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fable.kscc.api.model.operationLog.FbsLiveOperationLog;
+import com.fable.kscc.api.model.page.PageRequest;
+import com.fable.kscc.api.model.page.PageResponse;
+import com.fable.kscc.bussiness.mapper.liveoperationlog.LiveOperationLogMapper;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+@Service("liveOperationLogServiceImpl")
+public class LiveOperationLogServiceImpl implements LiveOperationLogService {
+	@Autowired
+	LiveOperationLogMapper liveOperationLogMapper;
+	
+	@Override
+	public PageResponse<FbsLiveOperationLog> queryFbsLiveOperationLogList(PageRequest<Map<String,Object>> pageRequest) {
+		Map<String,Object> map=pageRequest.getParam();
+        Page<FbsLiveOperationLog> result = PageHelper.startPage(pageRequest.getPageNo(), pageRequest.getPageSize());
+        liveOperationLogMapper.queryFbsLiveOperationLogList(map);
+        return PageResponse.wrap(result);
+	}
+	
+	@Override
+	public int insertLiveOperationLog(FbsLiveOperationLog fbsLiveOperationLog) {
+		return liveOperationLogMapper.insertLiveOperationLog(fbsLiveOperationLog);
+	}
+	
+}

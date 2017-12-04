@@ -1,0 +1,40 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+ request.setCharacterEncoding("UTF-8");
+%>
+<div class="hospitalDetailDiv">
+     <form class="form-inline" id="hospitalDetailForm" method="post" action="">
+       		<div class="clearfix mt-10">
+          <label class="text-right">医院名称：</label>
+          <label class="form-control form-label" id="hospitalName" style="width:65%;"></label>
+      </div>
+      <div class="clearfix mt-10">
+          <label class="text-right">网站链接：</label>
+          <label class="form-control form-label" id="hospitalUrl" style="width:65%;"></label>
+      </div>
+      <div class="clearfix mt-10">
+          <label class="text-right">医院头像：</label>
+          <label class="form-control form-label" id="hospitalImg" style="width:65%;"></label>
+      </div>
+      <div class="clearfix mt-10">
+          <label class="text-right">医院简介：</label>
+          <label class="form-control form-label" id="hospitalIntro" style="width:65%;height:150px;"></label>
+      </div>
+     </form>
+</div>
+
+<script>
+$(document).ready(function(){
+	$.ajax({
+    	//url:$.base+"/ksUser/updateFbUser?id="+codecId,
+    	type:"post",
+    	success:function(data){
+    		$("#hospitalName").text(data.hospitalName);
+    		$("#hospitalUrl").text(data.hospitalUrl);
+    		$("#hospitalImg").text(data.hospitalImg);
+    		$("#hospitalIntro").text(data.hospitalIntro);
+    	}
+    });
+});
+</script>

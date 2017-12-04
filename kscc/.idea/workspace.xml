@@ -1,0 +1,2637 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" readonly="true" id="3aadbb7e-d86a-435a-a0fe-23016f436132" name="Default" comment="reason:表&#10;taskid：###">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/medTApi/MedTApi.java" afterPath="$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/medTApi/MedTApi.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/kscc/kscc-ui/kscc-ui.iml" afterPath="$PROJECT_DIR$/kscc/kscc-ui/kscc-ui.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/kscc/kscc-ui/src/main/resources/jdbc.properties" afterPath="$PROJECT_DIR$/kscc/kscc-ui/src/main/resources/jdbc.properties" />
+    </list>
+    <ignored path="$PROJECT_DIR$/kscc/kscc-bussiness/target/" />
+    <ignored path="$PROJECT_DIR$/kscc/kscc-api/target/" />
+    <ignored path="$PROJECT_DIR$/kscc/target/" />
+    <ignored path="$PROJECT_DIR$/kscc/kscc-ui/target/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/kscc$kscc.coverage" NAME="kscc Coverage Results" MODIFIED="1508933506929" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_TABLE_DETAILS" value="true" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <PATH>
+      <PATH_ELEMENT>
+        <option name="myItemId" />
+        <option name="myItemType" value="com.intellij.database.view.DatabaseStructure$Root" />
+      </PATH_ELEMENT>
+      <PATH_ELEMENT>
+        <option name="myItemId" value="zgdx_sp_0830@192.168.20.197" />
+        <option name="myItemType" value="com.intellij.database.view.DbNodeDescriptor" />
+      </PATH_ELEMENT>
+    </PATH>
+    <PATH>
+      <PATH_ELEMENT>
+        <option name="myItemId" />
+        <option name="myItemType" value="com.intellij.database.view.DatabaseStructure$Root" />
+      </PATH_ELEMENT>
+      <PATH_ELEMENT>
+        <option name="myItemId" value="zgdx_sp_0830@192.168.20.197" />
+        <option name="myItemType" value="com.intellij.database.view.DbNodeDescriptor" />
+      </PATH_ELEMENT>
+      <PATH_ELEMENT>
+        <option name="myItemId" value="zgdx_sp_0830" />
+        <option name="myItemType" value="com.intellij.database.view.DbNodeDescriptor" />
+      </PATH_ELEMENT>
+    </PATH>
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="kscc" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="LiveBroadCastController.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/controller/livebroadcast/LiveBroadCastController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="93">
+              <caret line="114" column="17" lean-forward="false" selection-start-line="114" selection-start-column="17" selection-end-line="114" selection-end-column="17" />
+              <folding>
+                <element signature="imports" expanded="false" />
+                <element signature="e#2205#2206#0" expanded="false" />
+                <element signature="e#2255#2256#0" expanded="false" />
+                <element signature="e#3381#3382#0" expanded="false" />
+                <element signature="e#3431#3432#0" expanded="false" />
+                <element signature="e#3557#3558#0" expanded="false" />
+                <element signature="e#3606#3607#0" expanded="false" />
+                <element signature="e#3717#3718#0" expanded="false" />
+                <element signature="e#3775#3776#0" expanded="false" />
+                <element signature="e#5103#5104#0" expanded="false" />
+                <element signature="e#5158#5159#0" expanded="false" />
+                <element signature="e#5719#5720#0" expanded="false" />
+                <element signature="e#5770#5771#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LiveBroadCastService.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/livebroadcast/LiveBroadCastService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="22">
+              <caret line="43" column="48" lean-forward="false" selection-start-line="43" selection-start-column="48" selection-end-line="43" selection-end-column="48" />
+              <folding>
+                <element signature="imports" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LiveBroadCastServiceImpl.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/livebroadcast/LiveBroadCastServiceImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="440">
+              <caret line="467" column="21" lean-forward="false" selection-start-line="467" selection-start-column="21" selection-end-line="467" selection-end-column="21" />
+              <folding>
+                <element signature="imports" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="HospitalInformationService.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/hospitalInformation/HospitalInformationService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="622">
+              <caret line="51" column="29" lean-forward="false" selection-start-line="51" selection-start-column="29" selection-end-line="51" selection-end-column="29" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LiveBroadCastMapper.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/livebroadcast/LiveBroadCastMapper.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="286">
+              <caret line="23" column="7" lean-forward="true" selection-start-line="23" selection-start-column="7" selection-end-line="23" selection-end-column="7" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MedTApi.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/medTApi/MedTApi.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="308">
+              <caret line="51" column="25" lean-forward="true" selection-start-line="51" selection-start-column="25" selection-end-line="51" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="IliveController.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/liveControllerService/IliveController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="203">
+              <caret line="25" column="20" lean-forward="false" selection-start-line="25" selection-start-column="20" selection-end-line="25" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LiveControllerServiceImpl.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/liveControllerService/LiveControllerServiceImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="291">
+              <caret line="263" column="54" lean-forward="false" selection-start-line="263" selection-start-column="54" selection-end-line="263" selection-end-column="54" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="KedaApi.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/kedaApi/KedaApi.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="181">
+              <caret line="171" column="44" lean-forward="true" selection-start-line="171" selection-start-column="44" selection-end-line="171" selection-end-column="44" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LiveBroadCastMapper.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/livebroadcast/LiveBroadCastMapper.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="423">
+              <caret line="240" column="13" lean-forward="true" selection-start-line="240" selection-start-column="13" selection-end-line="240" selection-end-column="13" />
+              <folding>
+                <marker date="1511945595943" expanded="true" signature="406:1039" ph="INSERT INTO FBS_LIVE_BROADCAST... " />
+                <marker date="1511945595943" expanded="true" signature="1077:1731" ph="select FLB.I... " />
+                <marker date="1511945595943" expanded="true" signature="1772:2412" ph="select FLB.I... " />
+                <marker date="1511945595943" expanded="true" signature="4136:4303" ph="UPDATE FBS_L... " />
+                <marker date="1511945595943" expanded="true" signature="4218:4278" ph="select HOSPI... FBS_USER" />
+                <marker date="1511945595943" expanded="true" signature="4399:4491" ph="UPDATE FBS_L... " />
+                <marker date="1511945595943" expanded="true" signature="4596:5591" ph="select FLP.I... FBS_LIVE_PARTICIPANT" />
+                <marker date="1511945595943" expanded="true" signature="5939:6516" ph="select FLB.C... FBS_LIVE_PARTICIPANT" />
+                <marker date="1511945595943" expanded="true" signature="6596:7450" ph="UPDATE FBS_L... " />
+                <marker date="1511945595943" expanded="true" signature="7549:7607" ph="delete FROM " />
+                <marker date="1511945595943" expanded="true" signature="7719:7949" ph="INSERT INTO FBS_LIVE_PARTICIPANT... " />
+                <marker date="1511945595943" expanded="true" signature="8032:8109" ph="UPDATE FBS_L... " />
+                <marker date="1511945595943" expanded="true" signature="8180:8313" ph="UPDATE FBS_L... " />
+                <marker date="1511945595943" expanded="true" signature="8352:8526" ph="UPDATE FBS_L... " />
+                <marker date="1511945595943" expanded="true" signature="8566:8642" ph="UPDATE FBS_L... " />
+                <marker date="1511945595943" expanded="true" signature="9110:9316" ph="SELECT FHI.H... FBS_LIVE_PARTICIPANT" />
+                <marker date="1511945595943" expanded="true" signature="9371:9603" ph="SELECT FLB.I... FBS_LIVE_BROADCAST" />
+                <marker date="1511945595943" expanded="true" signature="10864:11186" ph="SELECT ID id... FBS_LIVE_BROADCAST" />
+                <marker date="1511945595943" expanded="true" signature="11593:11653" ph="SELECT END_T... FBS_LIVE_BROADCAST" />
+                <marker date="1511945595943" expanded="true" signature="11753:11833" ph="UPDATE FBS_L... " />
+                <marker date="1511945595943" expanded="true" signature="11952:12114" ph="SELECT ID,TI... FBS_LIVE_BROADCAST" />
+                <marker date="1511945595943" expanded="true" signature="12076:12113" ph="SELECT LIVE_... FBS_LIVE_HOMEPAGE" />
+                <marker date="1511945595943" expanded="true" signature="12274:12455" ph="INSERT INTO FBS_LIVE_HOMEPAGE... " />
+                <marker date="1511945595943" expanded="true" signature="12569:12767" ph="UPDATE FBS_L... " />
+                <marker date="1511945595943" expanded="true" signature="13450:13530" ph="SELECT ID,TI... fbs_live_broadcast" />
+                <marker date="1511945595943" expanded="true" signature="13644:13866" ph="SELECT FLH.I... FBS_LIVE_HOMEPAGE" />
+                <marker date="1511945595943" expanded="true" signature="13937:13999" ph="SELECT COUNT... fbs_live_homepage" />
+                <marker date="1511945595943" expanded="true" signature="14054:14107" ph="DELETE FROM " />
+                <marker date="1511945595943" expanded="true" signature="14186:14451" ph="SELECT FU.ID... FBS_LIVE_BROADCAST" />
+                <marker date="1511945595943" expanded="true" signature="14558:14799" ph="SELECT FHI.H... FBS_LIVE_PARTICIPANT" />
+                <marker date="1511945595943" expanded="true" signature="14736:14793" ph="SELECT ID FR... FBS_LIVE_BROADCAST" />
+                <marker date="1511945595943" expanded="true" signature="14866:15136" ph="SELECT FLP.M... FBS_LIVE_PARTICIPANT" />
+                <marker date="1511945595943" expanded="true" signature="15215:15951" ph="SELECT CAST(... fbs_live_codec" />
+                <marker date="1511945595943" expanded="true" signature="16030:16104" ph="UPDATE fbs_l... " />
+                <marker date="1511945595943" expanded="true" signature="16214:16291" ph="UPDATE fbs_l... " />
+                <marker date="1511945595943" expanded="true" signature="16430:16494" ph="SELECT OP_ST... fbs_live_broadcast" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+        <option value="Jsp File" />
+        <option value="JUnit5 Test Class" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>getSubtitleData</find>
+      <find>deletePaticipant</find>
+      <find>时间冲</find>
+      <find>时冲</find>
+      <find>冲</find>
+      <find>冲tu</find>
+      <find>冲突</find>
+      <find>、</find>
+      <find>/</find>
+      <find>/ch</find>
+      <find>/che</find>
+      <find>/chec</find>
+      <find>/check</find>
+      <find>/checkHospital</find>
+      <find>上传图片已修改</find>
+      <find>/modifyBroadcast</find>
+      <find>/modifyCheckHospital</find>
+      <find>modifyLive</find>
+      <find>xuz</find>
+      <find>x</find>
+      <find>xuznz</find>
+      <find>xuzn</find>
+      <find>xu</find>
+      <find>xua</find>
+      <find>xuanz</find>
+      <find>选择</find>
+      <find>选择fa</find>
+      <find>选择fayan</find>
+      <find>选择fayanren</find>
+      <find>选择发言人</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>log4j.p</replace>
+      <replace />
+      <replace>hospital</replace>
+    </replaceStrings>
+    <dirStrings>
+      <dir>D:\kscc\kscc\kscc-ui\src\main\webapp\js\app\liveConference</dir>
+      <dir>D:\kscc\kscc\kscc-bussiness\src\main\java\com\fable\kscc\bussiness\service</dir>
+      <dir>D:\kscc\kscc\kscc-bussiness\src\main\java\com\fable\kscc\bussiness\mapper</dir>
+      <dir>联系方式</dir>
+      <dir>D:\kscc\kscc\kscc-bussiness\src\main\java\com\fable\kscc\bussiness\service\livebroadcast</dir>
+      <dir>D:\kscc\kscc\kscc-ui\src\main\webapp\js\app\accountManage</dir>
+      <dir>D:\kscc\kscc\kscc-ui\src\main\webapp\WEB-INF</dir>
+      <dir>D:\kscc\kscc\kscc-ui/loginController/toHome</dir>
+      <dir>D:\kscc\kscc\kscc-uiresolution</dir>
+      <dir>D:\kscc\kscc\kscc-bussiness\src\main\java\com\fable\kscc\bussiness</dir>
+      <dir>D:\kscc\kscc\kscc-bussiness/SetChnScheme</dir>
+      <dir>D:\kscc\kscc\kscc-ui\src\main\webapp\js</dir>
+      <dir>D:\kscc\kscc\kscc-api</dir>
+      <dir>D:\kscc\kscc\kscc-ui</dir>
+      <dir>D:\kscc\kscc\kscc-bussiness</dir>
+      <dir>D:\kscc\kscc</dir>
+    </dirStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GradleLocalSettings">
+    <option name="externalProjectsViewState">
+      <projects_view />
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/controller/fbsUser/FbsUserController.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-ui/src/main/webapp/js/app/createLiveBroadcast/createLiveBroadcastApp.js" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/fbsUser/FbsUserServiceImpl.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/medTApi/AuthenticThread.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-ui/src/main/resources/log4j.properties" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/fbmenu/FbMenuMapper.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/utils/Constants.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/enrollMedT/MEDTInit.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/utils/XmlGenerator.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-ui/src/main/webapp/js/app/liveApproval/liveApprovalApp.js" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/fbmenu/FbsMenuService.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/controller/fbmenu/FbsMenuController.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-ui/src/main/webapp/js/app/indexApp.js" />
+        <option value="$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/fbsInterface/FbsInterface.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/model/fbsInterface/FbsInterface.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/fbsinterface/FbsInterfaceMapper.xml" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/interceptor/Interceptor.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/fbsinterface/FabsInterfaceMapper.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/apiService/IApiService.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/apiService/ApiServiceImpl.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/controller/restful/apiController.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/fbmenu/FbsMenuServiceImpl.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-ui/src/main/webapp/js/app/accountManage/accountManageApp.js" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/fbmenu/FbMenuMapper.xml" />
+        <option value="$PROJECT_DIR$/kscc/pom.xml" />
+        <option value="$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/model/livebroadcast/FbsLiveBroadcast.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/livebroadapprove/LiveBroadAppprove.xml" />
+        <option value="$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/model/hospitalInformation/FbsHospitalInformation.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/hospitalInformation/HospitalInformationMapper.xml" />
+        <option value="$PROJECT_DIR$/kscc/kscc-ui/src/main/webapp/js/app/accountManage/hospitalList.js" />
+        <option value="$PROJECT_DIR$/kscc/kscc-ui/src/main/webapp/js/app/accountManage/hospitalInfo.js" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/hospitalInformation/HospitalInformationServiceImpl.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/util/StringUtil.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/broadcastMeeting/BroadcastMeetMapper.xml" />
+        <option value="$PROJECT_DIR$/kscc/kscc-ui/src/main/webapp/js/app/liveConference/liveConferenceKSCCApp.js" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/liveControllerService/IliveController.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/livecodec/LiveCodecService.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/livecodec/LiveCodecServiceImpl.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/controller/liveController/LiveController.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/livecodec/LiveCodecMapper.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/liveControllerService/LiveControllerServiceImpl.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-ui/src/main/resources/jdbc.properties" />
+        <option value="$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/model/liveCodec/FbsLiveCodec.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/livecodec/LiveCodecMapper.xml" />
+        <option value="$PROJECT_DIR$/kscc/kscc-ui/src/main/webapp/js/app/liveControl/liveControlDetailApp.js" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/controller/loginController/LoginController.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-ui/src/main/webapp/js/app/editLiveBroadcast/editLiveBroadcastApp.js" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/livebroadcast/LiveBroadCastServiceImpl.java" />
+        <option value="$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/livebroadcast/LiveBroadCastMapper.xml" />
+        <option value="$PROJECT_DIR$/kscc/kscc-ui/src/main/webapp/css/pages/kscc.css" />
+        <option value="$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/medTApi/MedTApi.java" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="LogFilters">
+    <option name="FILTER_ERRORS" value="false" />
+    <option name="FILTER_WARNINGS" value="false" />
+    <option name="FILTER_INFO" value="true" />
+    <option name="FILTER_DEBUG" value="true" />
+    <option name="CUSTOM_FILTER" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="D:/java/apache-maven-3.2.1" />
+        <option name="userSettingsFile" value="D:\java\apache-maven-3.2.1\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="MavenProjectNavigator">
+    <treeState>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="kscc" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$ProjectNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="kscc" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$ProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Lifecycle" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$LifecycleNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Profiles" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$ProfilesNode" />
+        </PATH_ELEMENT>
+      </PATH>
+    </treeState>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1456" />
+    <option name="height" value="876" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+          <State>
+            <id>Android &gt; Lint &gt; Correctness</id>
+          </State>
+          <State>
+            <id>Gradle</id>
+          </State>
+          <State>
+            <id>Kotlin</id>
+          </State>
+          <State>
+            <id>Maven</id>
+          </State>
+          <State>
+            <id>OSGi</id>
+          </State>
+          <State>
+            <id>Probable bugsGradle</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>Android</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scratches" />
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kscc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kscc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kscc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kscc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kscc-api" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kscc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kscc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kscc-api" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kscc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kscc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kscc-api" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="api" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kscc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kscc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kscc-api" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="api" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="medTApi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kscc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kscc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kscc-api" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="api" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kedaApi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="settings.editor.selected.configurable" value="preferences.intentionPowerPack" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="com.intellij.database.dataSource.DataSourceTemplate" value="MySQL" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
+    <property name="SearchEverywhereHistoryKey" value="theme.css&#9;null&#9;null" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.fable.kscc.bussiness.service.liveControllerService" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.fable.kscc.bussiness.logandmessage" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\kscc\kscc\kscc-bussiness\src\main\java\com\fable\kscc\bussiness\mapper\fbsinterface" />
+      <recent name="D:\kscc\kscc\kscc-ui\src\main\webapp\js\lib" />
+      <recent name="D:\kscc\kscc\kscc-ui\src\main\webapp\js\app\resCataline\common" />
+      <recent name="D:\kscc\kscc\kscc-ui\src\main\webapp\fui" />
+      <recent name="D:\kscc\kscc\kscc-ui\src\main\webapp\catalinestyle" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="junit.framework.TestCase" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\kscc\kscc\kscc-ui\src\main\webapp\js" />
+    </key>
+  </component>
+  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
+    <UpdatedFiles>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Updated from server" />
+        <option name="myStatusName" value="Changed on server" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="CHANGED_ON_SERVER" />
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Updated" />
+          <option name="myStatusName" value="Changed" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="UPDATED" />
+          <PATH vcs="svn" revision="2818">D:\kscc\kscc\kscc-ui\src\main\webapp\js\app\resourceCalendar\resourceCalendarApp.js</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Created" />
+          <option name="myStatusName" value="Created" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="CREATED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Deleted" />
+          <option name="myStatusName" value="Deleted" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="true" />
+          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Restored" />
+          <option name="myStatusName" value="Will be restored" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="RESTORED" />
+        </FILE-GROUP>
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Modified" />
+        <option name="myStatusName" value="Modified" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MODIFIED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Skipped" />
+        <option name="myStatusName" value="Skipped" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SKIPPED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with conflicts" />
+        <option name="myStatusName" value="Will be merged with conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_CONFLICTS" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with tree conflicts" />
+        <option name="myStatusName" value="Merged with tree conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with property conflicts" />
+        <option name="myStatusName" value="Will be merged with property conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged" />
+        <option name="myStatusName" value="Will be merged" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Not in repository" />
+        <option name="myStatusName" value="Not in repository" />
+        <option name="mySupportsDeletion" value="true" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="UNKNOWN" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally added" />
+        <option name="myStatusName" value="Locally added" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_ADDED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally removed" />
+        <option name="myStatusName" value="Locally removed" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_REMOVED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Switched" />
+        <option name="myStatusName" value="Switched" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SWITCHED" />
+      </FILE-GROUP>
+    </UpdatedFiles>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Application.MedTApi">
+    <configuration default="false" name="MedTApi" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="com.fable.kscc.api.medTApi.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="MAIN_CLASS_NAME" value="com.fable.kscc.api.medTApi.MedTApi" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="kscc-api" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="FtpUtil" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="com.fable.kscc.api.skyCloud.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="MAIN_CLASS_NAME" value="com.fable.kscc.api.skyCloud.FtpUtil" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="kscc-api" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="apiController" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="com.fable.kscc.bussiness.controller.restful.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="MAIN_CLASS_NAME" value="com.fable.kscc.bussiness.controller.restful.apiController" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="kscc-bussiness" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="HospitalInformationServiceImpl" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="com.fable.kscc.bussiness.service.hospitalInformation.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="MAIN_CLASS_NAME" value="com.fable.kscc.bussiness.service.hospitalInformation.HospitalInformationServiceImpl" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="kscc-bussiness" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="StringUtil" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="com.fable.kscc.bussiness.util.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="MAIN_CLASS_NAME" value="com.fable.kscc.bussiness.util.StringUtil" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="kscc-bussiness" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" ALTERNATIVE_JRE_ENABLED="false">
+      <deployment />
+      <server-settings />
+      <predefined_log_file id="Tomcat" enabled="true" />
+      <predefined_log_file id="Tomcat Catalina" enabled="true" />
+      <predefined_log_file id="Tomcat Manager" enabled="false" />
+      <predefined_log_file id="Tomcat Host Manager" enabled="false" />
+      <predefined_log_file id="Tomcat Localhost Access" enabled="false" />
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <method />
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file id="idea.log" enabled="true" />
+      <method />
+    </configuration>
+    <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android App">
+      <module name="" />
+      <option name="DEPLOY" value="true" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
+      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="DEBUGGER_TYPE" value="Java" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <Java />
+      <Profilers>
+        <option name="ENABLE_ADVANCED_PROFILING" value="true" />
+        <option name="GAPID_ENABLED" value="false" />
+        <option name="GAPID_DISABLE_PCS" value="false" />
+        <option name="SUPPORT_LIB_ENABLED" value="true" />
+        <option name="INSTRUMENTATION_ENABLED" value="true" />
+      </Profilers>
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Tests">
+      <module name="" />
+      <option name="TESTING_TYPE" value="0" />
+      <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="EXTRA_OPTIONS" value="" />
+      <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
+      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="DEBUGGER_TYPE" value="Java" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <Java />
+      <Profilers>
+        <option name="ENABLE_ADVANCED_PROFILING" value="true" />
+        <option name="GAPID_ENABLED" value="false" />
+        <option name="GAPID_DISABLE_PCS" value="false" />
+        <option name="SUPPORT_LIB_ENABLED" value="true" />
+        <option name="INSTRUMENTATION_ENABLED" value="true" />
+      </Profilers>
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <module />
+      <method />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="true" type="ArquillianTestNG" factoryName="">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Cold Fusion runner description" factoryName="Cold Fusion" custom_browser="" web_path="">
+      <method />
+    </configuration>
+    <configuration default="true" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="myFilePath" />
+      <option name="GLUE" />
+      <option name="myNameFilter" />
+      <option name="myGeneratedName" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="FlashRunConfigurationType" factoryName="Flash App">
+      <option name="BCName" value="" />
+      <option name="IOSSimulatorSdkPath" value="" />
+      <option name="adlOptions" value="" />
+      <option name="airProgramParameters" value="" />
+      <option name="appDescriptorForEmulator" value="Android" />
+      <option name="debugTransport" value="USB" />
+      <option name="debuggerSdkRaw" value="BC SDK" />
+      <option name="emulator" value="NexusOne" />
+      <option name="emulatorAdlOptions" value="" />
+      <option name="fastPackaging" value="true" />
+      <option name="fullScreenHeight" value="0" />
+      <option name="fullScreenWidth" value="0" />
+      <option name="launchUrl" value="false" />
+      <option name="launcherParameters">
+        <LauncherParameters>
+          <option name="browser" value="a7bb68e0-33c0-4d6f-a81a-aac1fdb870c8" />
+          <option name="launcherType" value="OSDefault" />
+          <option name="newPlayerInstance" value="false" />
+          <option name="playerPath" value="FlashPlayerDebugger.exe" />
+        </LauncherParameters>
+      </option>
+      <option name="mobileRunTarget" value="Emulator" />
+      <option name="moduleName" value="" />
+      <option name="overriddenMainClass" value="" />
+      <option name="overriddenOutputFileName" value="" />
+      <option name="overrideMainClass" value="false" />
+      <option name="runTrusted" value="true" />
+      <option name="screenDpi" value="0" />
+      <option name="screenHeight" value="0" />
+      <option name="screenWidth" value="0" />
+      <option name="url" value="http://" />
+      <option name="usbDebugPort" value="7936" />
+      <method />
+    </configuration>
+    <configuration default="true" type="FlexUnitRunConfigurationType" factoryName="FlexUnit" appDescriptorForEmulator="Android" class_name="" emulatorAdlOptions="" method_name="" package_name="" scope="Class">
+      <option name="BCName" value="" />
+      <option name="launcherParameters">
+        <LauncherParameters>
+          <option name="browser" value="a7bb68e0-33c0-4d6f-a81a-aac1fdb870c8" />
+          <option name="launcherType" value="OSDefault" />
+          <option name="newPlayerInstance" value="false" />
+          <option name="playerPath" value="FlashPlayerDebugger.exe" />
+        </LauncherParameters>
+      </option>
+      <option name="moduleName" value="" />
+      <option name="trusted" value="true" />
+      <method />
+    </configuration>
+    <configuration default="true" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list />
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <method />
+    </configuration>
+    <configuration default="true" type="GrailsRunConfigurationType" factoryName="Grails">
+      <setting name="vmparams" value="" />
+      <setting name="cmdLine" value="run-app" />
+      <setting name="passParentEnv" value="true" />
+      <setting name="launchBrowser" value="true" />
+      <setting name="launchBrowserUrl" value="" />
+      <setting name="depsClasspath" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="true" type="JarApplication" factoryName="JAR Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="Java Scratch" factoryName="Java Scratch">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="SCRATCH_FILE_ID" value="0" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerJest" factoryName="Jest">
+      <node-interpreter value="project" />
+      <working-dir value="" />
+      <envs />
+      <scope-kind value="ALL" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerProtractor" factoryName="Protractor">
+      <config-file value="" />
+      <node-interpreter value="project" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType" factoryName="Kotlin">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="kscc" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType" factoryName="Kotlin script">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="filePath" />
+      <option name="vmParameters" />
+      <option name="alternativeJrePath" />
+      <option name="programParameters" />
+      <option name="passParentEnvs" value="true" />
+      <option name="workingDirectory" />
+      <option name="isAlternativeJrePathEnabled" value="false" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="MavenRunConfiguration" factoryName="Maven">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list />
+            </option>
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.npm" factoryName="npm">
+      <command value="run" />
+      <scripts />
+      <node-interpreter value="project" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="osgi.bnd.run" factoryName="Run Launcher">
+      <method />
+    </configuration>
+    <configuration default="true" type="osgi.bnd.run" factoryName="Test Launcher (JUnit)">
+      <method />
+    </configuration>
+    <configuration default="false" name="kscc" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 7.0.67" ALTERNATIVE_JRE_ENABLED="true" ALTERNATIVE_JRE_PATH="1.7">
+      <option name="OPEN_IN_BROWSER_URL" value="http://localhost:8080/kscc/" />
+      <option name="UPDATE_ON_FRAME_DEACTIVATION" value="true" />
+      <option name="UPDATE_CLASSES_ON_FRAME_DEACTIVATION" value="true" />
+      <deployment>
+        <artifact name="kscc-ui:war exploded">
+          <settings>
+            <option name="CONTEXT_PATH" value="/kscc" />
+          </settings>
+        </artifact>
+      </deployment>
+      <server-settings>
+        <option name="BASE_DIRECTORY_NAME" value="Unnamed_kscc_3" />
+        <option name="HTTP_PORT" value="8080" />
+      </server-settings>
+      <predefined_log_file id="Tomcat" enabled="true" />
+      <predefined_log_file id="Tomcat Catalina" enabled="true" />
+      <predefined_log_file id="Tomcat Manager" enabled="false" />
+      <predefined_log_file id="Tomcat Host Manager" enabled="false" />
+      <predefined_log_file id="Tomcat Localhost Access" enabled="false" />
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="63138" />
+      </RunnerSettings>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <method>
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="kscc-ui:war exploded" />
+        </option>
+      </method>
+    </configuration>
+    <configuration default="false" name="Test" type="Application" factoryName="Application" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" value="Test" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="kscc-api" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="pc" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="192.168.20.197" />
+      <option name="PORT" value="9090" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="9090" />
+        <option name="LOCAL" value="false" />
+      </RunnerSettings>
+      <method />
+    </configuration>
+    <list size="8">
+      <item index="0" class="java.lang.String" itemvalue="Tomcat Server.kscc" />
+      <item index="1" class="java.lang.String" itemvalue="Application.Test" />
+      <item index="2" class="java.lang.String" itemvalue="Remote.pc" />
+      <item index="3" class="java.lang.String" itemvalue="Application.MedTApi" />
+      <item index="4" class="java.lang.String" itemvalue="Application.FtpUtil" />
+      <item index="5" class="java.lang.String" itemvalue="Application.apiController" />
+      <item index="6" class="java.lang.String" itemvalue="Application.HospitalInformationServiceImpl" />
+      <item index="7" class="java.lang.String" itemvalue="Application.StringUtil" />
+    </list>
+    <recent_temporary>
+      <list size="5">
+        <item index="0" class="java.lang.String" itemvalue="Application.MedTApi" />
+        <item index="1" class="java.lang.String" itemvalue="Application.StringUtil" />
+        <item index="2" class="java.lang.String" itemvalue="Application.HospitalInformationServiceImpl" />
+        <item index="3" class="java.lang.String" itemvalue="Application.apiController" />
+        <item index="4" class="java.lang.String" itemvalue="Application.FtpUtil" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>C:\Users\Administrator\AppData\Roaming\Subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+  </component>
+  <component name="SvnFileUrlMappingImpl">
+    <option name="myMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="D:\kscc\kscc" />
+          <option name="myCopyRoot" value="D:\kscc\kscc" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="D:\kscc\kscc\kscc-api" />
+          <option name="myCopyRoot" value="D:\kscc\kscc\kscc-api" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="D:\kscc\kscc\kscc-bussiness" />
+          <option name="myCopyRoot" value="D:\kscc\kscc\kscc-bussiness" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="D:\kscc\kscc\kscc-ui" />
+          <option name="myCopyRoot" value="D:\kscc\kscc\kscc-ui" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+    <option name="myMoreRealMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="D:\kscc" />
+          <option name="myCopyRoot" value="D:\kscc\kscc" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3aadbb7e-d86a-435a-a0fe-23016f436132" name="Default" comment="" />
+      <created>1502943543393</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1502943543393</updated>
+      <workItem from="1502943549435" duration="7033000" />
+      <workItem from="1503624258007" duration="5425000" />
+      <workItem from="1503719999048" duration="7352000" />
+      <workItem from="1503881851221" duration="26958000" />
+      <workItem from="1503970326093" duration="25621000" />
+      <workItem from="1504056282921" duration="31458000" />
+      <workItem from="1504143118553" duration="25163000" />
+      <workItem from="1504229051756" duration="23961000" />
+      <workItem from="1504413682476" duration="23551000" />
+      <workItem from="1504488489579" duration="13784000" />
+      <workItem from="1504506595609" duration="22001000" />
+      <workItem from="1504574443028" duration="33276000" />
+      <workItem from="1504661540534" duration="24856000" />
+      <workItem from="1504690910611" duration="746000" />
+      <workItem from="1504747296622" duration="35835000" />
+      <workItem from="1504833780941" duration="24910000" />
+      <workItem from="1504924985970" duration="8165000" />
+      <workItem from="1504936290034" duration="7954000" />
+      <workItem from="1505092668338" duration="33673000" />
+      <workItem from="1505178980451" duration="35285000" />
+      <workItem from="1505265952319" duration="12856000" />
+      <workItem from="1505281396810" duration="35186000" />
+      <workItem from="1505352302180" duration="17587000" />
+      <workItem from="1505376314997" duration="17851000" />
+      <workItem from="1505438478964" duration="22223000" />
+      <workItem from="1505528719298" duration="2975000" />
+      <workItem from="1506302468152" duration="1021000" />
+      <workItem from="1507511624585" duration="22046000" />
+      <workItem from="1507598585775" duration="25613000" />
+      <workItem from="1507685514340" duration="24017000" />
+      <workItem from="1507719187593" duration="3975000" />
+      <workItem from="1507772044345" duration="11640000" />
+      <workItem from="1507792718749" duration="924000" />
+      <workItem from="1507860557437" duration="18345000" />
+      <workItem from="1508117298625" duration="29975000" />
+      <workItem from="1508203627704" duration="29154000" />
+      <workItem from="1508290145786" duration="25637000" />
+      <workItem from="1508376079750" duration="24710000" />
+      <workItem from="1508463009386" duration="22546000" />
+      <workItem from="1508559804513" duration="21582000" />
+      <workItem from="1508721860211" duration="25151000" />
+      <workItem from="1508808026296" duration="30992000" />
+      <workItem from="1508894782848" duration="32319000" />
+      <workItem from="1508981169892" duration="27590000" />
+      <workItem from="1509067565829" duration="36699000" />
+      <workItem from="1509164190172" duration="14620000" />
+      <workItem from="1509180325766" duration="152000" />
+      <workItem from="1509326549492" duration="25381000" />
+      <workItem from="1509413095082" duration="37553000" />
+      <workItem from="1509499548218" duration="30094000" />
+      <workItem from="1509586008936" duration="30452000" />
+      <workItem from="1509672344507" duration="23229000" />
+      <workItem from="1509931870921" duration="36018000" />
+      <workItem from="1510017988219" duration="33906000" />
+      <workItem from="1510104630593" duration="25540000" />
+      <workItem from="1510190888452" duration="27239000" />
+      <workItem from="1510224788035" duration="1497000" />
+      <workItem from="1510277523848" duration="24187000" />
+      <workItem from="1510536679210" duration="28495000" />
+      <workItem from="1510577327116" duration="205000" />
+      <workItem from="1510622814771" duration="35589000" />
+      <workItem from="1510709316074" duration="28480000" />
+      <workItem from="1510795822095" duration="28949000" />
+      <workItem from="1510884391370" duration="20421000" />
+      <workItem from="1511141564480" duration="25328000" />
+      <workItem from="1511227829503" duration="33261000" />
+      <workItem from="1511313877052" duration="22335000" />
+      <workItem from="1511400650845" duration="25079000" />
+      <workItem from="1511486860268" duration="20051000" />
+      <workItem from="1511746171885" duration="1110000" />
+      <workItem from="1511761086278" duration="12693000" />
+      <workItem from="1511834560409" duration="4604000" />
+      <workItem from="1511849981288" duration="161000" />
+      <workItem from="1511850210020" duration="13201000" />
+      <workItem from="1511920056775" duration="3594000" />
+      <workItem from="1511935186802" duration="14067000" />
+      <workItem from="1512005438524" duration="10142000" />
+      <workItem from="1512036445385" duration="967000" />
+      <workItem from="1512045628713" duration="58000" />
+      <workItem from="1512117931669" duration="1757000" />
+      <workItem from="1512351045894" duration="5164000" />
+    </task>
+    <task id="LOCAL-00221" summary="reason:用户管理整改&#10;taskid：###">
+      <created>1510196224023</created>
+      <option name="number" value="00221" />
+      <option name="presentableId" value="LOCAL-00221" />
+      <option name="project" value="LOCAL" />
+      <updated>1510196224023</updated>
+    </task>
+    <task id="LOCAL-00222" summary="reason:删除不必要的的代码&#10;taskid：###">
+      <created>1510206395458</created>
+      <option name="number" value="00222" />
+      <option name="presentableId" value="LOCAL-00222" />
+      <option name="project" value="LOCAL" />
+      <updated>1510206395459</updated>
+    </task>
+    <task id="LOCAL-00223" summary="reason:代码整改，给客户以感知&#10;taskid：###">
+      <created>1510210967384</created>
+      <option name="number" value="00223" />
+      <option name="presentableId" value="LOCAL-00223" />
+      <option name="project" value="LOCAL" />
+      <updated>1510210967385</updated>
+    </task>
+    <task id="LOCAL-00224" summary="reason:录像管理异常处理&#10;taskid：###">
+      <created>1510279042923</created>
+      <option name="number" value="00224" />
+      <option name="presentableId" value="LOCAL-00224" />
+      <option name="project" value="LOCAL" />
+      <updated>1510279042923</updated>
+    </task>
+    <task id="LOCAL-00225" summary="reason:管理员修改消息信息发布整改&#10;taskid：###">
+      <created>1510292998774</created>
+      <option name="number" value="00225" />
+      <option name="presentableId" value="LOCAL-00225" />
+      <option name="project" value="LOCAL" />
+      <updated>1510292998774</updated>
+    </task>
+    <task id="LOCAL-00226" summary="reason:直播间申请延时消息信息整改，管理员收到消息即可，普通参与方不需要&#10;taskid：###">
+      <created>1510295418454</created>
+      <option name="number" value="00226" />
+      <option name="presentableId" value="LOCAL-00226" />
+      <option name="project" value="LOCAL" />
+      <updated>1510295418454</updated>
+    </task>
+    <task id="LOCAL-00227" summary="reason:hd/spies切换再次设置一个通道&#10;taskid：###">
+      <created>1510539882008</created>
+      <option name="number" value="00227" />
+      <option name="presentableId" value="LOCAL-00227" />
+      <option name="project" value="LOCAL" />
+      <updated>1510539882008</updated>
+    </task>
+    <task id="LOCAL-00228" summary="reason:管理员用户增加姓名字段&#10;taskid：###">
+      <created>1510554831526</created>
+      <option name="number" value="00228" />
+      <option name="presentableId" value="LOCAL-00228" />
+      <option name="project" value="LOCAL" />
+      <updated>1510554831526</updated>
+    </task>
+    <task id="LOCAL-00229" summary="reason:用户管理整改&#10;taskid：###">
+      <created>1510564196454</created>
+      <option name="number" value="00229" />
+      <option name="presentableId" value="LOCAL-00229" />
+      <option name="project" value="LOCAL" />
+      <updated>1510564196454</updated>
+    </task>
+    <task id="LOCAL-00230" summary="reason:用户管理整改&#10;taskid：###">
+      <created>1510564507725</created>
+      <option name="number" value="00230" />
+      <option name="presentableId" value="LOCAL-00230" />
+      <option name="project" value="LOCAL" />
+      <updated>1510564507725</updated>
+    </task>
+    <task id="LOCAL-00231" summary="reason:用户管理整改&#10;taskid：###">
+      <created>1510566112366</created>
+      <option name="number" value="00231" />
+      <option name="presentableId" value="LOCAL-00231" />
+      <option name="project" value="LOCAL" />
+      <updated>1510566112366</updated>
+    </task>
+    <task id="LOCAL-00232" summary="reason:用户管理整改&#10;taskid：###">
+      <created>1510649129475</created>
+      <option name="number" value="00232" />
+      <option name="presentableId" value="LOCAL-00232" />
+      <option name="project" value="LOCAL" />
+      <updated>1510649129476</updated>
+    </task>
+    <task id="LOCAL-00233" summary="reason:录像开启和关闭，hd/spies切换&#10;taskid：###">
+      <created>1510711028727</created>
+      <option name="number" value="00233" />
+      <option name="presentableId" value="LOCAL-00233" />
+      <option name="project" value="LOCAL" />
+      <updated>1510711028727</updated>
+    </task>
+    <task id="LOCAL-00234" summary="reason:我的申请的‘已申请，审核’位置调整&#10;taskid：###">
+      <created>1510727604742</created>
+      <option name="number" value="00234" />
+      <option name="presentableId" value="LOCAL-00234" />
+      <option name="project" value="LOCAL" />
+      <updated>1510727604742</updated>
+    </task>
+    <task id="LOCAL-00235" summary="reason:用户管理整改&#10;taskid：###">
+      <created>1510728450853</created>
+      <option name="number" value="00235" />
+      <option name="presentableId" value="LOCAL-00235" />
+      <option name="project" value="LOCAL" />
+      <updated>1510728450853</updated>
+    </task>
+    <task id="LOCAL-00236" summary="reason:直播管理删除参与方不再显示改参与方&#10;taskid：###">
+      <created>1510736895582</created>
+      <option name="number" value="00236" />
+      <option name="presentableId" value="LOCAL-00236" />
+      <option name="project" value="LOCAL" />
+      <updated>1510736895582</updated>
+    </task>
+    <task id="LOCAL-00237" summary="reason:初验bug修改&#10;taskid：###">
+      <created>1510796157810</created>
+      <option name="number" value="00237" />
+      <option name="presentableId" value="LOCAL-00237" />
+      <option name="project" value="LOCAL" />
+      <updated>1510796157810</updated>
+    </task>
+    <task id="LOCAL-00238" summary="reason:用户管理，超级管理员和普通管理员的菜单权限分配&#10;taskid：###">
+      <created>1510821460824</created>
+      <option name="number" value="00238" />
+      <option name="presentableId" value="LOCAL-00238" />
+      <option name="project" value="LOCAL" />
+      <updated>1510821460824</updated>
+    </task>
+    <task id="LOCAL-00239" summary="reason:硬盘信息，磁盘信息，运维接口&#10;taskid：###">
+      <created>1510899067363</created>
+      <option name="number" value="00239" />
+      <option name="presentableId" value="LOCAL-00239" />
+      <option name="project" value="LOCAL" />
+      <updated>1510899067364</updated>
+    </task>
+    <task id="LOCAL-00240" summary="reason:硬盘信息，磁盘信息，运维接口&#10;taskid：###">
+      <created>1510903911346</created>
+      <option name="number" value="00240" />
+      <option name="presentableId" value="LOCAL-00240" />
+      <option name="project" value="LOCAL" />
+      <updated>1510903911346</updated>
+    </task>
+    <task id="LOCAL-00241" summary="reason:硬盘信息，磁盘信息，运维接口&#10;taskid：###">
+      <created>1510906377482</created>
+      <option name="number" value="00241" />
+      <option name="presentableId" value="LOCAL-00241" />
+      <option name="project" value="LOCAL" />
+      <updated>1510906377482</updated>
+    </task>
+    <task id="LOCAL-00242" summary="reason:编解码器&#10;taskid：###">
+      <created>1511148770691</created>
+      <option name="number" value="00242" />
+      <option name="presentableId" value="LOCAL-00242" />
+      <option name="project" value="LOCAL" />
+      <updated>1511148770691</updated>
+    </task>
+    <task id="LOCAL-00243" summary="reason:编解码器（运维）&#10;taskid：###">
+      <created>1511154088760</created>
+      <option name="number" value="00243" />
+      <option name="presentableId" value="LOCAL-00243" />
+      <option name="project" value="LOCAL" />
+      <updated>1511154088761</updated>
+    </task>
+    <task id="LOCAL-00244" summary="reason:编解码器（运维）&#10;taskid：###">
+      <created>1511154521891</created>
+      <option name="number" value="00244" />
+      <option name="presentableId" value="LOCAL-00244" />
+      <option name="project" value="LOCAL" />
+      <updated>1511154521893</updated>
+    </task>
+    <task id="LOCAL-00245" summary="reason:编解码器（运维）&#10;taskid：###">
+      <created>1511160290416</created>
+      <option name="number" value="00245" />
+      <option name="presentableId" value="LOCAL-00245" />
+      <option name="project" value="LOCAL" />
+      <updated>1511160290417</updated>
+    </task>
+    <task id="LOCAL-00246" summary="reason:编解码器（运维）&#10;taskid：###">
+      <created>1511163150630</created>
+      <option name="number" value="00246" />
+      <option name="presentableId" value="LOCAL-00246" />
+      <option name="project" value="LOCAL" />
+      <updated>1511163150630</updated>
+    </task>
+    <task id="LOCAL-00247" summary="reason:编解码器（运维）&#10;taskid：###">
+      <created>1511163340719</created>
+      <option name="number" value="00247" />
+      <option name="presentableId" value="LOCAL-00247" />
+      <option name="project" value="LOCAL" />
+      <updated>1511163340719</updated>
+    </task>
+    <task id="LOCAL-00248" summary="reason:编解码器（运维）&#10;taskid：###">
+      <created>1511165302410</created>
+      <option name="number" value="00248" />
+      <option name="presentableId" value="LOCAL-00248" />
+      <option name="project" value="LOCAL" />
+      <updated>1511165302410</updated>
+    </task>
+    <task id="LOCAL-00249" summary="reason:编解码器（运维）&#10;taskid：###">
+      <created>1511170857250</created>
+      <option name="number" value="00249" />
+      <option name="presentableId" value="LOCAL-00249" />
+      <option name="project" value="LOCAL" />
+      <updated>1511170857250</updated>
+    </task>
+    <task id="LOCAL-00250" summary="reason:用户管理菜单分配&#10;taskid：###">
+      <created>1511235064745</created>
+      <option name="number" value="00250" />
+      <option name="presentableId" value="LOCAL-00250" />
+      <option name="project" value="LOCAL" />
+      <updated>1511235064760</updated>
+    </task>
+    <task id="LOCAL-00251" summary="reason:增加编解码器的坐标位置&#10;taskid：###">
+      <created>1511238184788</created>
+      <option name="number" value="00251" />
+      <option name="presentableId" value="LOCAL-00251" />
+      <option name="project" value="LOCAL" />
+      <updated>1511238184788</updated>
+    </task>
+    <task id="LOCAL-00252" summary="reason:用户管理不同用户，显示不同的菜单项&#10;taskid：###">
+      <created>1511250574025</created>
+      <option name="number" value="00252" />
+      <option name="presentableId" value="LOCAL-00252" />
+      <option name="project" value="LOCAL" />
+      <updated>1511250574025</updated>
+    </task>
+    <task id="LOCAL-00253" summary="reason:新视通接口（查询）&#10;taskid：###">
+      <created>1511254950537</created>
+      <option name="number" value="00253" />
+      <option name="presentableId" value="LOCAL-00253" />
+      <option name="project" value="LOCAL" />
+      <updated>1511254950537</updated>
+    </task>
+    <task id="LOCAL-00254" summary="reason:讯世通接口暴露接口（运维用）&#10;taskid：###">
+      <created>1511257220023</created>
+      <option name="number" value="00254" />
+      <option name="presentableId" value="LOCAL-00254" />
+      <option name="project" value="LOCAL" />
+      <updated>1511257220023</updated>
+    </task>
+    <task id="LOCAL-00255" summary="reason:用户管理不同用户，显示不同的菜单项&#10;taskid：###">
+      <created>1511260123543</created>
+      <option name="number" value="00255" />
+      <option name="presentableId" value="LOCAL-00255" />
+      <option name="project" value="LOCAL" />
+      <updated>1511260123543</updated>
+    </task>
+    <task id="LOCAL-00256" summary="reason:编解码器新增所属地市字段维护&#10;taskid：###">
+      <created>1511262255823</created>
+      <option name="number" value="00256" />
+      <option name="presentableId" value="LOCAL-00256" />
+      <option name="project" value="LOCAL" />
+      <updated>1511262255824</updated>
+    </task>
+    <task id="LOCAL-00257" summary="reason:管理员和普通用户加字段跳转&#10;taskid：###">
+      <created>1511316894044</created>
+      <option name="number" value="00257" />
+      <option name="presentableId" value="LOCAL-00257" />
+      <option name="project" value="LOCAL" />
+      <updated>1511316894044</updated>
+    </task>
+    <task id="LOCAL-00258" summary="reason:管理员和普通医院用户菜单分配&#10;taskid：###">
+      <created>1511318873968</created>
+      <option name="number" value="00258" />
+      <option name="presentableId" value="LOCAL-00258" />
+      <option name="project" value="LOCAL" />
+      <updated>1511318873968</updated>
+    </task>
+    <task id="LOCAL-00259" summary="reason:管理员和普通医院用户菜单分配&#10;taskid：###">
+      <created>1511319526618</created>
+      <option name="number" value="00259" />
+      <option name="presentableId" value="LOCAL-00259" />
+      <option name="project" value="LOCAL" />
+      <updated>1511319526618</updated>
+    </task>
+    <task id="LOCAL-00260" summary="reason:管理员和普通医院用户菜单分配&#10;taskid：###">
+      <created>1511328659562</created>
+      <option name="number" value="00260" />
+      <option name="presentableId" value="LOCAL-00260" />
+      <option name="project" value="LOCAL" />
+      <updated>1511328659562</updated>
+    </task>
+    <task id="LOCAL-00261" summary="reason:呼叫码率由2048 - 4096&#10;taskid：###">
+      <created>1511337011356</created>
+      <option name="number" value="00261" />
+      <option name="presentableId" value="LOCAL-00261" />
+      <option name="project" value="LOCAL" />
+      <updated>1511337011356</updated>
+    </task>
+    <task id="LOCAL-00262" summary="reason:医院用户上传图片&#10;taskid：###">
+      <created>1511341735005</created>
+      <option name="number" value="00262" />
+      <option name="presentableId" value="LOCAL-00262" />
+      <option name="project" value="LOCAL" />
+      <updated>1511341735005</updated>
+    </task>
+    <task id="LOCAL-00263" summary="reason:N轮bug修改&#10;taskid：###">
+      <created>1511509098188</created>
+      <option name="number" value="00263" />
+      <option name="presentableId" value="LOCAL-00263" />
+      <option name="project" value="LOCAL" />
+      <updated>1511509098188</updated>
+    </task>
+    <task id="LOCAL-00264" summary="reason:管理员用户登录，直播信息增加历史直播信息&#10;taskid：###">
+      <created>1511515484762</created>
+      <option name="number" value="00264" />
+      <option name="presentableId" value="LOCAL-00264" />
+      <option name="project" value="LOCAL" />
+      <updated>1511515484762</updated>
+    </task>
+    <task id="LOCAL-00265" summary="reason:直播间字幕查看接口&#10;taskid：###">
+      <created>1511863266295</created>
+      <option name="number" value="00265" />
+      <option name="presentableId" value="LOCAL-00265" />
+      <option name="project" value="LOCAL" />
+      <updated>1511863266298</updated>
+    </task>
+    <task id="LOCAL-00266" summary="reason:编解码备注信息增加接口改造&#10;taskid：###">
+      <created>1511869219146</created>
+      <option name="number" value="00266" />
+      <option name="presentableId" value="LOCAL-00266" />
+      <option name="project" value="LOCAL" />
+      <updated>1511869219146</updated>
+    </task>
+    <task id="LOCAL-00267" summary="reason:表&#10;taskid：5、待审批状态的直播，参与方新增、删除、修改顺序等提交后实际都没有修改&#10;       &#10;       6、直播上传图片后，修改直播其他信息时，会有一条修改记录说图片被修改未空，实际未修改">
+      <created>1511944832173</created>
+      <option name="number" value="00267" />
+      <option name="presentableId" value="LOCAL-00267" />
+      <option name="project" value="LOCAL" />
+      <updated>1511944832173</updated>
+    </task>
+    <task id="LOCAL-00268" summary="reason:直播增加联系人跟新&#10;taskid：###">
+      <created>1511945711401</created>
+      <option name="number" value="00268" />
+      <option name="presentableId" value="LOCAL-00268" />
+      <option name="project" value="LOCAL" />
+      <updated>1511945711401</updated>
+    </task>
+    <task id="LOCAL-00269" summary="reason:首页设置，适屏宽度调整&#10;taskid：###">
+      <created>1512036644272</created>
+      <option name="number" value="00269" />
+      <option name="presentableId" value="LOCAL-00269" />
+      <option name="project" value="LOCAL" />
+      <updated>1512036644272</updated>
+    </task>
+    <option name="localTasksCounter" value="270" />
+    <servers />
+  </component>
+  <component name="TestHistory">
+    <history-entry file="LiveControllerServiceImpl_getSwitchImage - 2017.10.31 at 14h 34m 11s.xml">
+      <configuration name="LiveControllerServiceImpl.getSwitchImage" configurationId="JUnit" />
+    </history-entry>
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="1585200000" />
+  </component>
+  <component name="TodoView" selected-index="1">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1456" height="876" extended-state="1" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28667563" sideWeight="0.508596" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293011" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14255014" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="CDI" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.3295129" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19412607" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19412607" sideWeight="0.48521507" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="JSF" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.3295129" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.0" sideWeight="0.5623209" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293011" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28629032" sideWeight="0.491404" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32839838" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.028225806" sideWeight="0.5522923" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.10483871" sideWeight="0.5888252" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293011" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293011" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17191978" sideWeight="0.45891783" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.3295129" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15974212" sideWeight="0.54108214" order="6" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293011" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18696275" sideWeight="0.5376712" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27148998" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5067204" sideWeight="0.51862466" order="14" side_tool="false" content_ui="tabs" />
+    </layout>
+    <layout-to-restore>
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28667563" sideWeight="0.508596" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293011" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14255014" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="CDI" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.3295129" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27148998" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19412607" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19412607" sideWeight="0.48521507" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="JSF" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.3295129" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.04704301" sideWeight="0.5623209" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293011" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28667563" sideWeight="0.491404" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32839838" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20026882" sideWeight="0.5888252" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.41801074" sideWeight="0.5522923" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293011" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293011" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5067204" sideWeight="0.51862466" order="14" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18266475" sideWeight="0.46232876" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.3295129" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28008595" sideWeight="0.53064275" order="6" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293011" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18696275" sideWeight="0.5376712" order="7" side_tool="true" content_ui="tabs" />
+    </layout-to-restore>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="processedProjectFiles" value="true" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/kscc" />
+      <path value="E:/git_Repository" />
+    </ignored-roots>
+    <MESSAGE value="reason:我的申请的‘已申请，审核’位置调整&#10;taskid：###" />
+    <MESSAGE value="reason:用户管理整改&#10;taskid：###" />
+    <MESSAGE value="reason:直播管理删除参与方不再显示改参与方&#10;taskid：###" />
+    <MESSAGE value="reason:初验bug修改&#10;taskid：###" />
+    <MESSAGE value="reason:用户管理，超级管理员和普通管理员的菜单权限分配&#10;taskid：###" />
+    <MESSAGE value="reason:硬盘信息，磁盘信息，运维接口&#10;taskid：###" />
+    <MESSAGE value="reason:编解码器&#10;taskid：###" />
+    <MESSAGE value="reason:编解码器（运维）&#10;taskid：###" />
+    <MESSAGE value="reason:用户管理菜单分配&#10;taskid：###" />
+    <MESSAGE value="reason:增加编解码器的坐标位置&#10;taskid：###" />
+    <MESSAGE value="reason:新视通接口（查询）&#10;taskid：###" />
+    <MESSAGE value="reason:讯世通接口暴露接口（运维用）&#10;taskid：###" />
+    <MESSAGE value="reason:用户管理不同用户，显示不同的菜单项&#10;taskid：###" />
+    <MESSAGE value="reason:编解码器新增所属地市字段维护&#10;taskid：###" />
+    <MESSAGE value="reason:管理员和普通用户加字段跳转&#10;taskid：###" />
+    <MESSAGE value="reason:管理员和普通医院用户菜单分配&#10;taskid：###" />
+    <MESSAGE value="reason:呼叫码率由2048 - 4096&#10;taskid：###" />
+    <MESSAGE value="reason:医院用户上传图片&#10;taskid：###" />
+    <MESSAGE value="reason:N轮bug修改&#10;taskid：###" />
+    <MESSAGE value="reason:管理员用户登录，直播信息增加历史直播信息&#10;taskid：###" />
+    <MESSAGE value="reason:直播间字幕查看接口&#10;taskid：###" />
+    <MESSAGE value="reason:编解码备注信息增加接口改造&#10;taskid：###" />
+    <MESSAGE value="reason:表&#10;taskid：5、待审批状态的直播，参与方新增、删除、修改顺序等提交后实际都没有修改&#10;       &#10;       6、直播上传图片后，修改直播其他信息时，会有一条修改记录说图片被修改未空，实际未修改" />
+    <MESSAGE value="reason:直播增加联系人跟新&#10;taskid：###" />
+    <MESSAGE value="reason:首页设置，适屏宽度调整&#10;taskid：###" />
+    <option name="LAST_COMMIT_MESSAGE" value="reason:首页设置，适屏宽度调整&#10;taskid：###" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/livebroadapprove/ExportServiceImpl.java</url>
+          <line>83</line>
+          <properties />
+          <option name="timeStamp" value="248" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/logandmessage/FabsLiveOprLogUtil.java</url>
+          <line>311</line>
+          <properties />
+          <option name="timeStamp" value="443" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/controller/fileupload/FileUpload.java</url>
+          <line>44</line>
+          <properties />
+          <option name="timeStamp" value="504" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/logandmessage/FabsLiveOprLogUtil.java</url>
+          <line>227</line>
+          <properties />
+          <option name="timeStamp" value="659" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/liveControllerService/LiveControllerServiceImpl.java</url>
+          <line>1005</line>
+          <properties />
+          <option name="timeStamp" value="874" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/hospitalInformation/HospitalInformationServiceImpl.java</url>
+          <line>279</line>
+          <properties />
+          <option name="timeStamp" value="878" />
+        </line-breakpoint>
+      </breakpoints>
+      <breakpoints-dialog>
+        <breakpoints-dialog />
+      </breakpoints-dialog>
+      <option name="time" value="893" />
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory">
+        <watch expression="&quot;管理员&quot;.indexOf(userName) != -1" />
+        <watch expression="!&quot;&quot;.equals(userName)" />
+        <watch expression="liveMessageMapper.findMessageByStatus(map)" />
+        <watch expression="MorphDynaBean" />
+        <watch expression="src" />
+        <watch expression="srcMap.get(&quot;mt_id&quot;).toString()" />
+        <watch expression="req.getParameter(&quot;fileName&quot;)" />
+        <watch expression=" Document doc = DocumentHelper.parseText(xmlResponse);&#10;                    String SchID = doc.getRootElement().elementText(&quot;SchID&quot;); ///设置预案Id 1是人像，2是hd，3是spies 只需要2,3" />
+        <watch expression="response.get(&quot;success&quot;)" />
+        <watch expression="hostList.contains(user_id)" />
+      </configuration>
+      <configuration name="Application">
+        <watch expression="a.indexOf(&quot;管理员&quot;) == -1" />
+        <watch expression="a.indexOf(&quot;管理员&quot;)" />
+        <watch expression="CfgList.asXML()" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-ui/src/main/webapp/WEB-INF/jsp/liveConference/liveConferenceKSCC.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="319">
+          <caret line="29" column="21" lean-forward="true" selection-start-line="29" selection-start-column="21" selection-end-line="29" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-ui/src/main/webapp/js/app/accountManage/hospitalList.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="283">
+          <caret line="118" column="70" lean-forward="false" selection-start-line="118" selection-start-column="70" selection-end-line="118" selection-end-column="70" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-ui/src/main/webapp/js/app/accountManage/hospitalInfo.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="21" column="22" lean-forward="true" selection-start-line="21" selection-start-column="22" selection-end-line="21" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/util/StringUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="308">
+          <caret line="14" column="41" lean-forward="true" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/broadcastMeeting/BroadcastMeetService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="18" column="35" lean-forward="false" selection-start-line="18" selection-start-column="35" selection-end-line="18" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/broadcastMeeting/BroadcastMeetMapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="15" column="47" lean-forward="false" selection-start-line="15" selection-start-column="27" selection-end-line="15" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/broadcastMeeting/BroadcastMeetServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="130">
+          <caret line="24" column="58" lean-forward="false" selection-start-line="24" selection-start-column="42" selection-end-line="24" selection-end-column="58" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/controller/broadcastMeeting/BroadcastMeetController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="218">
+          <caret line="35" column="5" lean-forward="true" selection-start-line="35" selection-start-column="5" selection-end-line="35" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-ui/src/main/webapp/js/app/liveConference/liveConferenceKSCCApp.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="219">
+          <caret line="369" column="53" lean-forward="true" selection-start-line="369" selection-start-column="53" selection-end-line="369" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/broadcastMeeting/BroadcastMeetMapper.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1628">
+          <caret line="74" column="32" lean-forward="false" selection-start-line="74" selection-start-column="32" selection-end-line="74" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/controller/fbmenu/FbsMenuController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="990">
+          <caret line="59" column="38" lean-forward="false" selection-start-line="59" selection-start-column="38" selection-end-line="59" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/fbmenu/FbsMenuService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="550">
+          <caret line="29" column="20" lean-forward="false" selection-start-line="29" selection-start-column="20" selection-end-line="29" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/liveMessage/LiveMessageServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2750">
+          <caret line="151" column="17" lean-forward="false" selection-start-line="151" selection-start-column="17" selection-end-line="151" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/hospitalInformation/HospitalInformationMapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="616">
+          <caret line="34" column="51" lean-forward="false" selection-start-line="34" selection-start-column="33" selection-end-line="34" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/hospitalInformation/HospitalInformationMapper.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1716">
+          <caret line="78" column="14" lean-forward="false" selection-start-line="78" selection-start-column="14" selection-end-line="78" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/fbmenu/FbsMenuServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1914">
+          <caret line="105" column="39" lean-forward="false" selection-start-line="105" selection-start-column="39" selection-end-line="105" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/utils/XmlGenerator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7150">
+          <caret line="336" column="25" lean-forward="false" selection-start-line="336" selection-start-column="25" selection-end-line="336" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/controller/restful/apiController.java" />
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/apiService/IApiService.java" />
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/apiService/ApiServiceImpl.java" />
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/utils/JsonUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="24" column="5" lean-forward="true" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/logandmessage/FabsLiveOprLogUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="129">
+          <caret line="200" column="0" lean-forward="true" selection-start-line="200" selection-start-column="0" selection-end-line="200" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/model/livebroadcast/FbsLiveBroadcast.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="22">
+          <caret line="114" column="14" lean-forward="false" selection-start-line="114" selection-start-column="14" selection-end-line="114" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_51/src.zip!/java/awt/image/ColorConvertOp.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="239">
+          <caret line="253" column="31" lean-forward="false" selection-start-line="253" selection-start-column="31" selection-end-line="253" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/livecodec/LiveCodecService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="461">
+          <caret line="45" column="20" lean-forward="false" selection-start-line="45" selection-start-column="20" selection-end-line="45" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/livecodec/LiveCodecServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="423">
+          <caret line="149" column="26" lean-forward="true" selection-start-line="149" selection-start-column="26" selection-end-line="149" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-ui/src/main/resources/jdbc.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="242">
+          <caret line="11" column="37" lean-forward="true" selection-start-line="11" selection-start-column="37" selection-end-line="11" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/livecodec/LiveCodecMapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="858">
+          <caret line="45" column="22" lean-forward="false" selection-start-line="45" selection-start-column="8" selection-end-line="45" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/model/liveCodec/FbsLiveCodec.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="88">
+          <caret line="4" column="13" lean-forward="false" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/livecodec/LiveCodecMapper.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3036">
+          <caret line="138" column="13" lean-forward="false" selection-start-line="138" selection-start-column="13" selection-end-line="138" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/controller/liveController/LiveController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5170">
+          <caret line="259" column="21" lean-forward="false" selection-start-line="259" selection-start-column="21" selection-end-line="259" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-ui/src/main/webapp/js/app/liveControl/liveControlDetailApp.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="3145" column="29" lean-forward="true" selection-start-line="3145" selection-start-column="29" selection-end-line="3145" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/controller/loginController/LoginController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="241" column="59" lean-forward="false" selection-start-line="241" selection-start-column="22" selection-end-line="241" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-aop/4.0.2.RELEASE/spring-aop-4.0.2.RELEASE-sources.jar!/org/springframework/aop/support/AopUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="312" column="0" lean-forward="true" selection-start-line="312" selection-start-column="0" selection-end-line="312" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-ui/src/main/webapp/js/app/editLiveBroadcast/editLiveBroadcastApp.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9438">
+          <caret line="429" column="20" lean-forward="false" selection-start-line="429" selection-start-column="20" selection-end-line="429" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/controller/hospitalInformation/HospitalInformationController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1012">
+          <caret line="65" column="53" lean-forward="false" selection-start-line="65" selection-start-column="53" selection-end-line="65" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-ui/src/main/webapp/css/pages/kscc.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="242">
+          <caret line="1446" column="24" lean-forward="true" selection-start-line="1446" selection-start-column="24" selection-end-line="1446" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/apache/httpcomponents/httpclient/4.5.3/httpclient-4.5.3.jar!/org/apache/http/impl/client/HttpClientBuilder.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="95" column="44" lean-forward="true" selection-start-line="95" selection-start-column="44" selection-end-line="95" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/utils/HttpUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8184">
+          <caret line="409" column="19" lean-forward="false" selection-start-line="409" selection-start-column="19" selection-end-line="409" selection-end-column="19" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/livebroadcast/LiveBroadCastMapper.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="423">
+          <caret line="240" column="13" lean-forward="true" selection-start-line="240" selection-start-column="13" selection-end-line="240" selection-end-column="13" />
+          <folding>
+            <marker date="1511945595943" expanded="true" signature="406:1039" ph="INSERT INTO FBS_LIVE_BROADCAST... " />
+            <marker date="1511945595943" expanded="true" signature="1077:1731" ph="select FLB.I... " />
+            <marker date="1511945595943" expanded="true" signature="1772:2412" ph="select FLB.I... " />
+            <marker date="1511945595943" expanded="true" signature="4136:4303" ph="UPDATE FBS_L... " />
+            <marker date="1511945595943" expanded="true" signature="4218:4278" ph="select HOSPI... FBS_USER" />
+            <marker date="1511945595943" expanded="true" signature="4399:4491" ph="UPDATE FBS_L... " />
+            <marker date="1511945595943" expanded="true" signature="4596:5591" ph="select FLP.I... FBS_LIVE_PARTICIPANT" />
+            <marker date="1511945595943" expanded="true" signature="5939:6516" ph="select FLB.C... FBS_LIVE_PARTICIPANT" />
+            <marker date="1511945595943" expanded="true" signature="6596:7450" ph="UPDATE FBS_L... " />
+            <marker date="1511945595943" expanded="true" signature="7549:7607" ph="delete FROM " />
+            <marker date="1511945595943" expanded="true" signature="7719:7949" ph="INSERT INTO FBS_LIVE_PARTICIPANT... " />
+            <marker date="1511945595943" expanded="true" signature="8032:8109" ph="UPDATE FBS_L... " />
+            <marker date="1511945595943" expanded="true" signature="8180:8313" ph="UPDATE FBS_L... " />
+            <marker date="1511945595943" expanded="true" signature="8352:8526" ph="UPDATE FBS_L... " />
+            <marker date="1511945595943" expanded="true" signature="8566:8642" ph="UPDATE FBS_L... " />
+            <marker date="1511945595943" expanded="true" signature="9110:9316" ph="SELECT FHI.H... FBS_LIVE_PARTICIPANT" />
+            <marker date="1511945595943" expanded="true" signature="9371:9603" ph="SELECT FLB.I... FBS_LIVE_BROADCAST" />
+            <marker date="1511945595943" expanded="true" signature="10864:11186" ph="SELECT ID id... FBS_LIVE_BROADCAST" />
+            <marker date="1511945595943" expanded="true" signature="11593:11653" ph="SELECT END_T... FBS_LIVE_BROADCAST" />
+            <marker date="1511945595943" expanded="true" signature="11753:11833" ph="UPDATE FBS_L... " />
+            <marker date="1511945595943" expanded="true" signature="11952:12114" ph="SELECT ID,TI... FBS_LIVE_BROADCAST" />
+            <marker date="1511945595943" expanded="true" signature="12076:12113" ph="SELECT LIVE_... FBS_LIVE_HOMEPAGE" />
+            <marker date="1511945595943" expanded="true" signature="12274:12455" ph="INSERT INTO FBS_LIVE_HOMEPAGE... " />
+            <marker date="1511945595943" expanded="true" signature="12569:12767" ph="UPDATE FBS_L... " />
+            <marker date="1511945595943" expanded="true" signature="13450:13530" ph="SELECT ID,TI... fbs_live_broadcast" />
+            <marker date="1511945595943" expanded="true" signature="13644:13866" ph="SELECT FLH.I... FBS_LIVE_HOMEPAGE" />
+            <marker date="1511945595943" expanded="true" signature="13937:13999" ph="SELECT COUNT... fbs_live_homepage" />
+            <marker date="1511945595943" expanded="true" signature="14054:14107" ph="DELETE FROM " />
+            <marker date="1511945595943" expanded="true" signature="14186:14451" ph="SELECT FU.ID... FBS_LIVE_BROADCAST" />
+            <marker date="1511945595943" expanded="true" signature="14558:14799" ph="SELECT FHI.H... FBS_LIVE_PARTICIPANT" />
+            <marker date="1511945595943" expanded="true" signature="14736:14793" ph="SELECT ID FR... FBS_LIVE_BROADCAST" />
+            <marker date="1511945595943" expanded="true" signature="14866:15136" ph="SELECT FLP.M... FBS_LIVE_PARTICIPANT" />
+            <marker date="1511945595943" expanded="true" signature="15215:15951" ph="SELECT CAST(... fbs_live_codec" />
+            <marker date="1511945595943" expanded="true" signature="16030:16104" ph="UPDATE fbs_l... " />
+            <marker date="1511945595943" expanded="true" signature="16214:16291" ph="UPDATE fbs_l... " />
+            <marker date="1511945595943" expanded="true" signature="16430:16494" ph="SELECT OP_ST... fbs_live_broadcast" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/hospitalInformation/HospitalInformationServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="116">
+          <caret line="117" column="0" lean-forward="true" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#2883#2904#0" expanded="false" />
+            <element signature="e#2956#2972#0" expanded="false" />
+            <element signature="e#3350#3366#0" expanded="false" />
+            <element signature="e#3690#3706#0" expanded="false" />
+            <element signature="e#4257#4278#0" expanded="false" />
+            <element signature="e#4543#4559#0" expanded="false" />
+            <element signature="e#4883#4899#0" expanded="false" />
+            <element signature="e#5532#5553#0" expanded="false" />
+            <element signature="e#5605#5621#0" expanded="false" />
+            <element signature="e#6168#6184#0" expanded="false" />
+            <element signature="e#6718#6739#0" expanded="false" />
+            <element signature="e#6791#6807#0" expanded="false" />
+            <element signature="e#10278#10299#0" expanded="false" />
+            <element signature="e#10660#10676#0" expanded="false" />
+            <element signature="e#11090#11106#0" expanded="false" />
+            <element signature="e#15539#15560#0" expanded="false" />
+            <element signature="e#15630#15654#0" expanded="false" />
+            <element signature="e#15937#15953#0" expanded="false" />
+            <element signature="e#16345#16361#0" expanded="false" />
+            <element signature="e#16997#17013#0" expanded="false" />
+            <element signature="e#17476#17492#0" expanded="false" />
+            <element signature="e#17780#17796#0" expanded="false" />
+            <element signature="e#18422#18438#0" expanded="false" />
+            <element signature="e#18798#18814#0" expanded="false" />
+            <element signature="e#19088#19104#0" expanded="false" />
+            <element signature="e#19368#19384#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="22">
+          <caret line="15" column="27" lean-forward="false" selection-start-line="15" selection-start-column="27" selection-end-line="15" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/controller/livebroadcast/LiveBroadCastController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="93">
+          <caret line="114" column="17" lean-forward="false" selection-start-line="114" selection-start-column="17" selection-end-line="114" selection-end-column="17" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#2205#2206#0" expanded="false" />
+            <element signature="e#2255#2256#0" expanded="false" />
+            <element signature="e#3381#3382#0" expanded="false" />
+            <element signature="e#3431#3432#0" expanded="false" />
+            <element signature="e#3557#3558#0" expanded="false" />
+            <element signature="e#3606#3607#0" expanded="false" />
+            <element signature="e#3717#3718#0" expanded="false" />
+            <element signature="e#3775#3776#0" expanded="false" />
+            <element signature="e#5103#5104#0" expanded="false" />
+            <element signature="e#5158#5159#0" expanded="false" />
+            <element signature="e#5719#5720#0" expanded="false" />
+            <element signature="e#5770#5771#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/livebroadcast/LiveBroadCastService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="22">
+          <caret line="43" column="48" lean-forward="false" selection-start-line="43" selection-start-column="48" selection-end-line="43" selection-end-column="48" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/livebroadcast/LiveBroadCastServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="467" column="21" lean-forward="false" selection-start-line="467" selection-start-column="21" selection-end-line="467" selection-end-column="21" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/hospitalInformation/HospitalInformationService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="622">
+          <caret line="51" column="29" lean-forward="false" selection-start-line="51" selection-start-column="29" selection-end-line="51" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/mapper/livebroadcast/LiveBroadCastMapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="23" column="7" lean-forward="true" selection-start-line="23" selection-start-column="7" selection-end-line="23" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/medTApi/MedTApi.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="308">
+          <caret line="51" column="25" lean-forward="true" selection-start-line="51" selection-start-column="25" selection-end-line="51" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/liveControllerService/IliveController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="203">
+          <caret line="25" column="20" lean-forward="false" selection-start-line="25" selection-start-column="20" selection-end-line="25" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-bussiness/src/main/java/com/fable/kscc/bussiness/service/liveControllerService/LiveControllerServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="291">
+          <caret line="263" column="54" lean-forward="false" selection-start-line="263" selection-start-column="54" selection-end-line="263" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kscc/kscc-api/src/main/java/com/fable/kscc/api/kedaApi/KedaApi.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="181">
+          <caret line="171" column="44" lean-forward="true" selection-start-line="171" selection-start-column="44" selection-end-line="171" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArquillianSettingsConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <last-edited>kscc-ui:war exploded</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.5" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>Spring</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.7</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>kscc</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.7</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>Maven: aopalliance:aopalliance:1.0</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

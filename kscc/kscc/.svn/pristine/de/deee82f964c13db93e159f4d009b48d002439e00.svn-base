@@ -1,0 +1,42 @@
+package com.fable.kscc.api.utils;
+
+/**
+ * 通用常量
+ * Created by duyang 2017-08-05.
+ */
+public interface Constants {
+
+
+    interface KEDA_INTERFACE_ADDRESS {
+        String TOKEN = "api/v1/system/token"; //登陆认证token接口
+        String LOGIN = "api/v1/system/login"; //登陆接口
+    }
+
+    interface KEDA_INTERFACE_MSG {
+        String SUCCESS = "1"; //SUCCESS
+        String FAILURE = "0"; //FAILURE
+    }
+
+    interface MedT100 {
+        String authentication = "nvrcgi2/system/GetAuthenticationid";//鉴权
+        String login = "nvrcgi2/system/Login";//登陆
+        String setSysTimeInfo = "nvrcgi/system/SetSysTimeInfo";//时间同步
+        String heartBeat = "nvrcgi2/system/State";//心跳
+        String mp4BackupProgress = "nvrcgi2/svrmp4/Mp4BackupGetProgress";//备份进程
+        String viewSelf = "nvrcgi2/svrvmt/SetVmtParam";//通道切换
+        String mp4FileQuery = "nvrcgi2/svrmp4/Mp4FileQuery";//文件查询
+        String mp4BackupStart = "nvrcgi2/svrmp4/Mp4BackupStart";//开始备份文件
+        String mp4BackupStop = "nvrcgi2/svrmp4/Mp4BackupStop";//不用
+        String getChnRecCfg = "nvrcgi/record/GetChnRecCfg";//获取录像通道配置
+        String setChnRecCfg = "nvrcgi/record/SetChnRecCfg";//设置录像通道配置    开始，暂停
+        String mp4FilesDelete = "nvrcgi2/svrmp4/Mp4FilesDelete";//录像文件删除
+        String getAllVideoAdjustScheme = "nvrcgi2/svredu/GetAllVideoAdjustScheme";//获取全部预案信息
+        String setChnScheme = "nvrcgi2/svredu/SetChnScheme";//设置预案信息
+        String getAllChnScheme = "nvrcgi2/svredu/GetAllChnScheme";//获取全部通道预案、
+        String getSysDevInfo = "nvrcgi/system/GetSysDevInfo";//获取设备信息
+        String getMpuVidEncParam = "/nvrcgi2/svredu/GetMpuVidEncParam";//获取编解码器参数
+        String getDisks = "/nvrcgi/disk/GetDisks";//获取当前硬盘信息
+        String getDiskInfo = "/nvrcgi2/svrdisk/GetDiskInfo";//获取磁盘信息
+    }
+
+}

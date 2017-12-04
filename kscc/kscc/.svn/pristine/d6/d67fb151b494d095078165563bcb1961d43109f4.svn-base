@@ -1,0 +1,201 @@
+define(["base","bootstrap"],function(base,bootstrap){
+	var path=$.base;
+	//获得申请人所属医院
+	function affiliatedHospital(){
+		//管理员用户登录右上角显示
+		var loginName ='';
+        $.ajax({
+            url: $.base + "/fbsUser/getUserInfoByUser",
+            type: "GET",
+            async: false,
+            success: function (data) {
+				loginName = data.loginName;
+            }
+        });
+		
+		$.ajax({
+        	url:$.base+"/hospital/getHospitalInfoByUser",
+        	type:"GET",
+        	async:false,
+        	success:function(data){
+        		var strs="";
+        		$("#topLi").empty();
+        		if(data.id){
+	        		$("#userName").text(data.hospitalName);
+	        		$("#userName").attr("title",data.hospitalName);
+	        		strs="<li title='首页' class='active'><a att='"+path+"/loginController/toHomePage'><i class='iconfont iconTop' alt='首页'>&#xe66f;</i></a></li>"+
+				    "<li title='账户管理'><a att='"+path+"/loginController/toAccountManage'><i class='iconfont iconTop' alt='账户管理'>&#xe614;</i></a></li>"+
+					"<li title='消息中心'><a att='"+path+"/loginController/toMessageCenter' class='msgA'><span class='msgNum'></span><i class='iconfont iconTop' alt='消息中心'>&#xe6f4;</i></a></li>"+
+					"<li title='编解码器'><a att=''><i class='iconfont iconTop' alt='编解码器'>&#xe633;</i></a></li>";
+        		}
+        		else{
+
+        			$("#userName").text(loginName);
+        			$("#userName").attr("title",loginName);
+        		    strs="<li title='首页' class='active'><a att='"+path+"/loginController/toHomePage'><i class='iconfont iconTop' alt='首页'>&#xe66f;</i></a></li>"+
+					    "<li title='账户管理'><a att='"+path+"/loginController/toAccountManage'><i class='iconfont iconTop' alt='账户管理'>&#xe614;</i></a></li>"+
+						"<li title='消息中心'><a att='"+path+"/loginController/toMessageCenter' class='msgA'><span class='msgNum'></span><i class='iconfont iconTop' alt='消息中心'>&#xe6f4;</i></a></li>"+
+						"<li title='编解码器'><a att=''><i class='iconfont iconTop' alt='编解码器'>&#xe633;</i></a></li>"+
+						"<li title='设置'><a att='"+path+"/loginController/toHomeConfig'><i class='iconfont iconTop' alt='设置'>&#xe625;</i></a></li>"+
+						"<li title='资源日历'><a att='"+path+"/loginController/toResourceCalendar'><i class='iconfont iconTop' alt='资源日历'>&#xe663;</i></a></li>";
+        		}
+        		$("#topLi").append(strs);
+        		setQuit();
+        	},
+        	error:function(e){}
+		});
+	}
+	
+	function setQuit(){
+		$(".quit").unbind().on("click",function(){
+			base.confirm({ 
+		    	  label:"提示",
+		    	  text:"<div style='text-align:center;font-size:13px;'>确定退出系统吗?</div>",
+	              confirmCallback:function(){
+	            	  window.location.href=$.base+"/loginController/logout";
+	              }
+			});
+		});
+	}
+	
+	function getMenus(){
+        $.ajax({
+            type:"post",
+            async: false,
+            url:$.base+"/liveBroadCastController/getUserId",
+            success:function (data) {
+            	var roleName=data.roleName;
+            	$("#roleName").val(roleName);
+            	$("#createIdEdit").val(data.id);
+            	var path=$.base;
+            	if(roleName=="kscc管理员"){
+    			    strs="<li><a att='"+path+"/loginController/toCreateLiveBroadcast'><i class='iconfont iconBottom'>&#xe613;</i><span class='bottomName'>直播申请</span></a></li>"+
+    				     "<li><a att='"+path+"/loginController/toLiveConferenceKSCC'><i class='iconfont iconBottom'>&#xe622;</i><span class='bottomName'>直播信息</span></a></li>"+
+    				     "<li><a att='"+path+"/loginController/toLiveApproval'><i class='iconfont iconBottom'>&#xe624;</i><span class='bottomName'>直播审批</span></a></li>"+
+    				     "<li><a att='"+path+"/loginController/toLiveControlList'><i class='iconfont iconBottom'>&#xe6f3;</i><span class='bottomName'>直播管理</span></a></li>"+
+    				     "<li><a att=''><i class='iconfont iconBottom'>&#xe62c;</i><span class='bottomName'>录像管理</span></a></li>";
+	    		}
+	    		else{
+	    				strs="<li><a att='"+path+"/loginController/toCreateLiveBroadcast'><i class='iconfont iconBottom'>&#xe613;</i><span class='bottomName'>直播申请</span></a></li>"+
+	    			     "<li><a att='"+path+"/loginController/toLiveConferenceHosUser'><i class='iconfont iconBottom'>&#xe622;</i><span class='bottomName'>直播信息</span></a></li>"+
+	    			     "<li><a att='"+path+"/loginController/toLiveControlList'><i class='iconfont iconBottom'>&#xe6f3;</i><span class='bottomName'>直播管理</span></a></li>"+
+	    			     "<li><a att=''><i class='iconfont iconBottom'>&#xe62c;</i><span class='bottomName'>录像管理</span></a></li>";
+	    		}
+	    		$("#bottomLi").append(strs);
+	            }
+        });
+    };
+	
+    function setLevelMenu(){
+    	$("#topLi li,#bottomLi li").off().on("click",function(){
+    		var url=$(this).find("a").attr("att");
+    		$("#topLi li,#bottomLi li").removeClass("active");
+    		$(this).addClass("active");
+    		if(url){
+    			$.ajax({ 
+	                type:"GET", 
+	                url:url, 
+	                error:function(){ 
+	                   alert("加载错误！"); 
+	                }, 
+	                success:function(data){
+						$(".middle").html("");
+                        if(data.indexOf('06a5bb21-b8f0-4dfd-8004-4b4e17d4f81c')!==-1){
+                            window.location.href=$.base+'/loginController/toLogin'
+                            return
+                        }
+                        $(".middle").html(data);
+	                } 
+	             });
+    		}
+    	});
+    }
+    
+    function setBanner(){
+    	var itemStrs="";
+    	var olStrs="";
+    	$.ajax({
+            type:"post",
+            async: false,
+			contentType:'application/json',
+            url:$.base+"/liveBroadCastController/selectHomePage",
+            success:function (e) {
+            	if(e.status=='1'){
+            		var pitureList=e.data
+                    $(".carousel-indicators").empty();
+                    $(".carousel-inner").empty();
+                    $.each(pitureList,function(i,v){
+                    	if(v.networkUrl){
+                            if(v.networkUrl.indexOf("http")!==-1){
+                                itemStrs+="<div class='item'>"+
+                                    "<a href='"+v.networkUrl+"'><img src='"+$.base+"/loginController/showPic?name="+v.imageUrl+"'></a>"+
+                                    "</div>";
+                            }
+                            else{
+                                itemStrs+="<div class='item'>"+
+                                    "<a href='https://"+v.networkUrl+"'><img src='"+$.base+"/loginController/showPic?name="+v.imageUrl+"'></a>"+
+                                    "</div>";
+                            }
+						}
+						else{
+                            itemStrs+="<div class='item'>"+
+                                "<img src='"+$.base+"/loginController/showPic?name="+v.imageUrl+"'>"+
+                                "</div>";
+						}
+                        olStrs+="<li data-target='#myCarousel' data-slide-to='"+i+"'></li>";
+                    });
+                    $(".carousel-indicators").append(olStrs);
+                    $(".carousel-inner").append(itemStrs);
+                    $(".item:first").addClass("active");
+                    $(".carousel-indicators").children(":first").addClass("active");
+				}
+            },
+            error:function(){}
+    	});
+    }
+    function checkBrowserIsCloseOrNot() {
+    	// setInterval(poolFunction,2000)
+    }
+    var poolFunction=function () {
+        $.ajax({
+            type:"post",
+			contextType:'application/json',
+            url:$.base+"/loginController/longLink/"+new Date().getTime()
+        })
+    }
+
+    //获取消息信息数量
+    function getMessageNum() {
+        param={
+            //"liveId":$("#liveIdControlDetail").val(),
+            //"addressee":-1,
+            "status":1 //未读信息
+        }
+        $.ajax({
+            type: "post",
+            url:  $.base + "/messageContorller/queryExtendCount",
+            data:JSON.stringify(param),
+            contentType:"application/json",
+            success: function(data){
+                if(data!=0){
+                    $(".msgNum").show();
+                    $(".msgNum").text(data)
+                }else{
+                    $(".msgNum").hide();
+                }
+            }
+        });
+    }
+
+	return {
+		run:function(){
+			affiliatedHospital();//获得申请人所属医院
+			getMenus();//获得底部菜单
+			setLevelMenu();
+			setBanner();
+            checkBrowserIsCloseOrNot()
+			/*一分钟刷新一下消息数量*/
+            setInterval(getMessageNum,6000)
+		}
+	};
+});

@@ -1,0 +1,37 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+    request.setCharacterEncoding("UTF-8");
+%>
+<%
+    Object id = request.getAttribute("id");
+%>
+<div class="hospitalInfoDiv">
+    <input type="hidden" id="idstr" value="<%=id %>"/>
+        <%--<div class="clearfix">
+            <button class="btn btn-primary hospitalAdd">新增</button>
+        </div>--%>
+        <div class="clearfix mt-10">
+            <label class="text-right">医院名称：</label>
+            <label class="" id="hospitalName" style="width:40%;"></label>
+        </div>
+        <div class="clearfix mt-10">
+            <label class="text-right">网站链接：</label>
+            <label class="" id="hospitalUrl" style="width:35%;"></label>
+        </div>
+       <%-- <div class="clearfix mt-10">
+            <label class="text-right">医院头像：</label>
+            <label class="" id="logoUrl" style="width:35%;"></label>
+        </div>--%>
+        <div class="clearfix mt-10">
+            <label class="text-right">医院简介：</label>
+            <label class="" id="hospitalContent" style="width:35%;"></label>
+        </div>
+</div>
+<script>
+    require(["app/accountManage/hospitalInfo"],function(page){
+        page.run();
+    })
+</script>
+
+
